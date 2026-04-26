@@ -405,15 +405,15 @@ Es importante matizar que los héroes que se sitúan en el rango cercano al 48%�
                     responsive: true, maintainAspectRatio: false,
                     scales: {
                         x: { 
-                            title: { display: true, text: 'Presencia %', color: '#8b949e' }, 
-                            min: 0, max: 6,
+                            title: { display: true, text: 'Tasa de presencia %', color: '#8b949e' }, 
+                            min: 0, max: 7,
                             grid: {
                                 color: (context) => context.tick.value === 1 ? 'rgba(88, 166, 255, 0.4)' : 'rgba(48, 54, 61, 0.5)',
                                 lineWidth: (context) => context.tick.value === 1 ? 2 : 1
                             }
                         },
                         y: { 
-                            title: { display: true, text: 'Win Rate %', color: '#8b949e' }, 
+                            title: { display: true, text: 'Tasa de victoria %', color: '#8b949e' }, 
                             min: 40, max: 60,
                             grid: {
                                 color: (context) => context.tick.value === 50 ? 'rgba(88, 166, 255, 0.4)' : 'rgba(48, 54, 61, 0.5)',
