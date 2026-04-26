@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HOKStats | v4.8 Merodeo Fix</title>
+    <title>HOKStats | v4.9 Alignment</title>
     <style>
         :root { --bg: #0b0e11; --card: #161b22; --brd: #30363d; --txt: #f0f6fc; --sec: #8b949e; --acc: #58a6ff; --btn-bg: #21262d; }
         body { background: var(--bg); color: var(--txt); font-family: system-ui, sans-serif; padding: 20px 10px; margin: 0; }
@@ -44,15 +44,39 @@
             table-layout: fixed; 
         }
 
-        th { color: var(--sec); font-size: 10px; text-transform: uppercase; padding: 8px 15px; text-align: left; letter-spacing: 0.5px; }
+        /* AJUSTE: Centrado general de encabezados */
+        th { 
+            color: var(--sec); 
+            font-size: 10px; 
+            text-transform: uppercase; 
+            padding: 8px 15px; 
+            text-align: center; /* Centrado por defecto */
+            letter-spacing: 0.5px; 
+        }
+
+        /* Mantener el encabezado de Héroe a la izquierda */
+        th.w-hero { text-align: left; }
 
         .w-hero { width: 180px; } 
         .w-roles { width: 110px; } 
-        .w-stat { width: 120px; text-align: center; }
+        .w-stat { width: 120px; }
         .w-rel { width: 95px; }
 
-        tr.hero-row td { background: var(--card); padding: 8px 15px; border-top: 1px solid var(--brd); border-bottom: 1px solid var(--brd); vertical-align: middle; overflow: hidden; }
-        tr.hero-row td:first-child { border-left: 1px solid var(--brd); border-radius: 6px 0 0 6px; }
+        tr.hero-row td { 
+            background: var(--card); 
+            padding: 8px 15px; 
+            border-top: 1px solid var(--brd); 
+            border-bottom: 1px solid var(--brd); 
+            vertical-align: middle; 
+            overflow: hidden;
+            text-align: center; /* Centrado de celdas por defecto */
+        }
+
+        tr.hero-row td:first-child { 
+            border-left: 1px solid var(--brd); 
+            border-radius: 6px 0 0 6px; 
+            text-align: left; /* Héroe siempre a la izquierda */
+        }
         tr.hero-row td:last-child { border-right: 1px solid var(--brd); border-radius: 0 6px 6px 0; }
 
         .hero-info { display: flex; align-items: center; gap: 12px; min-width: 150px; }
@@ -62,8 +86,8 @@
         .name-txt { font-weight: 600; font-size: 14px; color: #fff; display: block; white-space: nowrap; }
         .type-txt, .stat-txt { color: var(--sec); font-size: 11px; white-space: nowrap; }
 
-        .roles-flex { display: flex; flex-direction: column; justify-content: center; }
-        .rel-flex { display: flex; flex-direction: row; gap: 6px; align-items: center; }
+        .roles-flex { display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .rel-flex { display: flex; flex-direction: row; gap: 6px; align-items: center; justify-content: center; }
 
         @media (max-width: 1000px) {
             table { width: 95vw; }
@@ -74,7 +98,7 @@
     <div class="container">
         <div class="header">
             <h1 style="margin:0; font-size: 20px;">HOKStats</h1>
-            <span class="v-badge">v4.8</span>
+            <span class="v-badge">v4.9</span>
         </div>
 
         <div class="filter-bar">
@@ -110,15 +134,9 @@
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             const rows = document.querySelectorAll('.hero-row');
-            
             rows.forEach(row => {
                 const heroRoles = row.getAttribute('data-roles');
-                // Buscamos la palabra exacta para evitar errores
-                if (role === 'Todo' || heroRoles.toLowerCase().includes(role.toLowerCase())) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
+                row.style.display = (role === 'Todo' || heroRoles.toLowerCase().includes(role.toLowerCase())) ? '' : 'none';
             });
         }
 
@@ -161,9 +179,9 @@
                             </div>
                         </td>
                         <td><div class="roles-flex stat-txt">${rolesHTML}</div></td>
-                        <td class="w-stat"><span class="stat-txt">${clean(d.w)}</span></td>
-                        <td class="w-stat"><span class="stat-txt">${clean(d.p)}</span></td>
-                        <td class="w-stat"><span class="stat-txt">${clean(d.b)}</span></td>
+                        <td><span class="stat-txt">${clean(d.w)}</span></td>
+                        <td><span class="stat-txt">${clean(d.p)}</span></td>
+                        <td><span class="stat-txt">${clean(d.b)}</span></td>
                         <td><div class="rel-flex">${rel(img(d.s1i))}${rel(img(d.s2i))}</div></td>
                         <td><div class="rel-flex">${rel(img(d.f1i))}${rel(img(d.f2i))}</div></td>
                         <td><div class="rel-flex">${rel(img(d.d1i))}${rel(img(d.d2i))}</div></td>
