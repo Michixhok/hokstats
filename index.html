@@ -2,26 +2,31 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>HOKStats | Estructura Final</title>
+    <title>HOKStats | Estructura Profesional</title>
     <style>
         body { background: #0b0e14; color: #e1e1e1; font-family: sans-serif; padding: 20px; }
         table { width: 100%; border-collapse: collapse; background: #161b22; }
-        th { background: #1f232c; color: #58a6ff; text-align: left; padding: 12px; border-bottom: 2px solid #30363d; font-size: 11px; }
-        td { padding: 12px; border-bottom: 1px solid #21262d; font-size: 13px; }
-        .win { color: #3fb950; font-weight: bold; }
-        .hero { font-weight: bold; color: #fff; }
-        .pair { display: block; font-size: 12px; margin-bottom: 4px; }
+        th { background: #1f232c; color: #58a6ff; text-align: left; padding: 12px; border-bottom: 2px solid #30363d; font-size: 11px; text-transform: uppercase; }
+        td { padding: 12px; border-bottom: 1px solid #21262d; font-size: 13px; vertical-align: middle; }
+        .win { color: #3fb950; font-weight: bold; font-size: 15px; }
+        .hero-main { font-weight: bold; color: #fff; display: block; font-size: 14px; }
+        .hero-type { color: #8b949e; font-size: 11px; }
+        .empty-cell { color: #333; }
+        .pair-text { display: block; font-size: 12px; }
     </style>
 </head>
 <body>
-    <h2>HOKStats - Verificación de Datos</h2>
+    <h2 style="color: white; margin-bottom: 20px;">HOKStats - Base de Datos Actualizada</h2>
     <table>
         <thead>
             <tr>
-                <th>Héroe</th>
-                <th>Tipo/Roles</th>
+                <th>Héroe / Tipo</th>
+                <th>Rol 1</th>
+                <th>Rol 2</th>
+                <th>Rol 3</th>
                 <th>Win Rate</th>
-                <th>Pick/Ban</th>
+                <th>Pick Rate</th>
+                <th>Ban Rate</th>
                 <th>Sinergias</th>
                 <th>Fuerte contra</th>
                 <th>Débil contra</th>
@@ -37,7 +42,6 @@
             try {
                 const res = await fetch(CSV_URL);
                 const text = await res.text();
-                // Regex para no romper nombres con comas
                 const rows = text.split('\n').map(r => r.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/));
                 
                 const tableBody = document.getElementById('table-body');
@@ -46,28 +50,37 @@
                 rows.slice(1).forEach(col => {
                     if (!col[1] || col[1].trim() === "") return;
 
+                    // Función para limpiar celdas vacías o con "-"
+                    const clean = (val) => (val && val.trim() !== "-" && val.trim() !== "") ? val : "";
+
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
-                        <td class="hero">${col[1]}</td>
-                        <td>${col[3]}<br><small style="color:#8b949e">${col[4]}, ${col[5]}</small></td>
-                        <td class="win">${col[7]}</td>
-                        <td>P: ${col[8]}<br>B: ${col[9]}</td>
                         <td>
-                            <span class="pair">1. ${col[10] || '-'}</span>
-                            <span class="pair">2. ${col[12] || '-'}</span>
+                            <span class="hero-main">${col[1]}</span>
+                            <span class="hero-type">${col[3]}</span>
+                        </td>
+                        <td>${clean(col[4])}</td>
+                        <td>${clean(col[5])}</td>
+                        <td>${clean(col[6])}</td>
+                        <td class="win">${col[7]}</td>
+                        <td>${col[8]}</td>
+                        <td>${col[9]}</td>
+                        <td>
+                            <span class="pair-text">${clean(col[10])}</span>
+                            <span class="pair-text">${clean(col[12])}</span>
                         </td>
                         <td style="color: #58a6ff">
-                            <span class="pair">1. ${col[14] || '-'}</span>
-                            <span class="pair">2. ${col[16] || '-'}</span>
+                            <span class="pair-text">${clean(col[14])}</span>
+                            <span class="pair-text">${clean(col[16])}</span>
                         </td>
                         <td style="color: #ff7b72">
-                            <span class="pair">1. ${col[18] || '-'}</span>
-                            <span class="pair">2. ${col[20] || '-'}</span>
+                            <span class="pair-text">${clean(col[18])}</span>
+                            <span class="pair-text">${clean(col[20])}</span>
                         </td>
                     `;
                     tableBody.appendChild(tr);
                 });
-            } catch (e) { console.error(e); }
+            } catch (e) { console.error("Error:", e); }
         }
         loadData();
     </script>
