@@ -7,12 +7,12 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root { 
-            --bg: #101419; 
-            --card: #161b22; 
-            --brd: #30363d; 
+            --bg: #0b0d14;           /* Fondo oscuro premium */
+            --card: #161923;         /* Filas oscuras */
+            --brd: #2d313e;          /* Bordes sutiles */
+            --acc: #3182ce;          /* Azul brillante del diamante */ 
             --txt: #f0f6fc; 
             --sec: #8b949e; 
-            --acc: #58a6ff; 
             --btn-bg: #21262d; 
             --green: #238636;
         }
@@ -214,6 +214,19 @@
             .img-main { width: 38px; height: 38px; }
             .img-mini { width: 28px; height: 28px; }
         }
+
+        .tier-box {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--acc);
+    color: white;
+    width: 22px;
+    height: 22px;
+    font-weight: 800;
+    font-size: 11px;
+    clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); /* Esto hace el diamante */
+}
     </style>
 </head>
 <body>
@@ -511,7 +524,7 @@ Es importante matizar que los héroes que se sitúan en el rango cercano al 48%�
                     tr.setAttribute('data-pos', d.pos);
                     tr.innerHTML = `
                         <td><div class="hero-info"><img src="${getImg(d.img)}" class="img-main"><div><span class="name-txt">${d.n}</span><span class="type-txt">${clean(d.type)}</span></div></div></td>
-                        <td><span class="tier-txt">${clean(d.tier)}</span></td>
+                        <td><div class="tier-box">${clean(d.tier).replace('T', '')}</div></td>
                         <td><div class="stat-txt">${roles.join('<br>')}</div></td>
                         <td><span class="stat-txt">${d.w}</span></td>
                         <td><span class="stat-txt">${d.p}</span></td>
