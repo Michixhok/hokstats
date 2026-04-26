@@ -263,10 +263,20 @@
         </div>
 
         <div id="section-analytics" class="content-section">
-            <div class="chart-area">
-                <canvas id="scatterChart"></canvas>
-            </div>
+    <div class="toolbar">
+        <div class="filter-bar">
+            <button class="filter-btn active" onclick="setFilterChart('Todo', this)">Todo</button>
+            <button class="filter-btn" onclick="setFilterChart('Choque', this)">Choque</button>
+            <button class="filter-btn" onclick="setFilterChart('Cazador', this)">Cazador</button>
+            <button class="filter-btn" onclick="setFilterChart('Medio', this)">Medio</button>
+            <button class="filter-btn" onclick="setFilterChart('Merodeo', this)">Merodeo</button>
+            <button class="filter-btn" onclick="setFilterChart('Farmeo', this)">Farmeo</button>
         </div>
+    </div>
+    <div class="chart-area">
+        <canvas id="scatterChart"></canvas>
+    </div>
+</div>
     </div>
 
     <script>
