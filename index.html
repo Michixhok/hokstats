@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HoKstats | v8.6</title>
+    <title>HoKstats | v8.7</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root { 
@@ -21,12 +21,11 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; 
             padding: 20px 10px; 
             margin: 0; 
-            line-height: 1.5;
         }
         
         .container { display: flex; flex-direction: column; align-items: center; width: 100%; }
         
-        /* HEADER FLEX */
+        /* HEADER */
         .header { 
             width: 1000px; 
             max-width: 95vw; 
@@ -49,10 +48,8 @@
             padding: 2px 6px; 
             border-radius: 10px; 
             font-weight: bold; 
-            text-transform: uppercase;
         }
 
-        /* PESTAÑAS */
         .main-tabs { display: flex; gap: 5px; }
         .tab-btn { 
             background: transparent; 
@@ -63,12 +60,11 @@
             cursor: pointer; 
             padding: 8px 16px; 
             border-radius: 6px; 
-            transition: all 0.2s ease; 
+            transition: 0.2s; 
         }
-        .tab-btn:hover { color: var(--txt); background: var(--btn-bg); }
         .tab-btn.active { color: var(--acc); background: rgba(88, 166, 255, 0.1); }
 
-        /* INFO BOX RECONSTRUIDO */
+        /* INFO BOX */
         .info-box { 
             width: 1000px; 
             max-width: 95vw; 
@@ -83,14 +79,13 @@
             align-items: flex-start;
         }
         .info-icon { font-size: 24px; color: var(--acc); }
-        .info-content { flex-grow: 1; }
         .info-text { 
             font-size: 14px; 
             color: var(--sec); 
             line-height: 1.6; 
             margin: 0 0 16px 0; 
         }
-        .contact-area { display: flex; gap: 24px; flex-wrap: wrap; }
+        .contact-area { display: flex; gap: 24px; }
         .contact-link { 
             display: flex; 
             align-items: center; 
@@ -98,9 +93,7 @@
             color: var(--acc); 
             text-decoration: none; 
             font-size: 13px; 
-            font-weight: 500;
         }
-        .contact-link:hover { text-decoration: underline; }
 
         .content-section { display: none; width: 100%; flex-direction: column; align-items: center; }
         .content-section.active { display: flex; }
@@ -132,13 +125,10 @@
             font-weight: 600; 
             cursor: pointer; 
             border-radius: 6px; 
-            transition: all 0.2s; 
         }
-        .filter-btn:hover { color: var(--txt); }
         .filter-btn.active { background: var(--acc); color: #fff; }
 
         .search-box { 
-            position: relative; 
             display: flex; 
             align-items: center; 
             background: var(--card); 
@@ -158,7 +148,7 @@
             outline: none; 
         }
 
-        /* TABLA COMPLETA */
+        /* TABLE */
         table { 
             width: 1000px; 
             border-collapse: separate; 
@@ -170,37 +160,30 @@
             color: var(--sec); 
             font-size: 10px; 
             text-transform: uppercase; 
-            padding: 8px 12px; 
+            padding: 8px; 
             text-align: center; 
-            letter-spacing: 0.5px; 
             cursor: pointer; 
-            transition: color 0.2s; 
         }
-        th:hover { color: var(--acc); }
-        th.w-hero { text-align: left; width: 180px; } 
-
         tr.hero-row td { 
             background: var(--card); 
             padding: 10px 15px; 
             border-top: 1px solid var(--brd); 
             border-bottom: 1px solid var(--brd); 
-            vertical-align: middle; 
             text-align: center; 
         }
         tr.hero-row td:first-child { border-left: 1px solid var(--brd); border-radius: 8px 0 0 8px; text-align: left; }
         tr.hero-row td:last-child { border-right: 1px solid var(--brd); border-radius: 0 8px 8px 0; }
 
         .hero-info { display: flex; align-items: center; gap: 12px; }
-        .img-main { width: 42px; height: 42px; border-radius: 8px; object-fit: cover; border: 1px solid var(--brd); }
-        .img-mini { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 1px solid var(--brd); }
+        .img-main { width: 40px; height: 40px; border-radius: 8px; object-fit: cover; }
+        .img-mini { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; border: 1px solid var(--brd); }
         .tier-txt { font-size: 18px; font-weight: 800; color: #fff; }
         .name-txt { font-weight: 600; font-size: 14px; color: #fff; display: block; }
         .type-txt { color: var(--sec); font-size: 11px; }
-        .stat-txt { color: var(--sec); font-size: 12px; font-weight: 500; }
-        .roles-flex { display: flex; flex-direction: column; align-items: center; line-height: 1.3; }
-        .rel-flex { display: flex; gap: 6px; align-items: center; justify-content: center; }
+        .stat-txt { color: var(--sec); font-size: 12px; }
+        .rel-flex { display: flex; gap: 5px; justify-content: center; }
 
-        /* GRÁFICO AREA */
+        /* CHART AREA */
         .chart-area { 
             width: 1000px; 
             max-width: 95vw; 
@@ -209,13 +192,10 @@
             border-radius: 12px; 
             padding: 30px; 
             box-sizing: border-box; 
-            height: 600px; 
+            height: 650px; 
         }
 
-        @media (max-width: 1000px) { 
-            table, .header, .info-box, .toolbar, .chart-area { width: 95vw; } 
-            .toolbar { flex-direction: column; align-items: stretch; }
-        }
+        @media (max-width: 1000px) { table, .header, .info-box, .toolbar, .chart-area { width: 95vw; } }
     </style>
 </head>
 <body>
@@ -223,7 +203,7 @@
         <div class="header">
             <div class="header-left">
                 <h1 style="margin:0; font-size: 22px;">HoKstats</h1>
-                <span class="v-badge">v8.6</span>
+                <span class="v-badge">v8.7</span>
             </div>
             <div class="main-tabs">
                 <button class="tab-btn active" onclick="switchTab('stats', this)">Estadísticas</button>
@@ -263,8 +243,8 @@
             <table id="heroTable">
                 <thead>
                     <tr>
-                        <th class="w-hero" onclick="sortRows(0, 'str')">Héroe</th>
-                        <th style="width:65px" onclick="sortRows(1, 'num')">Tier</th>
+                        <th style="width:180px; text-align:left" onclick="sortRows(0, 'str')">Héroe</th>
+                        <th style="width:70px" onclick="sortRows(1, 'num')">Tier</th>
                         <th style="width:100px">Roles</th>
                         <th style="width:110px" onclick="sortRows(3, 'num')">Win Rate</th>
                         <th style="width:110px" onclick="sortRows(4, 'num')">Pick Rate</th>
@@ -309,35 +289,23 @@
 
         function applyFilters() {
             const query = document.getElementById('heroSearch').value.toLowerCase();
-            const rows = document.querySelectorAll('.hero-row');
-            rows.forEach(row => {
+            document.querySelectorAll('.hero-row').forEach(row => {
                 const name = row.querySelector('.name-txt').innerText.toLowerCase();
                 const roles = row.getAttribute('data-roles').toLowerCase();
-                const matchesRole = (activeRole === 'Todo' || roles.includes(activeRole.toLowerCase()));
-                const matchesSearch = name.includes(query);
-                row.style.display = (matchesRole && matchesSearch) ? '' : 'none';
+                row.style.display = ((activeRole === 'Todo' || roles.includes(activeRole.toLowerCase())) && name.includes(query)) ? '' : 'none';
             });
         }
 
         function sortRows(col, type) {
             const tbody = document.getElementById('table-body');
             const rows = Array.from(tbody.querySelectorAll('.hero-row'));
-            
             if (currentSort.col === col) currentSort.asc = !currentSort.asc;
             else { currentSort.col = col; currentSort.asc = true; }
-
             rows.sort((a, b) => {
                 let vA, vB;
-                if (col === 1) { 
-                    vA = parseInt(a.getAttribute('data-pos')) || 999; 
-                    vB = parseInt(b.getAttribute('data-pos')) || 999; 
-                } else if (type === 'str') {
-                    vA = a.cells[col].innerText.toLowerCase();
-                    vB = b.cells[col].innerText.toLowerCase();
-                } else {
-                    vA = parseFloat(a.cells[col].innerText.replace('%', '')) || 0;
-                    vB = parseFloat(b.cells[col].innerText.replace('%', '')) || 0;
-                }
+                if (col === 1) { vA = parseInt(a.getAttribute('data-pos')) || 999; vB = parseInt(b.getAttribute('data-pos')) || 999; }
+                else if (type === 'str') { vA = a.cells[col].innerText.toLowerCase(); vB = b.cells[col].innerText.toLowerCase(); }
+                else { vA = parseFloat(a.cells[col].innerText.replace('%','')) || 0; vB = parseFloat(b.cells[col].innerText.replace('%','')) || 0; }
                 return currentSort.asc ? vA - vB : vB - vA;
             });
             rows.forEach(r => tbody.appendChild(r));
@@ -346,54 +314,30 @@
         function renderChart() {
             if(myChart) myChart.destroy();
             const ctx = document.getElementById('scatterChart').getContext('2d');
-            
-            const pointImages = allHeroes.map(h => {
-                const img = new Image();
-                img.src = h.img;
-                return img;
-            });
+            const icons = allHeroes.map(h => { const i = new Image(); i.src = h.img; return i; });
 
             myChart = new Chart(ctx, {
                 type: 'scatter',
                 data: {
                     datasets: [{
-                        label: 'Héroes',
-                        data: allHeroes.map(h => ({ 
-                            x: (h.p_raw + h.b_raw), 
-                            y: h.w_raw, 
-                            name: h.n 
-                        })),
-                        pointStyle: pointImages,
-                        pointRadius: 9
+                        data: allHeroes.map(h => ({ x: (h.p_raw + h.b_raw), y: h.w_raw, name: h.n })),
+                        pointStyle: icons,
+                        pointRadius: 6,
+                        pointHoverRadius: 15,
+                        borderWidth: 1,
+                        borderColor: 'rgba(255,255,255,0.2)'
                     }]
                 },
                 options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
+                    responsive: true, maintainAspectRatio: false,
                     scales: {
-                        x: { 
-                            title: { display: true, text: 'Presence Rate (Pick% + Ban%)', color: '#8b949e', font: { size: 14 } },
-                            min: 0, max: 6,
-                            grid: { color: 'rgba(255,255,255,0.05)' },
-                            ticks: { color: '#8b949e' }
-                        },
-                        y: { 
-                            title: { display: true, text: 'Win Rate %', color: '#8b949e', font: { size: 14 } },
-                            min: 40, max: 60,
-                            grid: { color: 'rgba(255,255,255,0.05)' },
-                            ticks: { color: '#8b949e' }
-                        }
+                        x: { title: { display: true, text: 'Presence Rate (Pick% + Ban%)', color: '#8b949e' }, min: 0, max: 6, grid: { color: 'rgba(255,255,255,0.05)' } },
+                        y: { title: { display: true, text: 'Win Rate %', color: '#8b949e' }, min: 40, max: 60, grid: { color: 'rgba(255,255,255,0.05)' } }
                     },
                     plugins: { 
                         legend: { display: false },
                         tooltip: { 
-                            backgroundColor: '#161b22',
-                            titleColor: '#58a6ff',
-                            borderColor: '#30363d',
-                            borderWidth: 1,
-                            callbacks: { 
-                                label: (c) => `${c.raw.name}: Win ${c.raw.y}% | Presence ${c.raw.x.toFixed(2)}%` 
-                            } 
+                            callbacks: { label: (c) => ` ${c.raw.name}: Win ${c.raw.y}% | Presence ${c.raw.x.toFixed(2)}%` } 
                         }
                     }
                 }
@@ -406,11 +350,7 @@
                 const text = await res.text();
                 const rows = text.split('\n').map(l => {
                     const p = []; let c = '', q = false;
-                    for (let x of l) { 
-                        if (x === '"') q = !q; 
-                        else if (x === ',' && !q) { p.push(c); c = ''; } 
-                        else c += x; 
-                    }
+                    for (let x of l) { if (x === '"') q = !q; else if (x === ',' && !q) { p.push(c); c = ''; } else c += x; }
                     p.push(c); return p;
                 });
                 
@@ -418,14 +358,11 @@
                 allHeroes = rows.slice(1).map(r => {
                     if (!r[1]) return null;
                     return {
-                        n: r[1], img: r[3], type: r[4], 
-                        r1: r[5], r2: r[6], r3: r[7],
+                        n: r[1], img: r[3], type: r[4], r1: r[5], r2: r[6], r3: r[7],
                         w: r[8], p: r[9], b: r[10],
                         s1i: r[13], s2i: r[16], f1i: r[19], f2i: r[22], d1i: r[25], d2i: r[28],
                         tier: r[29], pos: r[30],
-                        w_raw: parseFloat(r[8]) || 0, 
-                        p_raw: parseFloat(r[9]) || 0, 
-                        b_raw: parseFloat(r[10]) || 0
+                        w_raw: parseFloat(r[8]) || 0, p_raw: parseFloat(r[9]) || 0, b_raw: parseFloat(r[10]) || 0
                     };
                 }).filter(h => h !== null);
 
@@ -435,9 +372,6 @@
                     const clean = (v) => (v && !v.includes('http') && v !== "-" && v !== "0") ? v.trim() : "";
                     const img = (v) => (v && v.includes('http')) ? v.trim() : "";
                     const rel = (i) => i ? `<img src="${i}" class="img-mini" onerror="this.style.display='none'">` : "";
-                    
-                    const rolesHTML = [clean(d.r1), clean(d.r2), clean(d.r3)].filter(x => x).join('<br>');
-                    
                     const tr = document.createElement('tr');
                     tr.className = 'hero-row';
                     tr.setAttribute('data-roles', `${d.r1},${d.r2},${d.r3}`);
@@ -445,7 +379,7 @@
                     tr.innerHTML = `
                         <td><div class="hero-info"><img src="${img(d.img)}" class="img-main"><div><span class="name-txt">${d.n}</span><span class="type-txt">${clean(d.type)}</span></div></div></td>
                         <td><span class="tier-txt">${clean(d.tier)}</span></td>
-                        <td><div class="roles-flex stat-txt">${rolesHTML}</div></td>
+                        <td><div class="stat-txt">${[clean(d.r1), clean(d.r2)].filter(x=>x).join('<br>')}</div></td>
                         <td><span class="stat-txt">${d.w}</span></td>
                         <td><span class="stat-txt">${d.p}</span></td>
                         <td><span class="stat-txt">${d.b}</span></td>
@@ -455,7 +389,7 @@
                     `;
                     body.appendChild(tr);
                 });
-            } catch (e) { console.error("Error cargando CSV:", e); }
+            } catch (e) { console.error(e); }
         }
         load();
     </script>
