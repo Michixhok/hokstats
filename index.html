@@ -2,163 +2,68 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HOKStats Chile | Pro Database</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
+    <title>HOKStats | Verificación de Datos</title>
     <style>
-        body { background-color: #0b0e14; color: #e1e1e1; font-family: 'Rajdhani', sans-serif; }
-        .hero-font { font-family: 'Orbitron', sans-serif; }
-        
-        .glass-card { 
-            background: linear-gradient(145deg, #161b22, #0d1117);
-            border: 1px solid #30363d;
-            border-radius: 12px;
-            transition: all 0.3s ease;
-        }
-        .glass-card:hover { 
-            border-color: #58a6ff;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.5);
-        }
-
-        .tier-badge {
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-weight: bold;
-            font-size: 0.8rem;
-        }
-        .tier-T0 { background: #ff4d4d; color: white; box-shadow: 0 0 10px rgba(255,77,77,0.4); }
-        .tier-T1 { background: #ffbd2e; color: #000; }
-        .tier-T2 { background: #2ecc71; color: white; }
-
-        .stat-label { font-size: 10px; color: #8b949e; text-transform: uppercase; letter-spacing: 1px; }
-        .stat-value { font-size: 18px; font-weight: bold; color: #58a6ff; }
-        
-        .img-main { width: 50px; height: 50px; border-radius: 50%; border: 2px solid #30363d; object-fit: cover; }
-        .img-sub { width: 28px; height: 28px; border-radius: 50%; border: 1px solid #444; }
-
-        /* Scrollbar estilo gaming */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #0b0e14; }
-        ::-webkit-scrollbar-thumb { background: #30363d; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #58a6ff; }
+        body { background: #1a1a1a; color: white; font-family: sans-serif; padding: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th { background: #333; color: #58a6ff; text-align: left; padding: 12px; border: 1px solid #444; }
+        td { padding: 10px; border: 1px solid #444; font-size: 14px; }
+        tr:nth-child(even) { background: #222; }
+        .img-placeholder { width: 40px; height: 40px; background: #333; border-radius: 50%; display: inline-block; }
     </style>
 </head>
-<body class="p-4 md:p-8">
-    <div class="max-w-6xl mx-auto">
-        <div class="flex flex-col md:flex-row justify-between items-center mb-10 gap-4">
-            <div>
-                <h1 class="hero-font text-3xl font-bold text-white tracking-tighter">HOK<span class="text-[#58a6ff]">STATS</span></h1>
-                <p class="text-gray-500 text-xs uppercase tracking-[3px]">Chile Meta Database v2.0</p>
-            </div>
-            <div class="relative">
-                <input type="text" id="search" placeholder="Buscar héroe, rol o tier..." 
-                       class="bg-[#161b22] border border-[#30363d] px-6 py-3 rounded-full w-full md:w-96 outline-none focus:border-[#58a6ff] transition-all">
-            </div>
-        </div>
-
-        <div id="container" class="grid gap-4">
-            <p class="text-center text-gray-500 py-20">Sincronizando con la nube...</p>
-        </div>
-    </div>
+<body>
+    <h1>HOKStats - Control de Datos</h1>
+    <div id="status">Cargando datos...</div>
+    
+    <table id="main-table">
+        <thead>
+            <tr>
+                <th>Héroe</th>
+                <th>Tipo</th>
+                <th>Rol 1</th>
+                <th>Rol 2</th>
+                <th>Rol 3</th>
+                <th>Win Rate</th>
+                <th>Pick Rate</th>
+                <th>Ban Rate</th>
+                <th>Sinergia</th>
+                <th>Fuerte contra</th>
+                <th>Débil contra</th>
+            </tr>
+        </thead>
+        <tbody id="table-body"></tbody>
+    </table>
 
     <script>
         const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTO4rMY_drrjKMx3KTdjAaSrH6GenxyZ7YzLPT7oiZ_pNYm6EKG-yJPfmbRcZgYGGi2gERA1Gciw-Fy/pub?gid=538223640&single=true&output=csv';
 
-        async function loadData() {
+        async function fetchData() {
             try {
                 const response = await fetch(CSV_URL);
-                const text = await response.text();
-                const rows = text.split('\n').map(row => row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/));
+                const data = await response.text();
+                // Separar filas y manejar comas dentro de textos
+                const rows = data.split('\n').map(row => row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/));
                 
-                // MAPEÓ CORREGIDO SEGÚN TU EXCEL
-                const heroes = rows.slice(1).map(col => {
-                    return {
-                        name: col[1]?.replace(/"/g, ''),
-                        img: col[2]?.replace(/"/g, ''),
-                        type: col[3]?.replace(/"/g, ''),
-                        tier: col[5]?.replace(/"/g, '') || 'T2', // Columna de Tier
-                        winRate: col[8]?.replace(/"/g, ''),      // Columna Win Rate Real
-                        pickRate: col[9]?.replace(/"/g, ''),
-                        banRate: col[10]?.replace(/"/g, ''),
-                        sin1: col[11]?.replace(/"/g, ''),
-                        sin2: col[13]?.replace(/"/g, ''),
-                        count1: col[19]?.replace(/"/g, ''),
-                        count2: col[21]?.replace(/"/g, '')
-                    };
-                }).filter(h => h.name);
+                const tableBody = document.getElementById('table-body');
+                tableBody.innerHTML = '';
 
-                window.allHeroes = heroes;
-                displayHeroes(heroes);
+                // Empezamos desde la fila 1 para saltar el encabezado del CSV
+                rows.slice(1).forEach((col, index) => {
+                    if (!col[1]) return; // Salta filas vacías
+
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${col[1] || '-'}</td>  <td>${col[3] || '-'}</td>  <td>${col[4] || '-'}</td>  <td>${col[5] || '-'}</td>  <td>${col[6] || '-'}</td>  <td style="color:#58a6ff; font-weight:bold">${col[8] || '-'}</td> <td>${col[9] || '-'}</td>  <td>${col[10] || '-'}</td> <td>${col[11] || '-'}</td> <td>${col[17] || '-'}</td> <td>${col[23] || '-'}</td> `;
+                    tableBody.appendChild(tr);
+                });
+                document.getElementById('status').innerText = "Datos sincronizados correctamente.";
             } catch (error) {
-                console.error(error);
-                document.getElementById('container').innerHTML = "<p class='text-red-500'>Error de conexión con Sheets.</p>";
+                document.getElementById('status').innerText = "Error: No se pudo conectar con el CSV.";
             }
         }
 
-        function displayHeroes(list) {
-            const container = document.getElementById('container');
-            container.innerHTML = list.map(h => `
-                <div class="glass-card p-4 flex flex-wrap md:flex-nowrap items-center gap-6">
-                    <div class="flex items-center gap-4 w-full md:w-64">
-                        <img src="${h.img}" class="img-main" onerror="this.src='https://via.placeholder.com/50/222/555?text=HOK'">
-                        <div>
-                            <div class="flex items-center gap-2">
-                                <span class="hero-font font-bold text-white">${h.name}</span>
-                                <span class="tier-badge tier-${h.tier}">${h.tier}</span>
-                            </div>
-                            <span class="text-gray-500 text-xs">${h.type}</span>
-                        </div>
-                    </div>
-
-                    <div class="flex gap-8 flex-grow justify-center">
-                        <div class="text-center">
-                            <p class="stat-label">Win Rate</p>
-                            <p class="stat-value">${h.winRate}</p>
-                        </div>
-                        <div class="text-center">
-                            <p class="stat-label">Pick</p>
-                            <p class="text-gray-300 font-bold">${h.pickRate}</p>
-                        </div>
-                        <div class="text-center">
-                            <p class="stat-label">Ban</p>
-                            <p class="text-gray-300 font-bold">${h.banRate}</p>
-                        </div>
-                    </div>
-
-                    <div class="flex gap-6 w-full md:w-auto justify-end">
-                        <div class="text-right">
-                            <p class="stat-label mb-1">Sinergias</p>
-                            <div class="flex gap-1 justify-end">
-                                <img src="${h.sin1}" class="img-sub" onerror="this.style.display='none'">
-                                <img src="${h.sin2}" class="img-sub" onerror="this.style.display='none'">
-                            </div>
-                        </div>
-                        <div class="text-right">
-                            <p class="stat-label mb-1 text-red-400">Counters</p>
-                            <div class="flex gap-1 justify-end">
-                                <img src="${h.count1}" class="img-sub border-red-900" onerror="this.style.display='none'">
-                                <img src="${h.count2}" class="img-sub border-red-900" onerror="this.style.display='none'">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // Buscador inteligente
-        document.getElementById('search').addEventListener('input', (e) => {
-            const term = e.target.value.toLowerCase();
-            const filtered = window.allHeroes.filter(h => 
-                h.name.toLowerCase().includes(term) || 
-                h.type.toLowerCase().includes(term) || 
-                h.tier.toLowerCase().includes(term)
-            );
-            displayHeroes(filtered);
-        });
-
-        loadData();
+        fetchData();
     </script>
 </body>
 </html>
