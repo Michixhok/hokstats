@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HOKStats | Database</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        body { background-color: #0b0e14; color: #e2e8f0; font-family: 'Rajdhani', sans-serif; }
+        .glass-table { background: rgba(22, 27, 34, 0.8); backdrop-filter: blur(10px); border: 1px solid #30363d; }
+        .hero-img { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #00d4ff; object-fit: cover; }
+        .counter-img { width: 28px; height: 28px; border-radius: 50%; border: 1px solid #ff4b4b; display: inline-block; }
+        tr:hover { background: rgba(0, 212, 255, 0.05); }
+        .winrate-bar { height: 4px; background: #30363d; border-radius: 2px; margin-top: 4px; width: 100%; }
+        .winrate-fill { height: 100%; background: #00d4ff; border-radius: 2px; }
+        input::placeholder { color: #4a5568; }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+    <div class="max-w-7xl mx-auto">
+        <header class="mb-8 flex justify-between items-center border-b border-gray-800 pb-4">
+            <h1 class="text-4xl font-bold tracking-wider text-cyan-400">HOKSTATS <span class="text-white text-lg font-light">| Chile Database</span></h1>
+            <input type="text" id="search" placeholder="Buscar héroe o rol..." class="bg-gray-900 border border-gray-700 px-4 py-2 rounded-lg focus:outline-none focus:border-cyan-500 w-64">
+        </header>
+
+        <div class="overflow-x-auto glass-table rounded-xl">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="text-cyan-500 uppercase text-sm border-b border-gray-800">
+                        <th class="p-4">Héroe</th>
+                        <th class="p-4 text-center">Win Rate</th>
+                        <th class="p-4">Tipo/Rol</th>
+                        <th class="p-4 text-center">Sinergias</th>
+                        <th class="p-4 text-center text-red-400">Counters</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body">
+                    </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTO4rMY_drrjKMx3KTdjAaSrH6GenxyZ7YzLPT7oiZ_pNYm6EKG-yJPfmbRcZgYGGi2gERA1Gciw-Fy/pub?gid=538223640&single=true&output=csv';
+
+        async function loadData() {
+            const response = await fetch(CSV_URL);
+            const data = await response.text();
+            const rows = data.split('\n').slice(1); // Ignorar cabecera
+            const tbody = document.getElementById('table-body');
+            
+            window.heroData = rows.map(row => {
+                const cols = row.split(','); // Nota: Si tus datos tienen comas internas, esto fallará. Se puede mejorar.
+                if (cols.length < 5) return null;
+                return {
+                    nombre: cols[1], foto: cols[2], tipo: cols[3], rol: cols[4],
+                    wr: cols[8], s1: cols[13], s2: cols[15], d1: cols[21], d2: cols[23]
+                };
+            }).filter(h => h);
+
+            renderTable(window.heroData);
+        }
+
+        function renderTable(data) {
+            const tbody = document.getElementById('table-body');
+            tbody.innerHTML = data.map(h => `
+                <tr class="border-b border-gray-800/50">
+                    <td class="p-4 flex items-center gap-3">
+                        <img src="${h.foto}" class="hero-img" onerror="this.src='https://via.placeholder.com/40'">
+                        <span class="font-bold text-lg">${h.nombre}</span>
+                    </td>
+                    <td class="p-4 w-32">
+                        <div class="text-center font-bold">${h.wr}</div>
+                        <div class="winrate-bar"><div class="winrate-fill" style="width: ${h.wr}"></div></div>
+                    </td>
+                    <td class="p-4">
+                        <div class="text-sm">${h.tipo}</div>
+                        <div class="text-xs text-gray-500">${h.rol}</div>
+                    </td>
+                    <td class="p-4 text-center">
+                        <img src="${h.s1}" class="synergy-img counter-img" onerror="this.style.display='none'">
+                        <img src="${h.s2}" class="synergy-img counter-img" onerror="this.style.display='none'">
+                    </td>
+                    <td class="p-4 text-center">
+                        <img src="${h.d1}" class="counter-img" onerror="this.style.display='none'">
+                        <img src="${h.d2}" class="counter-img" onerror="this.style.display='none'">
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Buscador
+        document.getElementById('search').addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            const filtered = window.heroData.filter(h => 
+                h.nombre.toLowerCase().includes(term) || h.tipo.toLowerCase().includes(term)
+            );
+            renderTable(filtered);
+        });
+
+        loadData();
+    </script>
+</body>
+</html>
