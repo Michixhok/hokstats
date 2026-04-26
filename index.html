@@ -3,27 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HOKStats | v4.4 Ultra-Compact</title>
+    <title>HOKStats | v4.4 Aesthetic Update</title>
     <style>
         :root { --bg: #0b0e11; --card: #161b22; --brd: #30363d; --txt: #f0f6fc; --sec: #8b949e; --acc: #58a6ff; }
         body { background: var(--bg); color: var(--txt); font-family: system-ui, sans-serif; padding: 20px 10px; margin: 0; }
         
-        .container { 
-            display: flex; 
-            flex-direction: column;
-            align-items: center; /* Centra la tabla horizontalmente */
-            width: 100%;
-        }
+        .container { display: flex; flex-direction: column; align-items: center; width: 100%; }
         
         .header { width: fit-content; margin-bottom: 15px; border-left: 4px solid var(--acc); padding-left: 12px; display: flex; align-items: baseline; gap: 8px; align-self: center; }
         .v-badge { background: #238636; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; font-weight: bold; }
         
-        /* CAMBIO CLAVE: width auto para que no se estire sola */
         table { width: auto; border-collapse: separate; border-spacing: 0 4px; margin: 0 auto; }
         
         th { color: var(--sec); font-size: 10px; text-transform: uppercase; padding: 8px 15px; text-align: left; letter-spacing: 0.5px; }
 
-        /* Control estricto de anchos para eliminar el "aire" rojo */
         .w-hero { width: 160px; } 
         .w-roles { width: 100px; } 
         .w-stat { width: 70px; text-align: center; }
@@ -34,11 +27,24 @@
         tr.hero-row td:last-child { border-right: 1px solid var(--brd); border-radius: 0 6px 6px 0; }
 
         .hero-info { display: flex; align-items: center; gap: 10px; }
-        .img-main { width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--brd); object-fit: cover; }
         
+        /* --- ESTILO ACTUALIZADO: ICONO DE IPHONE --- */
+        .img-main { 
+            width: 38px; 
+            height: 38px; 
+            border-radius: 9px; /* Bordes muy redondeados tipo iPhone */
+            border: 1.5px solid var(--brd); 
+            object-fit: cover;
+            background-color: var(--brd); /* Fondo de seguridad */
+        }
+        
+        /* Los iconos pequeños se mantienen circulares */
         .img-mini { 
-            width: 24px; height: 24px; border-radius: 50%; 
-            border: 1px solid var(--brd); object-fit: cover;
+            width: 24px; 
+            height: 24px; 
+            border-radius: 50%; 
+            border: 1px solid var(--brd); 
+            object-fit: cover;
         }
 
         .name-txt { font-weight: 600; font-size: 14px; color: #fff; display: block; white-space: nowrap; }
@@ -47,7 +53,6 @@
         .roles-flex { display: flex; flex-direction: column; justify-content: center; width: 100px; }
         .rel-flex { display: flex; flex-direction: row; gap: 5px; align-items: center; }
 
-        /* Ajuste para móvil: que la tabla no sea más grande que la pantalla */
         @media (max-width: 800px) {
             .container { align-items: flex-start; overflow-x: auto; }
             table { margin: 0; }
