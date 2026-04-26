@@ -227,6 +227,58 @@
     font-size: 11px;
     clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); /* Esto hace el diamante */
 }
+
+        /* --- NUEVA SECCIÓN DE ANÁLISIS --- */
+.analysis-list {
+    width: 1080px;
+    max-width: 98vw;
+    margin: 30px auto;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.analysis-card {
+    background-color: var(--card);
+    border: 1px solid var(--brd);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.analysis-icon {
+    font-size: 24px;
+    min-width: 45px;
+    height: 45px;
+    background: rgba(255,255,255,0.03);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.analysis-card-content h3 {
+    margin: 0 0 8px 0;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.analysis-card-content p {
+    margin: 0 0 10px 0;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--sec);
+}
+
+.analysis-card-content strong {
+    color: var(--txt);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+}
     </style>
 </head>
 <body>
@@ -307,43 +359,46 @@
             <div class="chart-area">
                 <canvas id="scatterChart"></canvas>
             </div>
-        <div class="analysis-container" style="width: 1080px; max-width: 98vw; margin: 40px auto; color: var(--sec); font-family: sans-serif; background-color: var(--card); padding: 30px; border-radius: 14px; border: 1px solid var(--brd); box-sizing: border-box; display: block;">
-    <h2 style="color: var(--acc); border-bottom: 1px solid var(--brd); padding-bottom: 10px; margin-top: 0; font-size: 18px;">Interpretación de la matriz</h2>
-    
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 30px; margin-top: 20px;">
-        
-        <div>
-            <h3 style="color: #00ff00; font-size: 14px;">Pilares del meta</h3>
-            <p style="font-size: 12px;"> Representan las selecciones dominantes del meta actual. Su combinación de alto win rate y presencia (elección y baneo) sostenida sugiere no solo fortaleza estadística, sino también consistencia en distintos contextos de juego.</p>
-            <p style="font-size: 12px;"> Prioridad alta en fase de bans o first pick. Son elecciones seguras que definen el ritmo del meta.</p>
+
+            <div class="analysis-list">
+    <div class="analysis-card" style="border-left: 5px solid #00ff00;">
+        <div class="analysis-icon">🟢</div>
+        <div class="analysis-card-content">
+            <h3 style="color: #00ff00;">Pilares del meta</h3>
+            <p><strong>Análisis:</strong> Representan las selecciones dominantes. Su combinación de alto win rate y presencia sostenida sugiere consistencia en distintos contextos.</p>
+            <p><strong>Estrategia:</strong> Prioridad alta en fase de bans o first pick.</p>
         </div>
+    </div>
 
-        <div>
-            <h3 style="color: #00ffff; font-size: 14px;">Especialistas y selecciones infravaloradas</h3>
-            <p style="font-size: 12px;"> Picks de nicho con rendimiento sólido en manos experimentadas. Su baja presencia no refleja debilidad, sino una barrera de ejecución o conocimiento. Suelen explotar lagunas en el entendimiento del rival.</p>
-            <p style="font-size: 12px;"> Invertir en su dominio puede generar ventajas competitivas.</p>
+    <div class="analysis-card" style="border-left: 5px solid #00ffff;">
+        <div class="analysis-icon">🔵</div>
+        <div class="analysis-card-content">
+            <h3 style="color: #00ffff;">Especialistas e infravaloradas</h3>
+            <p><strong>Análisis:</strong> Picks de nicho con rendimiento sólido en manos expertas. Suelen explotar lagunas en el entendimiento del rival.</p>
+            <p><strong>Estrategia:</strong> Invertir en su dominio genera ventajas competitivas reales.</p>
         </div>
+    </div>
 
-        <div>
-            <h3 style="color: #ffff00; font-size: 14px;">Populares en transición</h3>
-            <p style="font-size: 12px;"> Héroes con alta presencia pero rendimiento inconsistente. Es importante considerar que esta presencia no siempre responde a una alta tasa de selección efectiva, sino que en muchos casos está influenciada por frecuencias elevadas de baneo.
-Esto sugiere que ciertos héroes generan una percepción de amenaza significativa dentro del entorno competitivo, aun cuando sus métricas de win rate no respalden completamente dicha percepción. En consecuencia, su posicionamiento en este cuadrante puede reflejar más el respeto estratégico del jugador promedio que su impacto real en partida.
-
-Un caso representativo es Augran, cuya elevada tasa de baneo lo posiciona en la práctica como un pick de prioridad (Tier S) dentro del entorno de draft. Esta presión constante implica que, aunque no siempre se traduzca en presencia efectiva en partida, limita activamente su disponibilidad, afectando especialmente a jugadores especializados en el héroe y distorsionando la lectura directa de sus estadísticas de rendimiento.</p>
-            <p style="font-size: 12px;"> Evaluar de forma crítica su selección. En héroes con alta tasa de baneo, distinguir entre poder real y percepción de amenaza: un alto nivel de prohibiciones puede reflejar presión psicológica, dificultad de enfrentamiento o falta de adaptación del entorno, más que un rendimiento objetivamente dominante. Su uso debe condicionarse al contexto de la partida y a una comprensión clara de su impacto real. </p>
+    <div class="analysis-card" style="border-left: 5px solid #ffff00;">
+        <div class="analysis-icon">🟡</div>
+        <div class="analysis-card-content">
+            <h3 style="color: #ffff00;">Populares en transición</h3>
+            <p><strong>Análisis:</strong> Héroes con alta adopción pero rendimiento inconsistente, influenciados por tendencias o facilidad de uso.</p>
+            <p><strong>Estrategia:</strong> Uso condicionado al contexto y evaluación crítica.</p>
         </div>
+    </div>
 
-        <div>
-            <h3 style="color: #ff4444; font-size: 14px;">Bajo rendimiento</h3>
-            <p style="font-size: 12px;"> En términos generales, presentan métricas desfavorables en el entorno actual, lo que sugiere dificultades de adaptación al meta o menor impacto en composiciones estándar.
-Es importante matizar que los héroes que se sitúan en el rango cercano al 48%–50% de win rate deben interpretarse con cautela. Dado el alto volumen de datos, pequeñas variaciones estadísticas pueden no ser suficientemente representativas de su verdadero potencial, especialmente si existen sesgos de uso, baja especialización o contextos de ejecución específicos.
-
-Adicionalmente, parte de su bajo rendimiento puede explicarse por una alta exigencia mecánica o complejidad de ejecución, lo que provoca que jugadores menos especializados obtengan resultados subóptimos. Este efecto tiende a deprimir tanto el win rate como la tasa de selección, sin necesariamente reflejar el techo real del héroe en manos experimentadas.</p>
-            <p style="font-size: 12px;"> Evitar como regla general en entornos competitivos, pero considerar casos puntuales donde el contexto, la composición o la experiencia del jugador puedan mitigar sus debilidades. En particular, estos héroes pueden recuperar valor cuando son utilizados por jugadores con alto nivel de dominio, capaces de compensar sus exigencias mecánicas.</p>
+    <div class="analysis-card" style="border-left: 5px solid #ff4444;">
+        <div class="analysis-icon">🔴</div>
+        <div class="analysis-card-content">
+            <h3 style="color: #ff4444;">Bajo rendimiento</h3>
+            <p><strong>Análisis:</strong> Métricas desfavorables. Los héroes cercanos al 48-50% de Win Rate deben interpretarse con cautela.</p>
+            <p><strong>Estrategia:</strong> Evitar en entornos competitivos si no hay un dominio total del héroe.</p>
         </div>
     </div>
 </div>
-            </div>
+
+            
             <div style="width: 1080px; max-width: 98vw; margin: 20px auto; padding: 15px 0; border-top: 1px solid var(--brd); display: flex; justify-content: center; align-items: center; gap: 8px;">
     <span style="color: var(--acc); font-size: 12px;">🕒</span>
     <p style="color: var(--sec); font-size: 10px; margin: 0; font-family: sans-serif; letter-spacing: 0.5px; text-transform: uppercase;">
