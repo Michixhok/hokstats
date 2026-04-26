@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>HOKStats | v3.2.1 Stable</title>
+    <title>HOKStats | v3.2.2 Stable</title>
     <style>
         :root {
             --bg-body: #0b0e11;
@@ -19,7 +19,7 @@
             padding: 30px; margin: 0;
         }
 
-        .container { max-width: 1350px; margin: 0 auto; }
+        .container { max-width: 1400px; margin: 0 auto; }
 
         .header-section { 
             margin-bottom: 20px; border-left: 4px solid var(--accent); 
@@ -37,14 +37,14 @@
             padding: 8px 15px; font-weight: 600; text-align: left;
         }
 
-        /* Anchos exactos de la v3.1 para evitar saltos */
+        /* Anchos ajustados para que nada se desplace */
         .col-hero { width: 18%; }
-        .col-role { width: 7%; }
-        .col-stat { width: 8%; }
-        .col-pair { width: 11%; }
+        .col-role { width: 8%; }
+        .col-stat { width: 7%; }
+        .col-pair { width: 12%; }
 
         tr.hero-row td {
-            background: var(--bg-card); padding: 12px 15px;
+            background: var(--bg-card); padding: 10px 15px;
             border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
             vertical-align: middle; overflow: hidden;
         }
@@ -52,19 +52,18 @@
         tr.hero-row td:first-child { border-left: 1px solid var(--border); border-radius: 6px 0 0 6px; }
         tr.hero-row td:last-child { border-right: 1px solid var(--border); border-radius: 0 6px 6px 0; }
 
-        /* Estilo de Imagen - Asegura que el link no se vea */
-        .img-wrapper { display: flex; align-items: center; gap: 10px; }
-        .hero-img { width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--border); object-fit: cover; flex-shrink: 0; }
-        .icon-rel { width: 22px; height: 22px; border-radius: 50%; border: 1px solid var(--border); flex-shrink: 0; }
+        .hero-flex { display: flex; align-items: center; gap: 10px; }
+        .img-main { width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--border); flex-shrink: 0; }
+        .img-mini { width: 22px; height: 22px; border-radius: 50%; border: 1px solid var(--border); flex-shrink: 0; }
 
         .rel-item { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
-        .hero-name { font-weight: bold; font-size: 14px; color: #fff; line-height: 1.2; }
+        .hero-name { font-weight: bold; font-size: 14px; color: #fff; display: block; }
         .hero-type { color: var(--text-sec); font-size: 10px; display: block; }
         .stat-val { font-weight: 600; font-size: 13px; color: #fff; }
 
         .blue { color: var(--accent); }
         .red { color: #f85149; }
-        .name-small { font-size: 11px; white-space: nowrap; }
+        .name-tag { font-size: 11px; white-space: nowrap; }
     </style>
 </head>
 <body>
@@ -72,7 +71,7 @@
     <div class="container">
         <div class="header-section">
             <h1 style="margin:0; font-size: 20px;">HOKStats</h1>
-            <span class="version-badge">Build v3.2.1</span>
+            <span class="version-badge">Build v3.2.2</span>
             <span style="color: var(--text-sec); font-size: 12px;">| Meta Database Chile</span>
         </div>
 
@@ -102,47 +101,51 @@
             try {
                 const res = await fetch(CSV_URL);
                 const text = await res.text();
-                // Separación robusta para manejar comas dentro de links
                 const rows = text.split('\n').map(r => r.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/));
                 const tableBody = document.getElementById('table-body');
                 
                 rows.slice(1).forEach(col => {
                     if (!col[1] || col[1].trim() === "") return;
 
-                    // Función de limpieza específica para URLs y Texto
                     const clean = (val) => {
                         if (!val) return "";
                         let s = val.trim().replace(/^"|"$/g, '');
-                        return (s === "-" || s === "0.00%" || s === "#N/A") ? "" : s;
+                        return (s === "-" || s === "0.00%" || s === "#N/A" || s.startsWith("http")) ? "" : s;
                     };
 
-                    // EXTRACCIÓN DE IMÁGENES (Solo se usan en el atributo src)
-                    const imgHero = clean(col[3]);   // Col D
-                    const imgS1 = clean(col[13]);    // Col N
-                    const imgS2 = clean(col[16]);    // Col Q
-                    const imgF1 = clean(col[19]);    // Col T
-                    const imgF2 = clean(col[22]);    // Col W
-                    const imgD1 = clean(col[25]);    // Col Z
-                    const imgD2 = clean(col[28]);    // Col AC
+                    const getImg = (val) => {
+                        if (!val) return "";
+                        let s = val.trim().replace(/^"|"$/g, '');
+                        return s.startsWith("http") ? s : "";
+                    };
 
-                    const renderRel = (name, img) => {
+                    // MAPEADO ESTRICTO PARA EVITAR DESPLAZAMIENTOS
+                    const heroName = col[1];
+                    const heroType = col[2]; 
+                    const heroImg  = getImg(col[3]); // Col D
+
+                    const s1Name = clean(col[10]), s1Img = getImg(col[13]); // N
+                    const s2Name = clean(col[12]), s2Img = getImg(col[16]); // Q
+                    const f1Name = clean(col[14]), f1Img = getImg(col[19]); // T
+                    const f2Name = clean(col[16]), f2Img = getImg(col[22]); // W
+                    const d1Name = clean(col[18]), d1Img = getImg(col[25]); // Z
+                    const d2Name = clean(col[20]), d2Img = getImg(col[28]); // AC
+
+                    const renderPair = (name, img) => {
                         if (!name) return "";
                         return `<div class="rel-item">
-                            <img src="${img}" class="icon-rel" onerror="this.style.display='none'">
-                            <span class="name-small">${name}</span>
-                        </div>`;
+                                    <img src="${img}" class="img-mini" onerror="this.style.display='none'">
+                                    <span class="name-tag">${name}</span>
+                                </div>`;
                     };
 
                     const tr = document.createElement('tr');
                     tr.className = 'hero-row';
                     tr.innerHTML = `
                         <td>
-                            <div class="img-wrapper">
-                                <img src="${imgHero}" class="hero-img" onerror="this.src='https://www.honorofkings.com/global/images/hero/hero_list_default.png'">
-                                <div>
-                                    <span class="hero-name">${col[1]}</span>
-                                    <span class="hero-type">${col[2]}</span>
-                                </div>
+                            <div class="hero-flex">
+                                <img src="${heroImg}" class="img-main" onerror="this.src='https://www.honorofkings.com/global/images/hero/hero_list_default.png'">
+                                <div><span class="hero-name">${heroName}</span><span class="hero-type">${heroType}</span></div>
                             </div>
                         </td>
                         <td class="role-text">${clean(col[4])}</td>
@@ -151,13 +154,13 @@
                         <td><span class="stat-val">${col[7]}</span></td>
                         <td><span class="stat-val">${col[8]}</span></td>
                         <td><span class="stat-val">${col[9]}</span></td>
-                        <td>${renderRel(clean(col[10]), imgS1)}${renderRel(clean(col[12]), imgS2)}</td>
-                        <td class="blue">${renderRel(clean(col[14]), imgF1)}${renderRel(clean(col[16]), imgF2)}</td>
-                        <td class="red">${renderRel(clean(col[18]), imgD1)}${renderRel(clean(col[20]), imgD2)}</td>
+                        <td>${renderPair(s1Name, s1Img)}${renderPair(s2Name, s2Img)}</td>
+                        <td class="blue">${renderPair(f1Name, f1Img)}${renderPair(f2Name, f2Img)}</td>
+                        <td class="red">${renderPair(d1Name, d1Img)}${renderPair(d2Name, d2Img)}</td>
                     `;
                     tableBody.appendChild(tr);
                 });
-            } catch (e) { console.error("Error cargando datos:", e); }
+            } catch (e) { console.error("Error:", e); }
         }
         load();
     </script>
