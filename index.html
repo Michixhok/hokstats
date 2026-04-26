@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HOKStats | v5.0 Interactivo</title>
+    <title>HOKStats | v5.1 Compact</title>
     <style>
         :root { --bg: #0b0e11; --card: #161b22; --brd: #30363d; --txt: #f0f6fc; --sec: #8b949e; --acc: #58a6ff; --btn-bg: #21262d; }
         body { background: var(--bg); color: var(--txt); font-family: system-ui, sans-serif; padding: 20px 10px; margin: 0; }
@@ -14,14 +14,19 @@
         .v-badge { background: #238636; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; font-weight: bold; }
 
         .filter-bar { display: flex; background: var(--card); border: 1px solid var(--brd); border-radius: 8px; padding: 4px; margin-bottom: 25px; gap: 4px; }
-        .filter-btn { background: transparent; border: none; color: var(--sec); padding: 8px 20px; font-size: 13px; font-weight: 600; cursor: pointer; border-radius: 6px; transition: all 0.2s; }
+        .filter-btn { background: transparent; border: none; color: var(--sec); padding: 8px 18px; font-size: 13px; font-weight: 600; cursor: pointer; border-radius: 6px; transition: all 0.2s; }
         .filter-btn:hover { color: #fff; background: var(--btn-bg); }
         .filter-btn.active { background: var(--acc); color: #fff; }
 
-        table { width: 1000px; border-collapse: separate; border-spacing: 0 4px; margin: 0 auto; table-layout: fixed; }
+        table { 
+            width: 1000px; 
+            border-collapse: separate; 
+            border-spacing: 0 2px; /* AJUSTE: Reducido de 4px a 2px para filas más juntas */
+            margin: 0 auto; 
+            table-layout: fixed; 
+        }
 
-        /* Estilo para encabezados clicables */
-        th { color: var(--sec); font-size: 10px; text-transform: uppercase; padding: 8px 10px; text-align: center; letter-spacing: 0.5px; cursor: pointer; transition: color 0.2s; position: relative; }
+        th { color: var(--sec); font-size: 10px; text-transform: uppercase; padding: 6px 10px; text-align: center; letter-spacing: 0.5px; cursor: pointer; transition: color 0.2s; position: relative; }
         th:hover { color: var(--acc); }
         th.sort-asc::after { content: ' ↑'; position: absolute; font-size: 8px; }
         th.sort-desc::after { content: ' ↓'; position: absolute; font-size: 8px; }
@@ -29,21 +34,28 @@
         th.w-hero { text-align: left; width: 180px; } 
         .w-roles { width: 110px; } 
         .w-stat { width: 120px; }
-        .w-rel { width: 105px; } /* Un poco más de ancho para los nombres nuevos */
+        .w-rel { width: 105px; }
 
-        tr.hero-row td { background: var(--card); padding: 8px 15px; border-top: 1px solid var(--brd); border-bottom: 1px solid var(--brd); vertical-align: middle; text-align: center; }
+        tr.hero-row td { 
+            background: var(--card); 
+            padding: 5px 15px; /* AJUSTE: Reducido de 8px a 5px para menor altura de fila */
+            border-top: 1px solid var(--brd); 
+            border-bottom: 1px solid var(--brd); 
+            vertical-align: middle; 
+            text-align: center; 
+        }
         tr.hero-row td:first-child { border-left: 1px solid var(--brd); border-radius: 6px 0 0 6px; text-align: left; }
         tr.hero-row td:last-child { border-right: 1px solid var(--brd); border-radius: 0 6px 6px 0; }
 
-        .hero-info { display: flex; align-items: center; gap: 12px; }
-        .img-main { width: 40px; height: 40px; border-radius: 10px; object-fit: cover; flex-shrink: 0; }
-        .img-mini { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+        .hero-info { display: flex; align-items: center; gap: 10px; }
+        .img-main { width: 36px; height: 36px; border-radius: 8px; object-fit: cover; flex-shrink: 0; } /* Un poco más pequeña para el modo compacto */
+        .img-mini { width: 26px; height: 26px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
 
-        .name-txt { font-weight: 600; font-size: 14px; color: #fff; display: block; }
-        .type-txt, .stat-txt { color: var(--sec); font-size: 11px; white-space: nowrap; }
+        .name-txt { font-weight: 600; font-size: 13px; color: #fff; display: block; }
+        .type-txt, .stat-txt { color: var(--sec); font-size: 10px; white-space: nowrap; }
 
-        .roles-flex { display: flex; flex-direction: column; align-items: center; }
-        .rel-flex { display: flex; gap: 6px; align-items: center; justify-content: center; }
+        .roles-flex { display: flex; flex-direction: column; align-items: center; line-height: 1.2; }
+        .rel-flex { display: flex; gap: 5px; align-items: center; justify-content: center; }
 
         @media (max-width: 1000px) { table { width: 95vw; } }
     </style>
@@ -52,7 +64,7 @@
     <div class="container">
         <div class="header">
             <h1 style="margin:0; font-size: 20px;">HOKStats</h1>
-            <span class="v-badge">v5.0</span>
+            <span class="v-badge">v5.1</span>
         </div>
 
         <div class="filter-bar">
@@ -95,22 +107,15 @@
             });
         }
 
-        // FUNCIÓN DE ORDENAMIENTO
         function sortRows(colIndex, type, header) {
             const tbody = document.getElementById('table-body');
             const rows = Array.from(tbody.querySelectorAll('.hero-row'));
-            
-            // Alternar dirección
             if (currentSort.col === colIndex) currentSort.asc = !currentSort.asc;
             else { currentSort.col = colIndex; currentSort.asc = true; }
-
-            // Actualizar flechas visuales
             document.querySelectorAll('th').forEach(th => th.classList.remove('sort-asc', 'sort-desc'));
             header.classList.add(currentSort.asc ? 'sort-asc' : 'sort-desc');
-
             rows.sort((a, b) => {
                 let valA, valB;
-                
                 if (type === 'str') {
                     valA = a.cells[colIndex].querySelector('.name-txt').innerText.toLowerCase();
                     valB = b.cells[colIndex].querySelector('.name-txt').innerText.toLowerCase();
@@ -118,12 +123,10 @@
                     valA = parseFloat(a.cells[colIndex].innerText.replace('%', '')) || 0;
                     valB = parseFloat(b.cells[colIndex].innerText.replace('%', '')) || 0;
                 }
-
                 if (valA < valB) return currentSort.asc ? -1 : 1;
                 if (valA > valB) return currentSort.asc ? 1 : -1;
                 return 0;
             });
-
             rows.forEach(row => tbody.appendChild(row));
         }
 
@@ -136,7 +139,6 @@
                     for (let c of line) { if (c === '"') q = !q; else if (c === ',' && !q) { parts.push(curr); curr = ''; } else curr += c; }
                     parts.push(curr); return parts;
                 });
-
                 const body = document.getElementById('table-body');
                 rows.slice(1).forEach(row => {
                     if (!row[1]) return;
@@ -146,25 +148,16 @@
                         w: row[8], p: row[9], b: row[10],
                         s1i: row[13], s2i: row[16], f1i: row[19], f2i: row[22], d1i: row[25], d2i: row[28]
                     };
-
                     const clean = (v) => (v && !v.includes('http') && v !== "-" && v !== "0") ? v.trim() : "";
                     const img = (v) => (v && v.includes('http')) ? v.trim() : "";
                     const rel = (i) => i ? `<img src="${i}" class="img-mini" onerror="this.style.display='none'">` : "";
-
                     const r1 = clean(d.r1), r2 = clean(d.r2), r3 = clean(d.r3);
                     const rolesHTML = [r1, r2, r3].filter(r => r !== "").join('<br>');
-                    
                     const tr = document.createElement('tr');
                     tr.className = 'hero-row';
                     tr.setAttribute('data-roles', `${r1},${r2},${r3}`);
-                    
                     tr.innerHTML = `
-                        <td>
-                            <div class="hero-info">
-                                <img src="${img(d.img)}" class="img-main" onerror="this.src='https://www.honorofkings.com/global/images/hero/hero_list_default.png'">
-                                <div><span class="name-txt">${d.n}</span><span class="type-txt">${clean(d.type)}</span></div>
-                            </div>
-                        </td>
+                        <td><div class="hero-info"><img src="${img(d.img)}" class="img-main" onerror="this.src='https://www.honorofkings.com/global/images/hero/hero_list_default.png'"><div><span class="name-txt">${d.n}</span><span class="type-txt">${clean(d.type)}</span></div></div></td>
                         <td><div class="roles-flex stat-txt">${rolesHTML}</div></td>
                         <td><span class="stat-txt">${clean(d.w)}</span></td>
                         <td><span class="stat-txt">${clean(d.p)}</span></td>
