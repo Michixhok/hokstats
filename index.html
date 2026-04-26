@@ -7,58 +7,48 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root { 
-            --bg: #0b0d14;           
-            --card: #161923;         
-            --card-alt: #1c1f2a;     
+            --bg: #0b0d14; 
+            --card: #161923; 
+            --card-alt: #1c1f2a;
             --brd: #2d313e; 
             --txt: #ffffff; 
             --sec: #9499a3; 
-            --acc: #3182ce;          
+            --acc: #3182ce; 
+            --btn-bg: #1c1f2a; 
+            --green: #238636;
         }
 
         body { 
-            background-color: var(--bg); color: var(--txt); 
-            font-family: 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 20px;
+            background-color: var(--bg); 
+            color: var(--txt); 
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+            padding: 20px 0; 
+            margin: 0; 
         }
         
-        .container { max-width: 1100px; margin: 0 auto; width: 100%; }
+        .container { width: 100%; max-width: 1080px; margin: 0 auto; padding: 0 15px; box-sizing: border-box; }
         
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .header-left { border-left: 4px solid var(--acc); padding-left: 15px; }
-        .header-left h1 { margin: 0; font-size: 22px; letter-spacing: 1px; }
+        .header { margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; }
+        .header-left { display: flex; align-items: center; gap: 10px; border-left: 4px solid var(--acc); padding-left: 15px; }
+        .header-left h1 { margin: 0; font-size: 22px; font-weight: 700; }
 
         .main-tabs { display: flex; background: #1c1f2a; border-radius: 8px; padding: 4px; gap: 5px; }
-        .tab-btn { border: none; background: transparent; color: var(--sec); padding: 8px 16px; cursor: pointer; font-size: 13px; font-weight: 600; border-radius: 6px; }
+        .tab-btn { border: none; background: transparent; color: var(--sec); padding: 8px 16px; cursor: pointer; font-size: 13px; font-weight: 600; border-radius: 6px; transition: 0.2s; }
         .tab-btn.active { background: var(--acc); color: white; }
 
         .content-section { display: none; flex-direction: column; width: 100%; }
         .content-section.active { display: flex; }
 
-        .toolbar { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            margin-bottom: 20px; 
-            gap: 20px;
-        }
-        
-        .filter-bar { display: flex; background: #1c1f2a; border-radius: 8px; padding: 4px; gap: 5px; }
-        .filter-btn { border: none; background: transparent; color: var(--sec); padding: 8px 15px; cursor: pointer; font-size: 12px; border-radius: 5px; }
+        .toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; gap: 15px; flex-wrap: wrap; }
+        .filter-bar { display: flex; background: #1c1f2a; border-radius: 8px; padding: 4px; gap: 4px; }
+        .filter-btn { border: none; background: transparent; color: var(--sec); padding: 8px 16px; cursor: pointer; font-size: 12px; font-weight: 600; border-radius: 5px; }
         .filter-btn.active { background: var(--acc); color: white; }
 
-        .search-box { 
-            background: #1c1f2a; 
-            border: 1px solid var(--brd);
-            border-radius: 8px; 
-            padding: 8px 15px; 
-            display: flex; 
-            align-items: center;
-            width: 250px; 
-        }
+        .search-box { background: #1c1f2a; border: 1px solid var(--brd); border-radius: 8px; padding: 8px 15px; display: flex; align-items: center; width: 260px; }
         .search-box input { background: transparent; border: none; color: white; outline: none; width: 100%; font-size: 13px; }
 
         table { width: 100%; border-collapse: collapse; background: var(--card); border-radius: 10px; overflow: hidden; }
-        th { color: var(--sec); font-size: 11px; text-transform: uppercase; padding: 15px 10px; border-bottom: 1px solid var(--brd); text-align: center; }
+        th { color: var(--sec); font-size: 11px; text-transform: uppercase; padding: 15px 10px; border-bottom: 1px solid var(--brd); text-align: center; letter-spacing: 0.5px; }
         th.w-hero { text-align: left; padding-left: 20px; }
 
         tr.hero-row td { padding: 10px; border-bottom: 1px solid #00000022; text-align: center; font-size: 12px; }
@@ -67,7 +57,7 @@
         .tier-box {
             display: inline-flex; align-items: center; justify-content: center;
             background-color: var(--acc); color: white;
-            width: 22px; height: 22px; font-weight: 800; font-size: 12px;
+            width: 22px; height: 22px; font-weight: 800; font-size: 11px;
             clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
         }
 
@@ -79,12 +69,11 @@
         .img-mini { width: 22px; height: 22px; border-radius: 50%; border: 1px solid #000; }
         .rel-flex { display: flex; gap: 4px; justify-content: center; }
         
-        .chart-area { background: var(--card); border-radius: 15px; padding: 25px; border: 1px solid var(--brd); height: 500px; }
+        .chart-area { background: var(--card); border-radius: 15px; padding: 25px; border: 1px solid var(--brd); height: 600px; position: relative; }
 
         .analysis-container { 
-            width: 100%; margin: 40px auto; color: var(--sec); 
-            background-color: var(--card); padding: 30px; border-radius: 14px; 
-            border: 1px solid var(--brd); box-sizing: border-box; 
+            width: 100%; margin: 30px auto; color: var(--sec); background-color: var(--card); 
+            padding: 30px; border-radius: 14px; border: 1px solid var(--brd); box-sizing: border-box; 
         }
     </style>
 </head>
@@ -171,16 +160,16 @@
             </div>
         </div>
 
-        <div style="width: 100%; margin-top: 30px; padding: 15px 0; border-top: 1px solid var(--brd); display: flex; justify-content: center; align-items: center; gap: 8px;">
-            <p style="color: var(--sec); font-size: 10px; margin: 0; text-transform: uppercase;">Última actualización: 26 de Abril, 2026</p>
+        <div style="width: 100%; margin: 40px 0 20px; padding-top: 20px; border-top: 1px solid var(--brd); text-align: center;">
+            <p style="color: var(--sec); font-size: 10px; text-transform: uppercase; letter-spacing: 1px;">Última actualización: 26 de Abril, 2026</p>
         </div>
     </div>
 
     <script>
-        const SHEET_ID = '12nS_m2_oN9fV00I0073Uu0X1kO13N7N71yV00p0_000'; // Tu ID real
+        const SHEET_ID = '1X9N_lZ_m4qV_j6S5Uu0Z1kO13N7N71yV66p9_eYvY_M'; 
         const SHEET_TITLE = 'HoK';
         const SHEET_RANGE = 'A2:AB200';
-        const FULL_URL = `https://docs.google.com/spreadsheets/d/1X9N_lZ_m4qV_j6S5Uu0Z1kO13N7N71yV66p9_eYvY_M/gviz/tq?sheet=${SHEET_TITLE}&range=${SHEET_RANGE}`;
+        const FULL_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${SHEET_TITLE}&range=${SHEET_RANGE}`;
 
         let allData = [];
         let chartInstance = null;
@@ -209,7 +198,7 @@
 
                 renderTable(allData);
                 renderChart(allData);
-            } catch (e) { console.error("Error:", e); }
+            } catch (e) { console.error("Error cargando datos:", e); }
         }
 
         function clean(v) { return v ? v.toString().trim() : ''; }
@@ -265,7 +254,7 @@
         function filterTable(role = null) {
             const query = document.getElementById('heroSearch').value.toLowerCase();
             const activeRoleBtn = document.querySelector('.filter-bar .filter-btn.active');
-            const currentRole = role || activeRoleBtn.innerText;
+            const currentRole = role || (activeRoleBtn ? activeRoleBtn.innerText : 'Todo');
             
             const rows = document.querySelectorAll('.hero-row');
             rows.forEach(row => {
@@ -294,24 +283,44 @@
                         label: 'Héroes',
                         data: chartData,
                         backgroundColor: '#3182ce',
-                        pointRadius: 6
+                        pointRadius: 6,
+                        hoverPointRadius: 8
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     scales: {
-                        x: { min: 0, max: 7, title: { display: true, text: 'Presencia (%)', color: '#fff' } },
-                        y: { min: 40, max: 60, title: { display: true, text: 'Win Rate (%)', color: '#fff' } }
+                        x: { 
+                            min: 0, max: 7, 
+                            title: { display: true, text: 'Presencia (%)', color: '#8b949e' },
+                            grid: { color: (c) => c.tick.value === 1 ? 'rgba(49, 130, 206, 0.5)' : 'rgba(255,255,255,0.05)', lineWidth: (c) => c.tick.value === 1 ? 2 : 1 }
+                        },
+                        y: { 
+                            min: 40, max: 60, 
+                            title: { display: true, text: 'Win Rate (%)', color: '#8b949e' },
+                            grid: { color: (c) => c.tick.value === 50 ? 'rgba(49, 130, 206, 0.5)' : 'rgba(255,255,255,0.05)', lineWidth: (c) => c.tick.value === 50 ? 2 : 1 }
+                        }
                     },
                     plugins: {
-                        tooltip: {
-                            callbacks: {
-                                label: (c) => `${c.raw.label}: ${c.raw.y}% WR / ${c.raw.x}% Presencia`
-                            }
-                        }
+                        legend: { display: false },
+                        tooltip: { callbacks: { label: (c) => `${c.raw.label}: ${c.raw.y}% WR / ${c.raw.x}% Presencia` } }
                     }
-                }
+                },
+                plugins: [{
+                    id: 'quadrants',
+                    beforeDraw(chart) {
+                        const {ctx, chartArea: {left, top, right, bottom}, scales: {x, y}} = chart;
+                        const midX = x.getPixelForValue(1);
+                        const midY = y.getPixelForValue(50);
+                        ctx.save();
+                        ctx.fillStyle = 'rgba(0, 255, 0, 0.03)'; ctx.fillRect(midX, top, right - midX, midY - top);
+                        ctx.fillStyle = 'rgba(0, 255, 255, 0.03)'; ctx.fillRect(left, top, midX - left, midY - top);
+                        ctx.fillStyle = 'rgba(255, 255, 0, 0.03)'; ctx.fillRect(midX, midY, right - midX, bottom - midY);
+                        ctx.fillStyle = 'rgba(255, 0, 0, 0.03)'; ctx.fillRect(left, midY, midX - left, bottom - midY);
+                        ctx.restore();
+                    }
+                }]
             });
         }
 
