@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HoKstats | v6.2</title>
+    <title>HoKstats | v7.0</title>
     <style>
         :root { --bg: #0b0e11; --card: #161b22; --brd: #30363d; --txt: #f0f6fc; --sec: #8b949e; --acc: #58a6ff; --btn-bg: #21262d; }
         body { background: var(--bg); color: var(--txt); font-family: system-ui, sans-serif; padding: 20px 10px; margin: 0; }
@@ -43,10 +43,42 @@
         .contact-link { display: flex; align-items: center; gap: 6px; color: var(--acc); text-decoration: none; font-size: 13px; transition: opacity 0.2s; }
         .contact-link:hover { opacity: 0.8; text-decoration: underline; }
 
-        .filter-bar { display: flex; background: var(--card); border: 1px solid var(--brd); border-radius: 8px; padding: 4px; margin-bottom: 25px; gap: 4px; }
-        .filter-btn { background: transparent; border: none; color: var(--sec); padding: 8px 18px; font-size: 13px; font-weight: 600; cursor: pointer; border-radius: 6px; transition: all 0.2s; }
+        /* Barra de herramientas: Filtros + Buscador */
+        .toolbar { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            width: 1000px; 
+            max-width: 95vw; 
+            margin-bottom: 25px; 
+            gap: 15px; 
+        }
+        .filter-bar { display: flex; background: var(--card); border: 1px solid var(--brd); border-radius: 8px; padding: 4px; gap: 4px; }
+        .filter-btn { background: transparent; border: none; color: var(--sec); padding: 8px 16px; font-size: 13px; font-weight: 600; cursor: pointer; border-radius: 6px; transition: all 0.2s; }
         .filter-btn:hover { color: #fff; background: var(--btn-bg); }
         .filter-btn.active { background: var(--acc); color: #fff; }
+
+        .search-box { 
+            position: relative; 
+            display: flex; 
+            align-items: center; 
+            background: var(--card); 
+            border: 1px solid var(--brd); 
+            border-radius: 8px; 
+            padding: 0 12px;
+            flex-grow: 1;
+            max-width: 300px;
+        }
+        .search-box input { 
+            background: transparent; 
+            border: none; 
+            color: var(--txt); 
+            padding: 10px 0; 
+            font-size: 13px; 
+            width: 100%; 
+            outline: none; 
+        }
+        .search-box input::placeholder { color: var(--sec); }
 
         table { width: 1000px; border-collapse: separate; border-spacing: 0 2px; margin: 0 auto; table-layout: fixed; }
 
@@ -66,8 +98,6 @@
 
         .hero-info { display: flex; align-items: center; gap: 10px; }
         .img-main { width: 38px; height: 38px; border-radius: 8px; object-fit: cover; flex-shrink: 0; }
-        
-        /* Ajuste solicitado: Sin bordes y tamaño de 32px */
         .img-mini { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; flex-shrink: 0; border: none; }
 
         .name-txt { font-weight: 600; font-size: 13px; color: #fff; display: block; }
@@ -77,14 +107,18 @@
         .roles-flex { display: flex; flex-direction: column; align-items: center; line-height: 1.2; }
         .rel-flex { display: flex; gap: 6px; align-items: center; justify-content: center; }
 
-        @media (max-width: 1000px) { table, .header, .info-box { width: 95vw; } }
+        @media (max-width: 1000px) { 
+            table, .header, .info-box, .toolbar { width: 95vw; } 
+            .toolbar { flex-direction: column; align-items: stretch; }
+            .search-box { max-width: none; }
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
             <h1 style="margin:0; font-size: 20px;">HoKstats</h1>
-            <span class="v-badge">v6.2</span>
+            <span class="v-badge">v7.0</span>
         </div>
 
         <div class="info-box">
@@ -102,13 +136,18 @@
             </div>
         </div>
 
-        <div class="filter-bar">
-            <button class="filter-btn active" onclick="filterHeroes('Todo', this)">Todo</button>
-            <button class="filter-btn" onclick="filterHeroes('Choque', this)">Choque</button>
-            <button class="filter-btn" onclick="filterHeroes('Cazador', this)">Cazador</button>
-            <button class="filter-btn" onclick="filterHeroes('Medio', this)">Medio</button>
-            <button class="filter-btn" onclick="filterHeroes('Merodeo', this)">Merodeo</button>
-            <button class="filter-btn" onclick="filterHeroes('Farmeo', this)">Farmeo</button>
+        <div class="toolbar">
+            <div class="filter-bar">
+                <button class="filter-btn active" onclick="setFilter('Todo', this)">Todo</button>
+                <button class="filter-btn" onclick="setFilter('Choque', this)">Choque</button>
+                <button class="filter-btn" onclick="setFilter('Cazador', this)">Cazador</button>
+                <button class="filter-btn" onclick="setFilter('Medio', this)">Medio</button>
+                <button class="filter-btn" onclick="setFilter('Merodeo', this)">Merodeo</button>
+                <button class="filter-btn" onclick="setFilter('Farmeo', this)">Farmeo</button>
+            </div>
+            <div class="search-box">
+                <input type="text" id="heroSearch" placeholder="Buscar héroe..." onkeyup="applyFilters()">
+            </div>
         </div>
 
         <table id="heroTable">
@@ -131,14 +170,27 @@
     <script>
         const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTO4rMY_drrjKMx3KTdjAaSrH6GenxyZ7YzLPT7oiZ_pNYm6EKG-yJPfmbRcZgYGGi2gERA1Gciw-Fy/pub?gid=538223640&single=true&output=csv&cache=' + Date.now();
         let currentSort = { col: null, asc: true };
+        let activeRole = 'Todo';
 
-        function filterHeroes(role, btn) {
+        function setFilter(role, btn) {
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
+            activeRole = role;
+            applyFilters();
+        }
+
+        function applyFilters() {
+            const query = document.getElementById('heroSearch').value.toLowerCase();
             const rows = document.querySelectorAll('.hero-row');
+            
             rows.forEach(row => {
-                const heroRoles = row.getAttribute('data-roles');
-                row.style.display = (role === 'Todo' || heroRoles.toLowerCase().includes(role.toLowerCase())) ? '' : 'none';
+                const heroName = row.querySelector('.name-txt').innerText.toLowerCase();
+                const heroRoles = row.getAttribute('data-roles').toLowerCase();
+                
+                const matchesRole = (activeRole === 'Todo' || heroRoles.includes(activeRole.toLowerCase()));
+                const matchesSearch = heroName.includes(query);
+                
+                row.style.display = (matchesRole && matchesSearch) ? '' : 'none';
             });
         }
 
