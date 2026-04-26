@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HoKstats | v8.9 - Versión Final Corregida</title>
+    <title>HoKstats | v9.0 - Corrección de Tabla</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root { 
@@ -27,16 +27,11 @@
             justify-content: center;
         }
         
-        .container { 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            width: 100%; 
-        }
+        .container { display: flex; flex-direction: column; align-items: center; width: 100%; }
         
         .header { 
-            width: 1000px; 
-            max-width: 95vw; 
+            width: 1080px; 
+            max-width: 98vw; 
             margin-bottom: 25px; 
             display: flex; 
             justify-content: space-between; 
@@ -52,15 +47,7 @@
         }
 
         .header-left h1 { margin: 0; font-size: 24px; font-weight: 600; }
-
-        .v-badge { 
-            background-color: var(--green); 
-            color: white; 
-            font-size: 11px; 
-            padding: 3px 8px; 
-            border-radius: 12px; 
-            font-weight: bold; 
-        }
+        .v-badge { background-color: var(--green); color: white; font-size: 11px; padding: 3px 8px; border-radius: 12px; font-weight: bold; }
 
         .main-tabs { display: flex; gap: 8px; }
 
@@ -83,8 +70,8 @@
         }
 
         .info-box { 
-            width: 1000px; 
-            max-width: 95vw; 
+            width: 1080px; 
+            max-width: 98vw; 
             background-color: rgba(88, 166, 255, 0.05); 
             border: 1px solid var(--brd); 
             border-radius: 12px; 
@@ -107,8 +94,8 @@
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
-            width: 1000px; 
-            max-width: 95vw; 
+            width: 1080px; 
+            max-width: 98vw; 
             margin-bottom: 25px; 
             gap: 20px; 
         }
@@ -156,43 +143,47 @@
             outline: none; 
         }
 
-        .table-wrapper { width: 1000px; max-width: 95vw; overflow-x: auto; }
-        table { width: 100%; border-collapse: separate; border-spacing: 0 4px; table-layout: fixed; }
-        th { color: var(--sec); font-size: 11px; text-transform: uppercase; padding: 12px; text-align: center; cursor: pointer; font-weight: 700; }
-        th.w-hero { text-align: left; width: 200px; } 
+        /* CORRECCIÓN: Eliminada barra de desplazamiento y ajustado ancho para visibilidad total */
+        .table-wrapper { width: 1080px; max-width: 98vw; overflow: visible; }
+        table { width: 100%; border-collapse: separate; border-spacing: 0 4px; table-layout: auto; }
+        
+        th { color: var(--sec); font-size: 11px; text-transform: uppercase; padding: 12px 8px; text-align: center; cursor: pointer; font-weight: 700; white-space: nowrap; }
+        th.w-hero { text-align: left; width: 180px; } 
 
         tr.hero-row td { 
             background-color: var(--card); 
-            padding: 12px 15px; 
+            padding: 10px 8px; 
             border-top: 1px solid var(--brd); 
             border-bottom: 1px solid var(--brd); 
             text-align: center; 
+            vertical-align: middle;
         }
 
         tr.hero-row td:first-child { border-left: 1px solid var(--brd); border-radius: 10px 0 0 10px; text-align: left; }
         tr.hero-row td:last-child { border-right: 1px solid var(--brd); border-radius: 0 10px 10px 0; }
 
-        .hero-info { display: flex; align-items: center; gap: 15px; }
+        .hero-info { display: flex; align-items: center; gap: 12px; }
         .img-main { width: 44px; height: 44px; border-radius: 10px; object-fit: cover; }
         
-        /* SOLUCIÓN: Quitados los bordes de las fotos de relación */
+        /* CORRECCIÓN: Sin bordes en sinergias/counters */
         .img-mini { 
-            width: 34px; 
-            height: 34px; 
+            width: 32px; 
+            height: 32px; 
             border-radius: 50%; 
             object-fit: cover; 
             border: none !important; 
+            display: block;
         }
 
         .tier-txt { font-size: 20px; font-weight: 900; color: #ffffff; }
-        .name-txt { font-weight: 700; font-size: 15px; color: #ffffff; display: block; }
-        .type-txt { color: var(--sec); font-size: 12px; }
-        .stat-txt { color: var(--sec); font-size: 13px; font-weight: 600; }
-        .rel-flex { display: flex; gap: 8px; justify-content: center; }
+        .name-txt { font-weight: 700; font-size: 14px; color: #ffffff; display: block; }
+        .type-txt { color: var(--sec); font-size: 11px; }
+        .stat-txt { color: var(--sec); font-size: 12px; font-weight: 600; }
+        .rel-flex { display: flex; gap: 6px; justify-content: center; min-width: 70px; }
 
         .chart-area { 
-            width: 1000px; 
-            max-width: 95vw; 
+            width: 1080px; 
+            max-width: 98vw; 
             background-color: var(--card); 
             border: 1px solid var(--brd); 
             border-radius: 14px; 
@@ -201,7 +192,12 @@
             height: 680px; 
         }
 
-        @media (max-width: 1000px) { .header, .info-box, .toolbar, .chart-area, .table-wrapper { width: 95vw; } }
+        @media (max-width: 1100px) { 
+            .header, .info-box, .toolbar, .chart-area, .table-wrapper { width: 98vw; }
+            .name-txt { font-size: 13px; }
+            .img-main { width: 38px; height: 38px; }
+            .img-mini { width: 28px; height: 28px; }
+        }
     </style>
 </head>
 <body>
@@ -209,7 +205,7 @@
         <div class="header">
             <div class="header-left">
                 <h1>HoKstats</h1>
-                <span class="v-badge">v8.9</span>
+                <span class="v-badge">v9.0</span>
             </div>
             <div class="main-tabs">
                 <button class="tab-btn active" onclick="switchTab('stats', this)">Estadísticas</button>
@@ -221,8 +217,8 @@
             <div class="info-icon">💡</div>
             <div class="info-content">
                 <p class="info-text">
-                    Este es un proyecto personal desarrollado originalmente para optimizar mi rendimiento en <strong>Honor of Kings</strong>. 
-                    Al notar su utilidad, decidí compartirlo con la comunidad. Esta herramienta es independiente y no tiene relación oficial con Honor of Kings.
+                    Proyecto personal para optimizar el rendimiento en <strong>Honor of Kings</strong>. 
+                    Independiente de Level Infinite/TiMi Studio. Datos obtenidos de fuentes públicas.
                 </p>
                 <div class="contact-area">
                     <a href="mailto:michixhok@gmail.com" class="contact-link">✉ michixhok@gmail.com</a>
@@ -251,14 +247,14 @@
                     <thead>
                         <tr>
                             <th class="w-hero" onclick="sortRows(0, 'str')">Héroe</th>
-                            <th style="width:75px" onclick="sortRows(1, 'num')">Tier</th>
-                            <th style="width:110px">Roles</th>
-                            <th style="width:115px" onclick="sortRows(3, 'num')">Win Rate</th>
-                            <th style="width:115px" onclick="sortRows(4, 'num')">Pick Rate</th>
-                            <th style="width:115px" onclick="sortRows(5, 'num')">Ban Rate</th>
-                            <th style="width:115px">Sinergia</th>
-                            <th style="width:115px">Fuerte</th>
-                            <th style="width:115px">Débil</th>
+                            <th style="width:60px" onclick="sortRows(1, 'num')">Tier</th>
+                            <th style="width:90px">Roles</th>
+                            <th onclick="sortRows(3, 'num')">Win Rate</th>
+                            <th onclick="sortRows(4, 'num')">Pick Rate</th>
+                            <th onclick="sortRows(5, 'num')">Ban Rate</th>
+                            <th>Sinergia</th>
+                            <th>Fuerte</th>
+                            <th>Débil</th>
                         </tr>
                     </thead>
                     <tbody id="table-body"></tbody>
@@ -319,11 +315,9 @@
             rows.forEach(r => tbody.appendChild(r));
         }
 
-        // SOLUCIÓN: Función para dibujar círculos en el gráfico
         function renderChart() {
             if(myChart) myChart.destroy();
             const ctx = document.getElementById('scatterChart').getContext('2d');
-
             const heroPoints = allHeroes.map(h => {
                 const img = new Image();
                 img.src = h.img;
@@ -332,35 +326,26 @@
 
             myChart = new Chart(ctx, {
                 type: 'scatter',
-                data: {
-                    datasets: [{
-                        data: heroPoints,
-                        pointRadius: 8,
-                        pointHoverRadius: 20
-                    }]
-                },
+                data: { datasets: [{ data: heroPoints, pointRadius: 8, pointHoverRadius: 22 }] },
                 options: {
                     responsive: true, maintainAspectRatio: false,
                     scales: {
                         x: { title: { display: true, text: 'Presence Rate %', color: '#8b949e' }, min: 0, max: 6 },
                         y: { title: { display: true, text: 'Win Rate %', color: '#8b949e' }, min: 40, max: 60 }
                     },
-                    plugins: {
+                    plugins: { 
                         legend: { display: false },
-                        tooltip: {
-                            callbacks: { label: (c) => ` ${c.raw.name}: Win ${c.raw.y}% | Presence ${c.raw.x.toFixed(2)}%` }
-                        }
+                        tooltip: { callbacks: { label: (c) => ` ${c.raw.name}: Win ${c.raw.y}% | Presence ${c.raw.x.toFixed(2)}%` } }
                     }
                 },
                 plugins: [{
                     id: 'heroIcons',
-                    afterDatasetDraw(chart, args, options) {
+                    afterDatasetDraw(chart) {
                         const {ctx} = chart;
                         chart.getDatasetMeta(0).data.forEach((point, index) => {
                             const {x, y} = point;
                             const hero = heroPoints[index];
                             const size = point.options.radius * 2.2;
-                            
                             if (hero.img.complete) {
                                 ctx.save();
                                 ctx.beginPath();
@@ -402,14 +387,15 @@
                     const clean = (v) => (v && !v.includes('http') && v !== "-" && v !== "0") ? v.trim() : "";
                     const getImg = (v) => (v && v.includes('http')) ? v.trim() : "";
                     const rel = (url) => url ? `<img src="${url}" class="img-mini" onerror="this.style.display='none'">` : "";
+                    const roles = [clean(d.r1), clean(d.r2)].filter(x=>x);
                     const tr = document.createElement('tr');
                     tr.className = 'hero-row';
-                    tr.setAttribute('data-roles', `${clean(d.r1)},${clean(d.r2)},${clean(d.r3)}`);
+                    tr.setAttribute('data-roles', roles.join(','));
                     tr.setAttribute('data-pos', d.pos);
                     tr.innerHTML = `
                         <td><div class="hero-info"><img src="${getImg(d.img)}" class="img-main"><div><span class="name-txt">${d.n}</span><span class="type-txt">${clean(d.type)}</span></div></div></td>
                         <td><span class="tier-txt">${clean(d.tier)}</span></td>
-                        <td><div class="stat-txt">${[clean(d.r1), clean(d.r2)].filter(x=>x).join('<br>')}</div></td>
+                        <td><div class="stat-txt">${roles.join('<br>')}</div></td>
                         <td><span class="stat-txt">${d.w}</span></td>
                         <td><span class="stat-txt">${d.p}</span></td>
                         <td><span class="stat-txt">${d.b}</span></td>
