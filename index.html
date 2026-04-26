@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HoKstats | v5.9</title>
+    <title>HoKstats | v5.3 Fixed</title>
     <style>
         :root { --bg: #0b0e11; --card: #161b22; --brd: #30363d; --txt: #f0f6fc; --sec: #8b949e; --acc: #58a6ff; --btn-bg: #21262d; }
         body { background: var(--bg); color: var(--txt); font-family: system-ui, sans-serif; padding: 20px 10px; margin: 0; }
@@ -24,14 +24,14 @@
         }
         .v-badge { background: #238636; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; font-weight: bold; }
 
-        /* Cuadro informativo: AHORA SÍ coincide con ambos bordes de la tabla */
+        /* AJUSTE 1: Cuadro informativo alineado a ambos bordes */
         .info-box { 
             background: rgba(88, 166, 255, 0.05); 
             border: 1px solid var(--brd); 
             border-radius: 12px; 
             padding: 16px; 
             margin-bottom: 25px; 
-            box-sizing: border-box; /* Crucial para alinear el borde derecho */
+            box-sizing: border-box; /* Esto hace que el borde derecho no se desplace */
             display: flex;
             gap: 15px;
             align-items: center;
@@ -40,7 +40,7 @@
         .info-icon { font-size: 24px; color: var(--acc); }
         .info-text { font-size: 13px; color: var(--sec); line-height: 1.5; margin: 0; }
 
-        /* Barra de filtros: AHORA centrada perfectamente */
+        /* AJUSTE 2: Barra de filtros centrada respecto a la tabla */
         .filter-container { 
             display: flex; 
             justify-content: center; 
@@ -54,7 +54,6 @@
             border-radius: 8px; 
             padding: 4px; 
             gap: 4px; 
-            justify-content: center; /* Asegura el equilibrio interno */
         }
         .filter-btn { background: transparent; border: none; color: var(--sec); padding: 8px 18px; font-size: 13px; font-weight: 600; cursor: pointer; border-radius: 6px; transition: all 0.2s; }
         .filter-btn:hover { color: #fff; background: var(--btn-bg); }
@@ -92,7 +91,7 @@
         <div class="main-wrapper">
             <div class="header">
                 <h1 style="margin:0; font-size: 20px;">HoKstats</h1>
-                <span class="v-badge">v5.9</span>
+                <span class="v-badge">v5.3 Fixed</span>
             </div>
 
             <div class="info-box">
