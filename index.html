@@ -3,46 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HoKstats | v5.5</title>
+    <title>HoKstats | v5.6 Fixed</title>
     <style>
         :root { --bg: #0b0e11; --card: #161b22; --brd: #30363d; --txt: #f0f6fc; --sec: #8b949e; --acc: #58a6ff; --btn-bg: #21262d; }
         body { background: var(--bg); color: var(--txt); font-family: system-ui, sans-serif; padding: 20px 10px; margin: 0; }
         
-        /* Contenedor central */
         .container { display: flex; flex-direction: column; align-items: center; width: 100%; }
         
-        /* El Wrapper ahora es el que manda sobre el ancho total */
-        .main-wrapper { 
-            width: 1000px; 
-            max-width: 95vw; 
-            display: flex; 
-            flex-direction: column; 
-        }
+        /* Contenedor maestro para alinear bordes izquierdo y derecho */
+        .main-wrapper { width: 1000px; max-width: 95vw; display: flex; flex-direction: column; }
 
-        /* Logo: Alineado al borde izquierdo del wrapper */
+        /* Logo: Coincide con el borde izquierdo */
         .header { 
             margin-bottom: 25px; 
             border-left: 4px solid var(--acc); 
             padding-left: 12px; 
             display: flex; 
             align-items: baseline; 
-            gap: 8px; 
-            align-self: flex-start; /* Asegura que no se estire innecesariamente */
+            gap: 8px;
+            align-self: flex-start;
         }
         .v-badge { background: #238636; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; font-weight: bold; }
 
-        /* Recuadro Informativo: Ahora coincide perfectamente con ambos bordes */
+        /* Recuadro: Coincide con ambos bordes (izq/der) */
         .info-box { 
             background: rgba(88, 166, 255, 0.05); 
             border: 1px solid var(--brd); 
             border-radius: 12px; 
             padding: 16px; 
-            margin-bottom: 30px; 
-            box-sizing: border-box; /* Fundamental para que el padding no rompa el ancho */
+            margin-bottom: 25px; 
+            box-sizing: border-box; 
             display: flex;
             gap: 15px;
             align-items: center;
-            width: 100%; /* Ocupa todo el wrapper de 1000px */
+            width: 100%; 
         }
         .info-icon { font-size: 24px; color: var(--acc); }
         .info-text { font-size: 13px; color: var(--sec); line-height: 1.5; margin: 0; flex: 1; }
@@ -51,17 +45,12 @@
         .filter-container { display: flex; justify-content: center; width: 100%; margin-bottom: 25px; }
         .filter-bar { display: flex; background: var(--card); border: 1px solid var(--brd); border-radius: 8px; padding: 4px; gap: 4px; }
         .filter-btn { background: transparent; border: none; color: var(--sec); padding: 8px 18px; font-size: 13px; font-weight: 600; cursor: pointer; border-radius: 6px; transition: all 0.2s; }
-        .filter-btn:hover { color: #fff; background: var(--btn-bg); }
         .filter-btn.active { background: var(--acc); color: #fff; }
 
-        /* Tabla: Coincide con los bordes del info-box */
+        /* Tabla: Ocupa el 100% del wrapper */
         table { width: 100%; border-collapse: separate; border-spacing: 0 2px; table-layout: fixed; }
-
-        th { color: var(--sec); font-size: 10px; text-transform: uppercase; padding: 6px 10px; text-align: center; letter-spacing: 0.5px; cursor: pointer; position: relative; }
+        th { color: var(--sec); font-size: 10px; text-transform: uppercase; padding: 6px 10px; text-align: center; }
         th.w-hero { text-align: left; width: 180px; } 
-        .w-roles { width: 110px; } 
-        .w-stat { width: 120px; }
-        .w-rel { width: 105px; }
 
         tr.hero-row td { background: var(--card); padding: 5px 15px; border-top: 1px solid var(--brd); border-bottom: 1px solid var(--brd); vertical-align: middle; text-align: center; }
         tr.hero-row td:first-child { border-left: 1px solid var(--brd); border-radius: 6px 0 0 6px; text-align: left; }
@@ -69,7 +58,7 @@
 
         .hero-info { display: flex; align-items: center; gap: 10px; }
         .img-main { width: 36px; height: 36px; border-radius: 8px; object-fit: cover; }
-        .img-mini { width: 26px; height: 26px; border-radius: 50%; object-fit: cover; }
+        .img-mini { width: 26px; height: 26px; border-radius: 50%; object-fit: cover; border: 1px solid var(--brd); }
         .name-txt { font-weight: 600; font-size: 13px; color: #fff; display: block; }
         .stat-txt { color: var(--sec); font-size: 12px; font-weight: 500; }
         .rel-flex { display: flex; gap: 5px; align-items: center; justify-content: center; }
@@ -80,16 +69,12 @@
         <div class="main-wrapper">
             <div class="header">
                 <h1 style="margin:0; font-size: 20px;">HoKstats</h1>
-                <span class="v-badge">v5.5</span>
+                <span class="v-badge">v5.6</span>
             </div>
 
             <div class="info-box">
                 <div class="info-icon">💡</div>
-                <p class="info-text">
-                    Este es un proyecto personal desarrollado originalmente para optimizar mi rendimiento en <strong>Honor of Kings</strong>. 
-                    Al notar su utilidad, decidí compartirlo con la comunidad. Esta herramienta es independiente y no tiene relación oficial con Honor of Kings; 
-                    los datos presentados se obtienen de fuentes públicas destinadas a los jugadores.
-                </p>
+                <p class="info-text">Este es un proyecto personal desarrollado originalmente para optimizar mi rendimiento en <strong>Honor of Kings</strong>. Independiente y basado en datos públicos.</p>
             </div>
 
             <div class="filter-container">
@@ -107,13 +92,13 @@
                 <thead>
                     <tr>
                         <th class="w-hero">Héroe</th>
-                        <th class="w-roles">Roles</th>
-                        <th class="w-stat">Tasa de victoria</th>
-                        <th class="w-stat">Tasa de selección</th>
-                        <th class="w-stat">Tasa de baneo</th>
-                        <th class="w-rel">Sinergia con</th>
-                        <th class="w-rel">Fuerte contra</th>
-                        <th class="w-rel">Débil contra</th>
+                        <th style="width:110px">Roles</th>
+                        <th style="width:120px">Tasa Victoria</th>
+                        <th style="width:120px">Tasa Selección</th>
+                        <th style="width:120px">Tasa Baneo</th>
+                        <th style="width:105px">Sinergia</th>
+                        <th style="width:105px">Fuerte</th>
+                        <th style="width:105px">Débil</th>
                     </tr>
                 </thead>
                 <tbody id="table-body"></tbody>
@@ -133,27 +118,36 @@
                     for (let c of line) { if (c === '"') q = !q; else if (c === ',' && !q) { parts.push(curr); curr = ''; } else curr += c; }
                     parts.push(curr); return parts;
                 });
+
                 const body = document.getElementById('table-body');
                 rows.slice(1).forEach(row => {
                     if (!row[1]) return;
-                    const d = { n: row[1], img: row[3], w: row[8], p: row[9], b: row[10], r1: row[5], type: row[4] };
+                    const d = { 
+                        n: row[1], img: row[3], type: row[4], r1: row[5],
+                        win: row[8], pick: row[9], ban: row[10],
+                        s1: row[13], s2: row[16], f1: row[19], f2: row[22], d1: row[25], d2: row[28]
+                    };
+
+                    const imgTag = (url) => (url && url.includes('http')) ? `<img src="${url.trim()}" class="img-mini" onerror="this.style.display='none'">` : "";
+
                     const tr = document.createElement('tr');
                     tr.className = 'hero-row';
                     tr.setAttribute('data-roles', d.r1);
                     tr.innerHTML = `
                         <td><div class="hero-info"><img src="${d.img}" class="img-main"><div><span class="name-txt">${d.n}</span><small style="color:var(--sec)">${d.type}</small></div></div></td>
                         <td><span class="stat-txt">${d.r1}</span></td>
-                        <td><span class="stat-txt">${d.w}</span></td>
-                        <td><span class="stat-txt">${d.p}</span></td>
-                        <td><span class="stat-txt">${d.b}</span></td>
-                        <td><div class="rel-flex"></div></td>
-                        <td><div class="rel-flex"></div></td>
-                        <td><div class="rel-flex"></div></td>
+                        <td><span class="stat-txt">${d.win}</span></td>
+                        <td><span class="stat-txt">${d.pick}</span></td>
+                        <td><span class="stat-txt">${d.ban}</span></td>
+                        <td><div class="rel-flex">${imgTag(d.s1)}${imgTag(d.s2)}</div></td>
+                        <td><div class="rel-flex">${imgTag(d.f1)}${imgTag(d.f2)}</div></td>
+                        <td><div class="rel-flex">${imgTag(d.d1)}${imgTag(d.d2)}</div></td>
                     `;
                     body.appendChild(tr);
                 });
             } catch (e) { console.error(e); }
         }
+
         function filterHeroes(role, btn) {
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
