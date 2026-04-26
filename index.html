@@ -6,215 +6,87 @@
     <title>HoKstats | v9.0</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        :root { 
-            --bg: #101419; 
-            --card: #161b22; 
-            --brd: #30363d; 
-            --txt: #f0f6fc; 
-            --sec: #8b949e; 
-            --acc: #58a6ff; 
-            --btn-bg: #21262d; 
-            --green: #238636;
-        }
+    :root { 
+        --bg: #0f111a;           /* Fondo más profundo */
+        --card: #1a1c24;         /* Azul oscuro para filas */
+        --card-alt: #22252e;     /* Azul sutilmente más claro para filas pares */
+        --brd: #2a2e39;          /* Bordes más integrados */
+        --txt: #ffffff; 
+        --sec: #9ba3af;          /* Texto secundario más legible */
+        --acc: #3182ce;          /* Azul brillante tipo ejemplo */
+        --btn-bg: #2d3748; 
+        --green: #238636;
+    }
 
-        body { 
-            background-color: var(--bg); 
-            color: var(--txt); 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; 
-            padding: 20px 10px; 
-            margin: 0; 
-            display: flex;
-            justify-content: center;
-        }
-        
-        .container { display: flex; flex-direction: column; align-items: center; width: 100%; }
-        
-        .header { 
-            width: 1080px; 
-            max-width: 98vw; 
-            margin-bottom: 25px; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-        }
+    body { 
+        background-color: var(--bg); 
+        color: var(--txt); 
+        font-family: 'Inter', -apple-system, sans-serif; 
+        padding: 20px 10px; 
+        margin: 0; 
+        display: flex;
+        justify-content: center;
+    }
+    
+    .container { display: flex; flex-direction: column; align-items: center; width: 100%; }
+    
+    .header { width: 1080px; max-width: 98vw; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; }
+    .header-left { display: flex; align-items: baseline; gap: 10px; border-left: 4px solid var(--acc); padding-left: 15px; }
+    .header-left h1 { margin: 0; font-size: 22px; font-weight: 700; }
 
-        .header-left { 
-            display: flex; 
-            align-items: baseline; 
-            gap: 10px; 
-            border-left: 4px solid var(--acc); 
-            padding-left: 15px; 
-        }
+    .tab-btn { background: transparent; border: none; color: var(--sec); font-size: 13px; font-weight: 600; cursor: pointer; padding: 10px 20px; border-radius: 6px; }
+    .tab-btn.active { color: #fff; background-color: var(--acc); }
 
-        .header-left h1 { margin: 0; font-size: 24px; font-weight: 600; }
-        .v-badge { background-color: var(--green); color: white; font-size: 11px; padding: 3px 8px; border-radius: 12px; font-weight: bold; }
+    /* Barra de filtros estilo ejemplo */
+    .filter-bar { display: flex; background-color: #22252e; border-radius: 6px; padding: 4px; gap: 2px; }
+    .filter-btn { background: transparent; border: none; color: var(--sec); padding: 8px 24px; font-size: 12px; font-weight: 600; cursor: pointer; border-radius: 4px; }
+    .filter-btn.active { background-color: var(--acc); color: #fff; }
 
-        .main-tabs { display: flex; gap: 8px; }
+    /* Estilización de la Tabla */
+    .table-wrapper { width: 1080px; max-width: 98vw; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    
+    th { color: var(--sec); font-size: 11px; text-transform: uppercase; padding: 15px 10px; text-align: center; border-bottom: 2px solid var(--brd); letter-spacing: 0.5px; }
+    th.w-hero { text-align: left; }
 
-        .tab-btn { 
-            background: transparent; 
-            border: 1px solid transparent; 
-            color: var(--sec); 
-            font-size: 14px; 
-            font-weight: 600; 
-            cursor: pointer; 
-            padding: 8px 16px; 
-            border-radius: 6px; 
-            transition: all 0.3s ease; 
-        }
+    tr.hero-row td { 
+        background-color: var(--card); 
+        padding: 8px 10px; 
+        border-bottom: 1px solid var(--bg); /* Separador sutil */
+        text-align: center; 
+        font-size: 12px; /* Un nivel menos */
+    }
 
-        .tab-btn.active { 
-            color: var(--acc); 
-            background-color: rgba(88, 166, 255, 0.1); 
-            border-color: rgba(88, 166, 255, 0.2);
-        }
+    /* Efecto cebra sutil */
+    tr.hero-row:nth-child(even) td { background-color: var(--card-alt); }
 
-        .info-box { 
-            width: 1080px; 
-            max-width: 98vw; 
-            background-color: rgba(88, 166, 255, 0.05); 
-            border: 1px solid var(--brd); 
-            border-radius: 12px; 
-            padding: 24px; 
-            margin-bottom: 30px; 
-            box-sizing: border-box;
-            display: flex;
-            gap: 20px;
-        }
+    /* Estilo del Tier (El diamante azul) */
+    .tier-box {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background-color: var(--acc);
+        color: white;
+        width: 22px;
+        height: 22px;
+        font-weight: 900;
+        font-size: 13px;
+        clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); /* Forma de diamante */
+    }
 
-        .info-icon { font-size: 26px; color: var(--acc); }
-        .info-text { font-size: 14px; color: var(--sec); line-height: 1.7; margin: 0 0 16px 0; }
-        .contact-area { display: flex; gap: 25px; }
-        .contact-link { display: flex; align-items: center; gap: 8px; color: var(--acc); text-decoration: none; font-size: 13px; }
+    .hero-info { display: flex; align-items: center; gap: 10px; }
+    .img-main { width: 34px; height: 34px; border-radius: 6px; }
+    
+    .name-txt { font-weight: 600; font-size: 13px; color: #fff; }
+    .type-txt { color: var(--sec); font-size: 10px; }
+    
+    .stat-txt { color: #cbd5e0; font-size: 12px; font-weight: 400; }
 
-        .content-section { display: none; width: 100%; flex-direction: column; align-items: center; }
-        .content-section.active { display: flex; }
+    .img-mini { width: 24px; height: 24px; border-radius: 50%; margin: 0 2px; }
+    .rel-flex { display: flex; gap: 4px; justify-content: center; }
 
-        .toolbar { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            width: 1080px; 
-            max-width: 98vw; 
-            margin-bottom: 25px; 
-            gap: 20px; 
-        }
-
-        .filter-bar { 
-            display: flex; 
-            background-color: var(--card); 
-            border: 1px solid var(--brd); 
-            border-radius: 10px; 
-            padding: 5px; 
-            gap: 5px; 
-        }
-
-        .filter-btn { 
-            background: transparent; 
-            border: none; 
-            color: var(--sec); 
-            padding: 8px 18px; 
-            font-size: 13px; 
-            font-weight: 600; 
-            cursor: pointer; 
-            border-radius: 7px; 
-        }
-
-        .filter-btn.active { background-color: var(--acc); color: #ffffff; }
-
-        .search-box { 
-            display: flex; 
-            align-items: center; 
-            background-color: var(--card); 
-            border: 1px solid var(--brd); 
-            border-radius: 10px; 
-            padding: 0 15px;
-            flex-grow: 1;
-            max-width: 320px;
-        }
-
-        .search-box input { 
-            background: transparent; 
-            border: none; 
-            color: var(--txt); 
-            padding: 12px 0; 
-            font-size: 14px; 
-            width: 100%; 
-            outline: none; 
-        }
-
-        .table-wrapper { width: 1080px; max-width: 98vw; overflow: visible; }
-        table { width: 100%; border-collapse: separate; border-spacing: 0 4px; table-layout: auto; }
-        
-        th { color: var(--sec); font-size: 11px; text-transform: uppercase; padding: 12px 8px; text-align: center; cursor: pointer; font-weight: 700; white-space: nowrap; }
-        th.w-hero { text-align: left; width: 180px; } 
-
-        tr.hero-row td { 
-            background-color: var(--card); 
-            padding: 4px; 
-            border-top: 1px solid var(--brd); 
-            border-bottom: 1px solid var(--brd); 
-            text-align: center; 
-            vertical-align: middle;
-            height: 52px; 
-            overflow: hidden;
-        }
-
-        tr.hero-row td:first-child { border-left: 1px solid var(--brd); border-radius: 10px 0 0 10px; text-align: left; }
-        tr.hero-row td:last-child { border-right: 1px solid var(--brd); border-radius: 0 10px 10px 0; }
-
-        .hero-info { display: flex; align-items: center; gap: 12px; }
-        .img-main { width: 44px; height: 44px; border-radius: 10px; object-fit: cover; }
-        
-        .img-mini { 
-            width: 32px; 
-            height: 32px; 
-            border-radius: 50%; 
-            object-fit: cover; 
-            border: none !important; 
-            display: block;
-        }
-
-        .tier-txt { font-size: 20px; font-weight: 900; color: #ffffff; }
-        .name-txt { font-weight: 700; font-size: 14px; color: #ffffff; display: block; }
-        
-        .type-txt { 
-            color: var(--sec); 
-            font-size: 10px; 
-            display: block;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 120px;
-        }
-
-        .stat-txt { 
-            color: var(--sec); 
-            font-size: 11px; 
-            font-weight: 600;
-            line-height: 1.2;
-        }
-
-        .rel-flex { display: flex; gap: 6px; justify-content: center; min-width: 70px; }
-
-        .chart-area { 
-            width: 1080px; 
-            max-width: 98vw; 
-            background-color: var(--card); 
-            border: 1px solid var(--brd); 
-            border-radius: 14px; 
-            padding: 35px; 
-            box-sizing: border-box; 
-            height: 680px; 
-        }
-
-        @media (max-width: 1100px) { 
-            .header, .info-box, .toolbar, .chart-area, .table-wrapper { width: 98vw; }
-            .name-txt { font-size: 13px; }
-            .img-main { width: 38px; height: 38px; }
-            .img-mini { width: 28px; height: 28px; }
-        }
-    </style>
+    .chart-area { width: 1080px; max-width: 98vw; background-color: var(--card); border-radius: 12px; padding: 25px; height: 600px; }
+</style>
 </head>
 <body>
     <div class="container">
@@ -510,15 +382,23 @@ Es importante matizar que los héroes que se sitúan en el rango cercano al 48%�
                     tr.setAttribute('data-roles', roles.join(','));
                     tr.setAttribute('data-pos', d.pos);
                     tr.innerHTML = `
-                        <td><div class="hero-info"><img src="${getImg(d.img)}" class="img-main"><div><span class="name-txt">${d.n}</span><span class="type-txt">${clean(d.type)}</span></div></div></td>
-                        <td><span class="tier-txt">${clean(d.tier)}</span></td>
-                        <td><div class="stat-txt">${roles.join('<br>')}</div></td>
-                        <td><span class="stat-txt">${d.w}</span></td>
-                        <td><span class="stat-txt">${d.p}</span></td>
-                        <td><span class="stat-txt">${d.b}</span></td>
-                        <td><div class="rel-flex">${rel(getImg(d.s1i))}${rel(getImg(d.s2i))}</div></td>
-                        <td><div class="rel-flex">${rel(getImg(d.f1i))}${rel(getImg(d.f2i))}</div></td>
-                        <td><div class="rel-flex">${rel(getImg(d.d1i))}${rel(getImg(d.d2i))}</div></td>
+    <td>
+        <div class="hero-info">
+            <img src="${getImg(d.img)}" class="img-main">
+            <div>
+                <span class="name-txt">${d.n}</span>
+                <span class="type-txt">${clean(d.type)}</span>
+            </div>
+        </div>
+    </td>
+    <td><div class="tier-box">${clean(d.tier).replace('T', '')}</div></td>
+    <td><div class="stat-txt">${roles.join('<br>')}</div></td>
+    <td><span class="stat-txt">${d.w}</span></td>
+    <td><span class="stat-txt">${d.p}</span></td>
+    <td><span class="stat-txt">${d.b}</span></td>
+    <td><div class="rel-flex">${rel(getImg(d.s1i))}${rel(getImg(d.s2i))}</div></td>
+    <td><div class="rel-flex">${rel(getImg(d.f1i))}${rel(getImg(d.f2i))}</div></td>
+    <td><div class="rel-flex">${rel(getImg(d.d1i))}${rel(getImg(d.d2i))}</div></td>
                     `;
                     tbody.appendChild(tr);
                 });
