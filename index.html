@@ -2,68 +2,76 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>HOKStats | Verificación de Datos</title>
+    <title>HOKStats | Database Corregida</title>
     <style>
-        body { background: #1a1a1a; color: white; font-family: sans-serif; padding: 20px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th { background: #333; color: #58a6ff; text-align: left; padding: 12px; border: 1px solid #444; }
-        td { padding: 10px; border: 1px solid #444; font-size: 14px; }
-        tr:nth-child(even) { background: #222; }
-        .img-placeholder { width: 40px; height: 40px; background: #333; border-radius: 50%; display: inline-block; }
+        body { background: #0b0e14; color: #e1e1e1; font-family: sans-serif; padding: 20px; }
+        table { width: 100%; border-collapse: collapse; background: #161b22; border: 1px solid #30363d; }
+        th { background: #1f232c; color: #58a6ff; text-align: left; padding: 12px; border-bottom: 2px solid #30363d; font-size: 12px; text-transform: uppercase; }
+        td { padding: 12px; border-bottom: 1px solid #21262d; font-size: 13px; }
+        .win-cell { color: #3fb950; font-weight: bold; font-size: 15px; }
+        .hero-name { font-weight: bold; color: #fff; }
+        .tag-sub { color: #8b949e; font-size: 11px; display: block; }
+        tr:hover { background: #1c2128; }
     </style>
 </head>
 <body>
-    <h1>HOKStats - Control de Datos</h1>
-    <div id="status">Cargando datos...</div>
+    <h2 style="color: #fff; border-bottom: 1px solid #30363d; pb-4">HOKStats - Verificación de Integridad de Datos</h2>
     
-    <table id="main-table">
+    <table>
         <thead>
             <tr>
-                <th>Héroe</th>
-                <th>Tipo</th>
-                <th>Rol 1</th>
-                <th>Rol 2</th>
-                <th>Rol 3</th>
+                <th>Héroe / Tipo</th>
+                <th>Roles (1-2-3)</th>
                 <th>Win Rate</th>
                 <th>Pick Rate</th>
                 <th>Ban Rate</th>
-                <th>Sinergia</th>
-                <th>Fuerte contra</th>
-                <th>Débil contra</th>
+                <th>Sinergias (1 y 2)</th>
+                <th>Fuerte contra (1 y 2)</th>
+                <th>Débil contra (1 y 2)</th>
             </tr>
         </thead>
-        <tbody id="table-body"></tbody>
+        <tbody id="table-body">
+            <tr><td colspan="8" style="text-center: p-10">Sincronizando con Google Sheets...</td></tr>
+        </tbody>
     </table>
 
     <script>
         const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTO4rMY_drrjKMx3KTdjAaSrH6GenxyZ7YzLPT7oiZ_pNYm6EKG-yJPfmbRcZgYGGi2gERA1Gciw-Fy/pub?gid=538223640&single=true&output=csv';
 
-        async function fetchData() {
+        async function init() {
             try {
-                const response = await fetch(CSV_URL);
-                const data = await response.text();
-                // Separar filas y manejar comas dentro de textos
-                const rows = data.split('\n').map(row => row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/));
+                const res = await fetch(CSV_URL);
+                const text = await res.text();
+                // Regex para manejar comas dentro de celdas
+                const rows = text.split('\n').map(r => r.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/));
                 
                 const tableBody = document.getElementById('table-body');
                 tableBody.innerHTML = '';
 
-                // Empezamos desde la fila 1 para saltar el encabezado del CSV
-                rows.slice(1).forEach((col, index) => {
-                    if (!col[1]) return; // Salta filas vacías
+                rows.slice(1).forEach(col => {
+                    if (!col[1] || col[1].includes("Nombre")) return;
 
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
-                        <td>${col[1] || '-'}</td>  <td>${col[3] || '-'}</td>  <td>${col[4] || '-'}</td>  <td>${col[5] || '-'}</td>  <td>${col[6] || '-'}</td>  <td style="color:#58a6ff; font-weight:bold">${col[8] || '-'}</td> <td>${col[9] || '-'}</td>  <td>${col[10] || '-'}</td> <td>${col[11] || '-'}</td> <td>${col[17] || '-'}</td> <td>${col[23] || '-'}</td> `;
+                        <td>
+                            <span class="hero-name">${col[1]}</span>
+                            <span class="tag-sub">${col[3]}</span>
+                        </td>
+                        <td>${col[4] || '-'} / ${col[5] || '-'} / ${col[6] || '-'}</td>
+                        <td class="win-cell">${col[8] || '-'}</td> 
+                        <td>${col[9] || '-'}</td>
+                        <td>${col[10] || '-'}</td>
+                        <td>${col[11] || '-'}<br>${col[13] || '-'}</td>
+                        <td style="color: #58a6ff">${col[15] || '-'}<br>${col[17] || '-'}</td>
+                        <td style="color: #ff7b72">${col[19] || '-'}<br>${col[21] || '-'}</td>
+                    `;
                     tableBody.appendChild(tr);
                 });
-                document.getElementById('status').innerText = "Datos sincronizados correctamente.";
-            } catch (error) {
-                document.getElementById('status').innerText = "Error: No se pudo conectar con el CSV.";
+            } catch (e) {
+                console.error(e);
             }
         }
-
-        fetchData();
+        init();
     </script>
 </body>
 </html>
