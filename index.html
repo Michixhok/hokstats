@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>HOKStats | Meta Analysis</title>
+    <title>HOKStats | v2.1</title>
     <style>
         :root {
             --bg-body: #0b0e11;
@@ -22,54 +22,66 @@
             margin: 0;
         }
 
-        .container { max-width: 1400px; margin: 0 auto; }
+        .container { max-width: 1450px; margin: 0 auto; }
 
-        .header-section { margin-bottom: 30px; border-left: 4px solid var(--accent); padding-left: 15px; }
+        /* Encabezado con Versión */
+        .header-section { 
+            margin-bottom: 30px; 
+            border-left: 4px solid var(--accent); 
+            padding-left: 15px;
+            display: flex;
+            align-items: baseline;
+            gap: 15px;
+        }
+        .version-badge {
+            background: #238636;
+            color: white;
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
 
         table { width: 100%; border-collapse: separate; border-spacing: 0 8px; table-layout: fixed; }
         
-        /* Alineación precisa de títulos */
+        /* Alineación milimétrica de títulos */
         th { 
             color: var(--text-sec); 
             font-size: 11px; 
             text-transform: uppercase; 
-            padding: 10px 15px; /* Mismo padding que las celdas */
+            padding: 10px 20px; /* Ajustado para coincidir con el inicio del texto en la celda */
             font-weight: 600;
             text-align: left;
         }
 
-        /* Definición de anchos para que no bailen las columnas */
-        .col-hero { width: 18%; }
+        /* Definición estricta de anchos */
+        .col-hero { width: 16%; }
         .col-role { width: 8%; }
-        .col-stat { width: 10%; }
-        .col-pair { width: 12%; }
+        .col-stat { width: 9%; }
+        .col-pair { width: 13%; }
 
         tr.hero-row td {
             background: var(--bg-card);
-            padding: 16px 15px;
+            padding: 16px 20px;
             border-top: 1px solid var(--border);
             border-bottom: 1px solid var(--border);
             vertical-align: middle;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
         }
 
         tr.hero-row td:first-child { border-left: 1px solid var(--border); border-radius: 8px 0 0 8px; }
         tr.hero-row td:last-child { border-right: 1px solid var(--border); border-radius: 0 8px 8px 0; }
 
-        .hero-info { display: flex; flex-direction: column; }
-        .hero-name { font-weight: bold; font-size: 15px; color: #fff; }
-        .hero-type { color: var(--text-sec); font-size: 11px; margin-top: 2px; }
+        .hero-name { font-weight: bold; font-size: 15px; color: #fff; display: block; }
+        .hero-type { color: var(--text-sec); font-size: 11px; }
 
         .stat-label { display: block; font-size: 10px; color: var(--text-sec); text-transform: uppercase; margin-top: 4px; }
         .stat-val { font-weight: 600; font-size: 14px; }
         .win-val { color: var(--win); font-size: 16px; }
 
-        .role-tag { font-size: 12px; color: var(--text-main); }
-        .pair-list { font-size: 12px; line-height: 1.4; white-space: normal !important; }
-        .red-text { color: #f85149; }
-        .blue-text { color: var(--accent); }
+        .pair-item { display: block; font-size: 12px; margin-bottom: 2px; }
+        .blue { color: var(--accent); }
+        .red { color: #f85149; }
     </style>
 </head>
 <body>
@@ -77,13 +89,14 @@
     <div class="container">
         <div class="header-section">
             <h1 style="margin:0; font-size: 24px;">HOKStats</h1>
-            <span style="color: var(--text-sec);">Meta Analysis & Database</span>
+            <span class="version-badge">Build v2.1</span>
+            <span style="color: var(--text-sec); font-size: 14px;">| Meta Database Chile</span>
         </div>
 
         <table>
             <thead>
                 <tr>
-                    <th class="col-hero">Héroe</th>
+                    <th class="col-hero">Héroe / Tipo</th>
                     <th class="col-role">Rol 1</th>
                     <th class="col-role">Rol 2</th>
                     <th class="col-role">Rol 3</th>
@@ -100,7 +113,8 @@
     </div>
 
     <script>
-        const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTO4rMY_drrjKMx3KTdjAaSrH6GenxyZ7YzLPT7oiZ_pNYm6EKG-yJPfmbRcZgYGGi2gERA1Gciw-Fy/pub?gid=538223640&single=true&output=csv';
+        // URL con parámetro de tiempo para forzar al navegador a descargar el CSV más reciente cada vez
+        const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTO4rMY_drrjKMx3KTdjAaSrH6GenxyZ7YzLPT7oiZ_pNYm6EKG-yJPfmbRcZgYGGi2gERA1Gciw-Fy/pub?gid=538223640&single=true&output=csv&cache=' + new Date().getTime();
 
         async function load() {
             try {
@@ -111,20 +125,18 @@
                 
                 rows.slice(1).forEach(col => {
                     if (!col[1] || col[1].trim() === "") return;
-                    const clean = (v) => (v && v.trim() !== "-" && v.trim() !== "" && v.trim() !== "0.00%") ? v : "";
+                    const clean = (v) => (v && v.trim() !== "-" && v.trim() !== "" && v.trim() !== "0.00%") ? v.replace(/"/g, '') : "";
 
                     const tr = document.createElement('tr');
                     tr.className = 'hero-row';
                     tr.innerHTML = `
                         <td>
-                            <div class="hero-info">
-                                <span class="hero-name">${col[1]}</span>
-                                <span class="hero-type">${col[3]}</span>
-                            </div>
+                            <span class="hero-name">${col[1]}</span>
+                            <span class="hero-type">${col[3]}</span>
                         </td>
-                        <td class="role-tag">${clean(col[4])}</td>
-                        <td class="role-tag">${clean(col[5])}</td>
-                        <td class="role-tag">${clean(col[6])}</td>
+                        <td style="color: var(--text-sec)">${clean(col[4])}</td>
+                        <td style="color: var(--text-sec)">${clean(col[5])}</td>
+                        <td style="color: var(--text-sec)">${clean(col[6])}</td>
                         <td>
                             <span class="stat-val win-val">${col[7]}</span>
                             <span class="stat-label">Win Rate</span>
@@ -137,22 +149,22 @@
                             <span class="stat-val">${col[9]}</span>
                             <span class="stat-label">Ban</span>
                         </td>
-                        <td class="pair-list">
-                            <div>${clean(col[10])}</div>
-                            <div>${clean(col[12])}</div>
+                        <td>
+                            <span class="pair-item">${clean(col[10])}</span>
+                            <span class="pair-item">${clean(col[12])}</span>
                         </td>
-                        <td class="pair-list blue-text">
-                            <div>${clean(col[14])}</div>
-                            <div>${clean(col[16])}</div>
+                        <td class="blue">
+                            <span class="pair-item">${clean(col[14])}</span>
+                            <span class="pair-item">${clean(col[16])}</span>
                         </td>
-                        <td class="pair-list red-text">
-                            <div>${clean(col[18])}</div>
-                            <div>${clean(col[20])}</div>
+                        <td class="red">
+                            <span class="pair-item">${clean(col[18])}</span>
+                            <span class="pair-item">${clean(col[20])}</span>
                         </td>
                     `;
                     tableBody.appendChild(tr);
                 });
-            } catch (e) { console.error(e); }
+            } catch (e) { console.error("Error cargando el meta:", e); }
         }
         load();
     </script>
