@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>HOKStats | v3.2 final</title>
+    <title>HOKStats | v3.2 Final 2</title>
     <style>
         :root {
             --bg-body: #0b0e11;
@@ -17,18 +17,14 @@
             background: var(--bg-body); 
             color: var(--text-main); 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            padding: 30px;
-            margin: 0;
+            padding: 30px; margin: 0;
         }
 
-        .container { max-width: 1350px; margin: 0 auto; }
+        .container { max-width: 1300px; margin: 0 auto; }
 
         .header-section { 
-            margin-bottom: 20px; 
-            border-left: 4px solid var(--accent); 
-            padding-left: 15px;
-            display: flex;
-            align-items: baseline; gap: 12px;
+            margin-bottom: 20px; border-left: 4px solid var(--accent); 
+            padding-left: 15px; display: flex; align-items: baseline; gap: 12px;
         }
         .version-badge {
             background: #238636; color: white; font-size: 9px;
@@ -42,6 +38,7 @@
             padding: 8px 15px; font-weight: 600; text-align: left;
         }
 
+        /* Anchos de columna idénticos a la 3.1 */
         .col-hero { width: 16%; }
         .col-role { width: 7%; }
         .col-stat { width: 8%; }
@@ -56,21 +53,24 @@
         tr.hero-row td:first-child { border-left: 1px solid var(--border); border-radius: 6px 0 0 6px; }
         tr.hero-row td:last-child { border-right: 1px solid var(--border); border-radius: 0 6px 6px 0; }
 
-        /* Estilos de Imagen para que NO se vea el texto del link */
-        .img-hero { width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--border); flex-shrink: 0; }
-        .img-rel { width: 20px; height: 20px; border-radius: 50%; border: 1px solid var(--border); flex-shrink: 0; }
-        
-        .hero-cell { display: flex; align-items: center; gap: 10px; }
-        .rel-container { display: flex; flex-direction: column; gap: 4px; }
-        .rel-item { display: flex; align-items: center; gap: 6px; font-size: 11px; }
+        /* Estilo de los iconos para que no ocupen espacio de más */
+        .img-icon { 
+            width: 24px; height: 24px; border-radius: 50%; 
+            border: 1px solid var(--border); flex-shrink: 0;
+            background: #000;
+        }
+        .hero-img { width: 32px; height: 32px; } /* Icono principal un poco más grande */
+
+        .flex-cell { display: flex; align-items: center; gap: 10px; }
+        .rel-item { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
 
         .hero-name { font-weight: bold; font-size: 14px; color: #fff; display: block; }
         .hero-type { color: var(--text-sec); font-size: 10px; display: block; }
-        .role-text { color: var(--text-sec); font-size: 10px; }
         .stat-val { font-weight: 600; font-size: 13px; color: #fff; }
 
         .blue { color: var(--accent); }
         .red { color: #f85149; }
+        span.name-tag { font-size: 11px; }
     </style>
 </head>
 <body>
@@ -108,7 +108,7 @@
             try {
                 const res = await fetch(CSV_URL);
                 const text = await res.text();
-                // El split por coma mejorado para evitar errores con los links
+                // Separamos por comas ignorando las que están dentro de comillas (links)
                 const rows = text.split('\n').map(r => r.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/));
                 const tableBody = document.getElementById('table-body');
                 
@@ -116,29 +116,23 @@
                     if (!col[1] || col[1].trim() === "") return;
                     const clean = (v) => (v && v.trim() !== "-" && v.trim() !== "" && v.trim() !== "0.00%") ? v.replace(/"/g, '').trim() : "";
 
-                    // MAPEO DE COLUMNAS SEGÚN TU INDICACIÓN (A=0, B=1, C=2...)
-                    const imgH = clean(col[3]);  // D
-                    const s1N = clean(col[10]), s1I = clean(col[13]); // N
-                    const s2N = clean(col[12]), s2I = clean(col[16]); // Q
-                    const f1N = clean(col[14]), f1I = clean(col[19]); // T
-                    const f2N = clean(col[16]), f2I = clean(col[22]); // W
-                    const d1N = clean(col[18]), d1I = clean(col[25]); // Z
-                    const d2N = clean(col[20]), d2I = clean(col[28]); // AC
-
-                    const renderRel = (name, img) => {
-                        if(!name) return "";
+                    // Definición limpia de datos según tus columnas (D=3, N=13, Q=16, T=19, W=22, Z=25, AC=28)
+                    const hero = { name: col[1], type: col[3], img: clean(col[3]) };
+                    
+                    const renderItem = (name, img) => {
+                        if (!name) return "";
                         return `<div class="rel-item">
-                            <img src="${img}" class="img-rel" onerror="this.style.visibility='hidden'">
-                            <span>${name}</span>
-                        </div>`;
+                                    <img src="${img}" class="img-icon" onerror="this.style.display='none'">
+                                    <span class="name-tag">${name}</span>
+                                </div>`;
                     };
 
                     const tr = document.createElement('tr');
                     tr.className = 'hero-row';
                     tr.innerHTML = `
                         <td>
-                            <div class="hero-cell">
-                                <img src="${imgH}" class="img-hero" onerror="this.src='https://www.honorofkings.com/global/images/hero/hero_list_default.png'">
+                            <div class="flex-cell">
+                                <img src="${clean(col[3])}" class="img-icon hero-img" onerror="this.src='https://www.honorofkings.com/global/images/hero/hero_list_default.png'">
                                 <div><span class="hero-name">${col[1]}</span><span class="hero-type">${col[3]}</span></div>
                             </div>
                         </td>
@@ -148,9 +142,18 @@
                         <td><span class="stat-val">${col[7]}</span></td>
                         <td><span class="stat-val">${col[8]}</span></td>
                         <td><span class="stat-val">${col[9]}</span></td>
-                        <td><div class="rel-container">${renderRel(s1N, s1I)}${renderRel(s2N, s2I)}</div></td>
-                        <td class="blue"><div class="rel-container">${renderRel(f1N, f1I)}${renderRel(f2N, f2I)}</div></td>
-                        <td class="red"><div class="rel-container">${renderRel(d1N, d1I)}${renderRel(d2N, d2I)}</div></td>
+                        <td>
+                            ${renderItem(clean(col[10]), clean(col[13]))}
+                            ${renderItem(clean(col[12]), clean(col[16]))}
+                        </td>
+                        <td class="blue">
+                            ${renderItem(clean(col[14]), clean(col[19]))}
+                            ${renderItem(clean(col[16]), clean(col[22]))}
+                        </td>
+                        <td class="red">
+                            ${renderItem(clean(col[18]), clean(col[25]))}
+                            ${renderItem(clean(col[20]), clean(col[28]))}
+                        </td>
                     `;
                     tableBody.appendChild(tr);
                 });
