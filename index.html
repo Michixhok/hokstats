@@ -2,31 +2,29 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>HOKStats | Datos Sincronizados</title>
+    <title>HOKStats | Estructura Final</title>
     <style>
         body { background: #0b0e14; color: #e1e1e1; font-family: sans-serif; padding: 20px; }
-        table { width: 100%; border-collapse: collapse; background: #161b22; border: 1px solid #30363d; }
+        table { width: 100%; border-collapse: collapse; background: #161b22; }
         th { background: #1f232c; color: #58a6ff; text-align: left; padding: 12px; border-bottom: 2px solid #30363d; font-size: 11px; }
-        td { padding: 12px; border-bottom: 1px solid #21262d; font-size: 13px; vertical-align: top; }
-        .win-rate { color: #3fb950; font-weight: bold; font-size: 15px; }
-        .hero-name { font-weight: bold; color: #fff; display: block; font-size: 15px; }
-        .sub-text { color: #8b949e; font-size: 11px; }
-        .pair-item { display: block; margin-bottom: 2px; }
+        td { padding: 12px; border-bottom: 1px solid #21262d; font-size: 13px; }
+        .win { color: #3fb950; font-weight: bold; }
+        .hero { font-weight: bold; color: #fff; }
+        .pair { display: block; font-size: 12px; margin-bottom: 4px; }
     </style>
 </head>
 <body>
-    <h2 style="color: white;">HOKStats - Control de Datos Final</h2>
-    <table id="data-table">
+    <h2>HOKStats - Verificación de Datos</h2>
+    <table>
         <thead>
             <tr>
-                <th>Héroe / Tipo</th>
-                <th>Roles (1-2-3)</th>
+                <th>Héroe</th>
+                <th>Tipo/Roles</th>
                 <th>Win Rate</th>
-                <th>Pick Rate</th>
-                <th>Ban Rate</th>
-                <th>Sinergias (1 y 2)</th>
-                <th>Fuerte contra (1 y 2)</th>
-                <th>Débil contra (1 y 2)</th>
+                <th>Pick/Ban</th>
+                <th>Sinergias</th>
+                <th>Fuerte contra</th>
+                <th>Débil contra</th>
             </tr>
         </thead>
         <tbody id="table-body"></tbody>
@@ -39,46 +37,37 @@
             try {
                 const res = await fetch(CSV_URL);
                 const text = await res.text();
-                // Manejo de CSV con comas internas
+                // Regex para no romper nombres con comas
                 const rows = text.split('\n').map(r => r.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/));
                 
                 const tableBody = document.getElementById('table-body');
                 tableBody.innerHTML = '';
 
                 rows.slice(1).forEach(col => {
-                    // Si el nombre (col 1) está vacío o es un encabezado, saltar
-                    if (!col[1] || col[1].trim() === "" || col[1].includes("Nombre")) return;
+                    if (!col[1] || col[1].trim() === "") return;
 
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
+                        <td class="hero">${col[1]}</td>
+                        <td>${col[3]}<br><small style="color:#8b949e">${col[4]}, ${col[5]}</small></td>
+                        <td class="win">${col[7]}</td>
+                        <td>P: ${col[8]}<br>B: ${col[9]}</td>
                         <td>
-                            <span class="hero-name">${col[1]}</span>
-                            <span class="sub-text">${col[3] || '-'}</span>
-                        </td>
-                        <td class="sub-text">
-                            ${col[4] || '-'}<br>${col[5] || '-'}<br>${col[6] || '-'}
-                        </td>
-                        <td class="win-rate">${col[8] || '-'}</td> 
-                        <td>${col[9] || '-'}</td>
-                        <td>${col[10] || '-'}</td>
-                        <td>
-                            <span class="pair-item">${col[11] || '-'}</span>
-                            <span class="pair-item">${col[13] || '-'}</span>
+                            <span class="pair">1. ${col[10] || '-'}</span>
+                            <span class="pair">2. ${col[12] || '-'}</span>
                         </td>
                         <td style="color: #58a6ff">
-                            <span class="pair-item">${col[15] || '-'}</span>
-                            <span class="pair-item">${col[17] || '-'}</span>
+                            <span class="pair">1. ${col[14] || '-'}</span>
+                            <span class="pair">2. ${col[16] || '-'}</span>
                         </td>
                         <td style="color: #ff7b72">
-                            <span class="pair-item">${col[19] || '-'}</span>
-                            <span class="pair-item">${col[21] || '-'}</span>
+                            <span class="pair">1. ${col[18] || '-'}</span>
+                            <span class="pair">2. ${col[20] || '-'}</span>
                         </td>
                     `;
                     tableBody.appendChild(tr);
                 });
-            } catch (e) {
-                console.error("Error cargando datos:", e);
-            }
+            } catch (e) { console.error(e); }
         }
         loadData();
     </script>
