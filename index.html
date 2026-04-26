@@ -2,71 +2,69 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>HOKStats | v4.1 Compact Edition</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HOKStats | v4.2 Responsive</title>
     <style>
         :root { --bg: #0b0e11; --card: #161b22; --brd: #30363d; --txt: #f0f6fc; --sec: #8b949e; --acc: #58a6ff; }
-        body { background: var(--bg); color: var(--txt); font-family: system-ui, sans-serif; padding: 20px; margin: 0; }
-        .container { max-width: 1300px; margin: 0 auto; } /* Reducido para compactar */
+        body { background: var(--bg); color: var(--txt); font-family: system-ui, -apple-system, sans-serif; padding: 10px; margin: 0; }
         
-        .header { margin-bottom: 20px; border-left: 4px solid var(--acc); padding-left: 15px; display: flex; align-items: baseline; gap: 10px; }
-        .v-badge { background: #238636; color: white; font-size: 10px; padding: 2px 8px; border-radius: 10px; font-weight: bold; }
+        .container { max-width: 100%; margin: 0 auto; overflow-x: auto; } /* Permite scroll horizontal en móvil si es necesario */
         
-        table { width: 100%; border-collapse: separate; border-spacing: 0 4px; table-layout: fixed; }
-        th { color: var(--sec); font-size: 10px; text-transform: uppercase; padding: 10px; text-align: left; letter-spacing: 0.5px; }
-
-        /* AJUSTE DE ANCHOS PARA REDUCIR ESPACIOS */
-        .w-hero { width: 160px; } 
-        .w-roles { width: 100px; } 
-        .w-stat { width: 70px; }  /* Columnas de números más estrechas */
-        .w-rel { width: 80px; }   /* Columnas de iconos muy compactas */
-
-        tr.hero-row td { background: var(--card); padding: 10px 12px; border-top: 1px solid var(--brd); border-bottom: 1px solid var(--brd); vertical-align: middle; }
-        tr.hero-row td:first-child { border-left: 1px solid var(--brd); border-radius: 8px 0 0 8px; }
-        tr.hero-row td:last-child { border-right: 1px solid var(--brd); border-radius: 0 8px 8px 0; }
-
-        .hero-info { display: flex; align-items: center; gap: 10px; }
-        .img-main { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--brd); object-fit: cover; }
+        .header { margin-bottom: 15px; border-left: 4px solid var(--acc); padding-left: 12px; display: flex; align-items: baseline; gap: 8px; }
+        .v-badge { background: #238636; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; font-weight: bold; }
         
-        /* Iconos de relación ultra compactos */
+        table { width: 100%; border-collapse: separate; border-spacing: 0 4px; min-width: 800px; } /* Evita que se rompa el diseño en pantallas muy pequeñas */
+        
+        th { color: var(--sec); font-size: 10px; text-transform: uppercase; padding: 8px; text-align: left; letter-spacing: 0.5px; white-space: nowrap; }
+
+        /* REDUCCIÓN ESTRATÉGICA DE ESPACIOS */
+        .w-hero { width: 180px; } 
+        .w-auto { width: auto; } /* Deja que el contenido defina el ancho */
+
+        tr.hero-row td { background: var(--card); padding: 8px 10px; border-top: 1px solid var(--brd); border-bottom: 1px solid var(--brd); vertical-align: middle; }
+        tr.hero-row td:first-child { border-left: 1px solid var(--brd); border-radius: 6px 0 0 6px; }
+        tr.hero-row td:last-child { border-right: 1px solid var(--brd); border-radius: 0 6px 6px 0; }
+
+        .hero-info { display: flex; align-items: center; gap: 8px; }
+        .img-main { width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--brd); object-fit: cover; }
+        
+        /* Iconos de relación ultra compactos con tooltip */
         .img-mini { 
-            width: 24px; height: 24px; border-radius: 50%; 
+            width: 22px; height: 22px; border-radius: 50%; 
             border: 1px solid var(--brd); object-fit: cover;
-            cursor: pointer; transition: transform 0.1s;
-            display: block;
+            cursor: pointer;
         }
-        .img-mini:hover { transform: scale(1.2); border-color: var(--acc); z-index: 10; }
 
-        .name-txt { font-weight: bold; font-size: 14px; color: #fff; display: block; }
-        .type-txt { color: var(--sec); font-size: 11px; line-height: 1.2; font-weight: normal; }
-        
-        /* Estilo para los números (Rates) igual que los roles */
-        .stat-txt { color: var(--sec); font-size: 11px; font-weight: normal; }
+        .name-txt { font-weight: 600; font-size: 13px; color: #fff; display: block; }
+        .type-txt, .stat-txt { color: var(--sec); font-size: 11px; font-weight: normal; line-height: 1.2; }
 
+        /* Contenedores flexibles */
         .roles-flex { display: flex; flex-direction: column; justify-content: center; }
+        .rel-flex { display: flex; flex-direction: row; gap: 3px; align-items: center; }
 
-        /* Contenedor horizontal ajustado */
-        .rel-flex { display: flex; flex-direction: row; gap: 4px; align-items: center; }
-
-        .blue { color: var(--acc); } .red { color: #f85149; }
+        @media (max-width: 600px) {
+            body { padding: 5px; }
+            .name-txt { font-size: 12px; }
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1 style="margin:0; font-size: 20px;">HOKStats</h1>
-            <span class="v-badge">v4.1</span>
+            <h1 style="margin:0; font-size: 18px;">HOKStats</h1>
+            <span class="v-badge">v4.2</span>
         </div>
         <table>
             <thead>
                 <tr>
                     <th class="w-hero">Héroe</th>
-                    <th class="w-roles">Roles</th>
-                    <th class="w-stat">Win Rate</th>
-                    <th class="w-stat">Pick Rate</th>
-                    <th class="w-stat">Ban Rate</th>
-                    <th class="w-rel">Sinergias</th>
-                    <th class="w-rel">Fuerte vs</th>
-                    <th class="w-rel">Débil vs</th>
+                    <th class="w-auto">Roles</th>
+                    <th class="w-auto">Win</th>
+                    <th class="w-auto">Pick</th>
+                    <th class="w-auto">Ban</th>
+                    <th class="w-auto">Sinergia</th>
+                    <th class="w-auto">Fuerte</th>
+                    <th class="w-auto">Débil</th>
                 </tr>
             </thead>
             <tbody id="table-body"></tbody>
@@ -94,25 +92,19 @@
                         nombre: row[1], img: row[3], tipo: row[4],
                         rol1: row[5], rol2: row[6], rol3: row[7],
                         win: row[8], pick: row[9], ban: row[10],
-                        s1_n: row[11], s1_i: row[13],
-                        s2_n: row[14], s2_i: row[16],
-                        f1_n: row[17], f1_i: row[19],
-                        f2_n: row[20], f2_i: row[22],
-                        d1_n: row[23], d1_i: row[25],
-                        d2_n: row[26], d2_i: row[28]
+                        s1_n: row[11], s1_i: row[13], s2_n: row[14], s2_i: row[16],
+                        f1_n: row[17], f1_i: row[19], f2_n: row[20], f2_i: row[22],
+                        d1_n: row[23], d1_i: row[25], d2_n: row[26], d2_i: row[28]
                     };
 
-                    const clean = (val) => (val && !val.includes('http') && val !== "-" && val !== "0" && val.trim() !== "") ? val.trim() : "";
-                    const img = (val) => (val && val.includes('http')) ? val.trim() : "";
-                    
+                    const clean = (v) => (v && !v.includes('http') && v !== "-" && v !== "0" && v.trim() !== "") ? v.trim() : "";
+                    const img = (v) => (v && v.includes('http')) ? v.trim() : "";
                     const relIcon = (n, i) => {
                         const name = clean(n);
-                        const icon = img(i);
-                        // El atributo title es lo que genera el tooltip al pasar el mouse
-                        return name ? `<img src="${icon}" class="img-mini" title="${name}" alt="${name}" onerror="this.style.display='none'">` : "";
+                        return name ? `<img src="${img(i)}" class="img-mini" title="${name}" alt="${name}" onerror="this.style.display='none'">` : "";
                     };
 
-                    const rolesHtml = [clean(d.rol1), clean(d.rol2), clean(d.rol3)].filter(r => r !== "").join('<br>');
+                    const roles = [clean(d.rol1), clean(d.rol2), clean(d.rol3)].filter(r => r !== "").join('<br>');
 
                     const tr = document.createElement('tr');
                     tr.className = 'hero-row';
@@ -123,7 +115,7 @@
                                 <div><span class="name-txt">${d.nombre}</span><span class="type-txt">${clean(d.tipo)}</span></div>
                             </div>
                         </td>
-                        <td><div class="roles-flex type-txt">${rolesHtml}</div></td>
+                        <td><div class="roles-flex stat-txt">${roles}</div></td>
                         <td><span class="stat-txt">${clean(d.win)}</span></td>
                         <td><span class="stat-txt">${clean(d.pick)}</span></td>
                         <td><span class="stat-txt">${clean(d.ban)}</span></td>
