@@ -19,27 +19,40 @@
             color: var(--text-main); 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
             padding: 40px;
+            margin: 0;
         }
+
+        .container { max-width: 1400px; margin: 0 auto; }
 
         .header-section { margin-bottom: 30px; border-left: 4px solid var(--accent); padding-left: 15px; }
 
-        table { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
+        table { width: 100%; border-collapse: separate; border-spacing: 0 8px; table-layout: fixed; }
         
+        /* Alineación precisa de títulos */
         th { 
             color: var(--text-sec); 
             font-size: 11px; 
             text-transform: uppercase; 
-            padding: 10px 15px;
+            padding: 10px 15px; /* Mismo padding que las celdas */
             font-weight: 600;
+            text-align: left;
         }
 
-        /* Estilo de Tarjeta por fila */
+        /* Definición de anchos para que no bailen las columnas */
+        .col-hero { width: 18%; }
+        .col-role { width: 8%; }
+        .col-stat { width: 10%; }
+        .col-pair { width: 12%; }
+
         tr.hero-row td {
             background: var(--bg-card);
             padding: 16px 15px;
             border-top: 1px solid var(--border);
             border-bottom: 1px solid var(--border);
             vertical-align: middle;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
         tr.hero-row td:first-child { border-left: 1px solid var(--border); border-radius: 8px 0 0 8px; }
@@ -47,42 +60,44 @@
 
         .hero-info { display: flex; flex-direction: column; }
         .hero-name { font-weight: bold; font-size: 15px; color: #fff; }
-        .hero-type { color: var(--text-sec); font-size: 12px; margin-top: 2px; }
+        .hero-type { color: var(--text-sec); font-size: 11px; margin-top: 2px; }
 
         .stat-label { display: block; font-size: 10px; color: var(--text-sec); text-transform: uppercase; margin-top: 4px; }
         .stat-val { font-weight: 600; font-size: 14px; }
         .win-val { color: var(--win); font-size: 16px; }
 
         .role-tag { font-size: 12px; color: var(--text-main); }
-        .pair-list { font-size: 12px; line-height: 1.4; }
+        .pair-list { font-size: 12px; line-height: 1.4; white-space: normal !important; }
         .red-text { color: #f85149; }
         .blue-text { color: var(--accent); }
     </style>
 </head>
 <body>
 
-    <div class="header-section">
-        <h1 style="margin:0; font-size: 24px;">HOKStats</h1>
-        <span style="color: var(--text-sec);">Meta Analysis & Database</span>
-    </div>
+    <div class="container">
+        <div class="header-section">
+            <h1 style="margin:0; font-size: 24px;">HOKStats</h1>
+            <span style="color: var(--text-sec);">Meta Analysis & Database</span>
+        </div>
 
-    <table>
-        <thead>
-            <tr>
-                <th style="width: 15%;">Héroe</th>
-                <th>Rol 1</th>
-                <th>Rol 2</th>
-                <th>Rol 3</th>
-                <th>Win Rate</th>
-                <th>Pick</th>
-                <th>Ban</th>
-                <th>Sinergias</th>
-                <th>Fuerte vs</th>
-                <th>Débil vs</th>
-            </tr>
-        </thead>
-        <tbody id="table-body"></tbody>
-    </table>
+        <table>
+            <thead>
+                <tr>
+                    <th class="col-hero">Héroe</th>
+                    <th class="col-role">Rol 1</th>
+                    <th class="col-role">Rol 2</th>
+                    <th class="col-role">Rol 3</th>
+                    <th class="col-stat">Win Rate</th>
+                    <th class="col-stat">Pick</th>
+                    <th class="col-stat">Ban</th>
+                    <th class="col-pair">Sinergias</th>
+                    <th class="col-pair">Fuerte vs</th>
+                    <th class="col-pair">Débil vs</th>
+                </tr>
+            </thead>
+            <tbody id="table-body"></tbody>
+        </table>
+    </div>
 
     <script>
         const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTO4rMY_drrjKMx3KTdjAaSrH6GenxyZ7YzLPT7oiZ_pNYm6EKG-yJPfmbRcZgYGGi2gERA1Gciw-Fy/pub?gid=538223640&single=true&output=csv';
@@ -96,7 +111,7 @@
                 
                 rows.slice(1).forEach(col => {
                     if (!col[1] || col[1].trim() === "") return;
-                    const clean = (v) => (v && v.trim() !== "-" && v.trim() !== "") ? v : "";
+                    const clean = (v) => (v && v.trim() !== "-" && v.trim() !== "" && v.trim() !== "0.00%") ? v : "";
 
                     const tr = document.createElement('tr');
                     tr.className = 'hero-row';
