@@ -3,19 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HoKstats | v5.3 Fixed</title>
+    <title>HoKstats | v5.3</title>
     <style>
         :root { --bg: #0b0e11; --card: #161b22; --brd: #30363d; --txt: #f0f6fc; --sec: #8b949e; --acc: #58a6ff; --btn-bg: #21262d; }
         body { background: var(--bg); color: var(--txt); font-family: system-ui, sans-serif; padding: 20px 10px; margin: 0; }
         
         .container { display: flex; flex-direction: column; align-items: center; width: 100%; }
         
-        /* Contenedor principal de ancho fijo para alinear todo */
-        .main-wrapper { width: 1000px; max-width: 95vw; }
-
-        /* Encabezado alineado a la izquierda del wrapper */
+        /* Encabezado con el nuevo nombre y mayor margen inferior */
         .header { 
-            margin-bottom: 25px; 
+            width: 1000px; 
+            max-width: 95vw; 
+            margin-bottom: 25px; /* AJUSTE: Más espacio entre el nombre y el recuadro */
             border-left: 4px solid var(--acc); 
             padding-left: 12px; 
             display: flex; 
@@ -24,46 +23,33 @@
         }
         .v-badge { background: #238636; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; font-weight: bold; }
 
-        /* AJUSTE 1: Cuadro informativo alineado a ambos bordes */
         .info-box { 
+            width: 1000px; 
+            max-width: 95vw; 
             background: rgba(88, 166, 255, 0.05); 
             border: 1px solid var(--brd); 
             border-radius: 12px; 
             padding: 16px; 
             margin-bottom: 25px; 
-            box-sizing: border-box; /* Esto hace que el borde derecho no se desplace */
+            box-sizing: border-box;
             display: flex;
             gap: 15px;
             align-items: center;
-            width: 100%; 
         }
         .info-icon { font-size: 24px; color: var(--acc); }
         .info-text { font-size: 13px; color: var(--sec); line-height: 1.5; margin: 0; }
 
-        /* AJUSTE 2: Barra de filtros centrada respecto a la tabla */
-        .filter-container { 
-            display: flex; 
-            justify-content: center; 
-            width: 100%; 
-            margin-bottom: 25px; 
-        }
-        .filter-bar { 
-            display: flex; 
-            background: var(--card); 
-            border: 1px solid var(--brd); 
-            border-radius: 8px; 
-            padding: 4px; 
-            gap: 4px; 
-        }
+        .filter-bar { display: flex; background: var(--card); border: 1px solid var(--brd); border-radius: 8px; padding: 4px; margin-bottom: 25px; gap: 4px; }
         .filter-btn { background: transparent; border: none; color: var(--sec); padding: 8px 18px; font-size: 13px; font-weight: 600; cursor: pointer; border-radius: 6px; transition: all 0.2s; }
         .filter-btn:hover { color: #fff; background: var(--btn-bg); }
         .filter-btn.active { background: var(--acc); color: #fff; }
 
-        /* Tabla al 100% del wrapper */
-        table { width: 100%; border-collapse: separate; border-spacing: 0 2px; table-layout: fixed; }
+        table { width: 1000px; border-collapse: separate; border-spacing: 0 2px; margin: 0 auto; table-layout: fixed; }
 
         th { color: var(--sec); font-size: 10px; text-transform: uppercase; padding: 6px 10px; text-align: center; letter-spacing: 0.5px; cursor: pointer; transition: color 0.2s; position: relative; }
         th:hover { color: var(--acc); }
+        th.sort-asc::after { content: ' ↑'; position: absolute; font-size: 8px; }
+        th.sort-desc::after { content: ' ↓'; position: absolute; font-size: 8px; }
 
         th.w-hero { text-align: left; width: 180px; } 
         .w-roles { width: 110px; } 
@@ -84,52 +70,50 @@
 
         .roles-flex { display: flex; flex-direction: column; align-items: center; line-height: 1.2; }
         .rel-flex { display: flex; gap: 5px; align-items: center; justify-content: center; }
+
+        @media (max-width: 1000px) { table, .header, .info-box { width: 95vw; } }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="main-wrapper">
-            <div class="header">
-                <h1 style="margin:0; font-size: 20px;">HoKstats</h1>
-                <span class="v-badge">v5.3 Fixed</span>
-            </div>
-
-            <div class="info-box">
-                <div class="info-icon">💡</div>
-                <p class="info-text">
-                    Este es un proyecto personal desarrollado originalmente para optimizar mi rendimiento en <strong>Honor of Kings</strong>. 
-                    Al notar su utilidad, decidí compartirlo con la comunidad. Esta herramienta es independiente y no tiene relación oficial con Honor of Kings; 
-                    los datos presentados se obtienen de fuentes públicas destinadas a los jugadores.
-                </p>
-            </div>
-
-            <div class="filter-container">
-                <div class="filter-bar">
-                    <button class="filter-btn active" onclick="filterHeroes('Todo', this)">Todo</button>
-                    <button class="filter-btn" onclick="filterHeroes('Choque', this)">Choque</button>
-                    <button class="filter-btn" onclick="filterHeroes('Cazador', this)">Cazador</button>
-                    <button class="filter-btn" onclick="filterHeroes('Medio', this)">Medio</button>
-                    <button class="filter-btn" onclick="filterHeroes('Merodeo', this)">Merodeo</button>
-                    <button class="filter-btn" onclick="filterHeroes('Farmeo', this)">Farmeo</button>
-                </div>
-            </div>
-
-            <table id="heroTable">
-                <thead>
-                    <tr>
-                        <th class="w-hero" onclick="sortRows(0, 'str', this)">Héroe</th>
-                        <th class="w-roles">Roles</th>
-                        <th class="w-stat" onclick="sortRows(2, 'num', this)">Tasa de victoria</th>
-                        <th class="w-stat" onclick="sortRows(3, 'num', this)">Tasa de selección</th>
-                        <th class="w-stat" onclick="sortRows(4, 'num', this)">Tasa de baneo</th>
-                        <th class="w-rel">Sinergia con</th>
-                        <th class="w-rel">Fuerte contra</th>
-                        <th class="w-rel">Débil contra</th>
-                    </tr>
-                </thead>
-                <tbody id="table-body"></tbody>
-            </table>
+        <div class="header">
+            <h1 style="margin:0; font-size: 20px;">HoKstats</h1>
+            <span class="v-badge">v5.3</span>
         </div>
+
+        <div class="info-box">
+            <div class="info-icon">💡</div>
+            <p class="info-text">
+                Este es un proyecto personal desarrollado originalmente para optimizar mi rendimiento en <strong>Honor of Kings</strong>. 
+                Al notar su utilidad, decidí compartirlo con la comunidad. Esta herramienta es independiente y no tiene relación oficial con Honor of Kings; 
+                los datos presentados se obtienen de fuentes públicas destinadas a los jugadores.
+            </p>
+        </div>
+
+        <div class="filter-bar">
+            <button class="filter-btn active" onclick="filterHeroes('Todo', this)">Todo</button>
+            <button class="filter-btn" onclick="filterHeroes('Choque', this)">Choque</button>
+            <button class="filter-btn" onclick="filterHeroes('Cazador', this)">Cazador</button>
+            <button class="filter-btn" onclick="filterHeroes('Medio', this)">Medio</button>
+            <button class="filter-btn" onclick="filterHeroes('Merodeo', this)">Merodeo</button>
+            <button class="filter-btn" onclick="filterHeroes('Farmeo', this)">Farmeo</button>
+        </div>
+
+        <table id="heroTable">
+            <thead>
+                <tr>
+                    <th class="w-hero" onclick="sortRows(0, 'str', this)">Héroe</th>
+                    <th class="w-roles">Roles</th>
+                    <th class="w-stat" onclick="sortRows(2, 'num', this)">Tasa de victoria</th>
+                    <th class="w-stat" onclick="sortRows(3, 'num', this)">Tasa de selección</th>
+                    <th class="w-stat" onclick="sortRows(4, 'num', this)">Tasa de baneo</th>
+                    <th class="w-rel">Sinergia con</th>
+                    <th class="w-rel">Fuerte contra</th>
+                    <th class="w-rel">Débil contra</th>
+                </tr>
+            </thead>
+            <tbody id="table-body"></tbody>
+        </table>
     </div>
 
     <script>
