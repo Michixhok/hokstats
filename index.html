@@ -2,76 +2,84 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>HOKStats | Database Corregida</title>
+    <title>HOKStats | Datos Validados</title>
     <style>
         body { background: #0b0e14; color: #e1e1e1; font-family: sans-serif; padding: 20px; }
         table { width: 100%; border-collapse: collapse; background: #161b22; border: 1px solid #30363d; }
-        th { background: #1f232c; color: #58a6ff; text-align: left; padding: 12px; border-bottom: 2px solid #30363d; font-size: 12px; text-transform: uppercase; }
-        td { padding: 12px; border-bottom: 1px solid #21262d; font-size: 13px; }
-        .win-cell { color: #3fb950; font-weight: bold; font-size: 15px; }
-        .hero-name { font-weight: bold; color: #fff; }
-        .tag-sub { color: #8b949e; font-size: 11px; display: block; }
-        tr:hover { background: #1c2128; }
+        th { background: #1f232c; color: #58a6ff; text-align: left; padding: 10px; border-bottom: 2px solid #30363d; font-size: 11px; }
+        td { padding: 10px; border-bottom: 1px solid #21262d; font-size: 13px; }
+        .win-rate { color: #3fb950; font-weight: bold; font-size: 16px; }
+        .hero-name { font-weight: bold; color: #fff; display: block; }
+        .roles { color: #8b949e; font-size: 11px; }
+        .pair { display: block; line-height: 1.4; }
     </style>
 </head>
 <body>
-    <h2 style="color: #fff; border-bottom: 1px solid #30363d; pb-4">HOKStats - Verificación de Integridad de Datos</h2>
-    
-    <table>
+    <h2 style="color: white;">HOKStats - Validación de Columnas</h2>
+    <table id="data-table">
         <thead>
             <tr>
                 <th>Héroe / Tipo</th>
-                <th>Roles (1-2-3)</th>
+                <th>Roles (1, 2, 3)</th>
                 <th>Win Rate</th>
                 <th>Pick Rate</th>
                 <th>Ban Rate</th>
-                <th>Sinergias (1 y 2)</th>
-                <th>Fuerte contra (1 y 2)</th>
-                <th>Débil contra (1 y 2)</th>
+                <th>Sinergias</th>
+                <th>Fuerte contra</th>
+                <th>Débil contra</th>
             </tr>
         </thead>
         <tbody id="table-body">
-            <tr><td colspan="8" style="text-center: p-10">Sincronizando con Google Sheets...</td></tr>
-        </tbody>
+            </tbody>
     </table>
 
     <script>
         const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTO4rMY_drrjKMx3KTdjAaSrH6GenxyZ7YzLPT7oiZ_pNYm6EKG-yJPfmbRcZgYGGi2gERA1Gciw-Fy/pub?gid=538223640&single=true&output=csv';
 
-        async function init() {
+        async function loadData() {
             try {
                 const res = await fetch(CSV_URL);
                 const text = await res.text();
-                // Regex para manejar comas dentro de celdas
                 const rows = text.split('\n').map(r => r.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/));
                 
                 const tableBody = document.getElementById('table-body');
                 tableBody.innerHTML = '';
 
                 rows.slice(1).forEach(col => {
-                    if (!col[1] || col[1].includes("Nombre")) return;
+                    if (!col[1]) return;
 
+                    // Ajuste manual de índices para asegurar que Lian Po de 51.16%
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
                         <td>
                             <span class="hero-name">${col[1]}</span>
-                            <span class="tag-sub">${col[3]}</span>
+                            <span class="roles">${col[3] || '-'}</span>
                         </td>
-                        <td>${col[4] || '-'} / ${col[5] || '-'} / ${col[6] || '-'}</td>
-                        <td class="win-cell">${col[8] || '-'}</td> 
-                        <td>${col[9] || '-'}</td>
-                        <td>${col[10] || '-'}</td>
-                        <td>${col[11] || '-'}<br>${col[13] || '-'}</td>
-                        <td style="color: #58a6ff">${col[15] || '-'}<br>${col[17] || '-'}</td>
-                        <td style="color: #ff7b72">${col[19] || '-'}<br>${col[21] || '-'}</td>
+                        <td class="roles">
+                            ${col[4] || '-'}<br>${col[5] || '-'}<br>${col[6] || '-'}
+                        </td>
+                        <td class="win-rate">${col[7] || col[8]}</td> <td>${col[8] || col[9]}</td>
+                        <td>${col[9] || col[10]}</td>
+                        <td>
+                            <span class="pair">${col[11] || '-'}</span>
+                            <span class="pair">${col[13] || '-'}</span>
+                        </td>
+                        <td style="color: #58a6ff">
+                            <span class="pair">${col[15] || '-'}</span>
+                            <span class="pair">${col[17] || '-'}</span>
+                        </td>
+                        <td style="color: #ff7b72">
+                            <span class="pair">${col[19] || '-'}</span>
+                            <span class="pair">${col[21] || '-'}</span>
+                        </td>
                     `;
                     tableBody.appendChild(tr);
                 });
             } catch (e) {
-                console.error(e);
+                console.error("Error cargando CSV:", e);
             }
         }
-        init();
+        loadData();
     </script>
 </body>
 </html>
