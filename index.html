@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>HOKStats | v3.7 Mapeo Real</title>
+    <title>HOKStats | v3.9 Centered Roles</title>
     <style>
         :root { --bg: #0b0e11; --card: #161b22; --brd: #30363d; --txt: #f0f6fc; --sec: #8b949e; --acc: #58a6ff; }
         body { background: var(--bg); color: var(--txt); font-family: system-ui, sans-serif; padding: 20px; margin: 0; }
@@ -13,7 +13,10 @@
         table { width: 100%; border-collapse: separate; border-spacing: 0 4px; table-layout: fixed; }
         th { color: var(--sec); font-size: 11px; text-transform: uppercase; padding: 10px; text-align: left; }
 
-        .w-hero { width: 200px; } .w-roles { width: 110px; } .w-stat { width: 90px; } .w-rel { width: 150px; }
+        .w-hero { width: 200px; } 
+        .w-roles { width: 120px; } /* Un poco más de ancho para los roles */
+        .w-stat { width: 90px; } 
+        .w-rel { width: 150px; }
 
         tr.hero-row td { background: var(--card); padding: 12px 15px; border-top: 1px solid var(--brd); border-bottom: 1px solid var(--brd); vertical-align: middle; }
         tr.hero-row td:first-child { border-left: 1px solid var(--brd); border-radius: 8px 0 0 8px; }
@@ -25,6 +28,19 @@
         
         .name-txt { font-weight: bold; font-size: 15px; color: #fff; display: block; }
         .type-txt { color: var(--sec); font-size: 11px; }
+        
+        /* CENTRADO DE ROLES */
+        .roles-container { 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; /* Centra verticalmente */
+            align-items: flex-start; /* Mantiene el texto alineado a la izquierda, cámbialo a 'center' si quieres todo al medio */
+            height: 100%;
+            min-height: 45px; /* Asegura un espacio mínimo */
+            gap: 2px;
+        }
+        .role-item { color: var(--sec); font-size: 11px; line-height: 1.2; }
+
         .stat-txt { font-weight: 800; font-size: 14px; color: #fff; }
         .rel-list { display: flex; flex-direction: column; gap: 5px; }
         .rel-item { display: flex; align-items: center; gap: 8px; font-size: 12px; }
@@ -35,7 +51,7 @@
     <div class="container">
         <div class="header">
             <h1 style="margin:0; font-size: 22px;">HOKStats</h1>
-            <span class="v-badge">v3.7 Fix</span>
+            <span class="v-badge">v3.9</span>
         </div>
         <table>
             <thead>
@@ -71,27 +87,27 @@
                 rows.slice(1).forEach(row => {
                     if (!row[1]) return;
 
-                    // MAPEADO CORREGIDO SEGÚN TUS INDICACIONES
                     const d = {
-                        nombre: row[1],    // B
-                        img:    row[3],    // D
-                        tipo:   row[4],    // E
-                        rol1:   row[5],    // F
-                        rol2:   row[6],    // G
-                        win:    row[8],    // I
-                        pick:   row[9],    // J
-                        ban:    row[10],   // K
-                        s1_n:   row[11], s1_i: row[13], // L y N
-                        s2_n:   row[14], s2_i: row[16], // O y Q
-                        f1_n:   row[17], f1_i: row[19], // R y T
-                        f2_n:   row[20], f2_i: row[22], // U y W
-                        d1_n:   row[23], d1_i: row[25], // X y Z
-                        d2_n:   row[26], d2_i: row[28]  // AA y AC
+                        nombre: row[1], img: row[3], tipo: row[4],
+                        rol1: row[5], rol2: row[6], rol3: row[7],
+                        win: row[8], pick: row[9], ban: row[10],
+                        s1_n: row[11], s1_i: row[13],
+                        s2_n: row[14], s2_i: row[16],
+                        f1_n: row[17], f1_i: row[19],
+                        f2_n: row[20], f2_i: row[22],
+                        d1_n: row[23], d1_i: row[25],
+                        d2_n: row[26], d2_i: row[28]
                     };
 
-                    const clean = (val) => (val && !val.includes('http') && val !== "-" && val !== "0") ? val.trim() : "";
+                    const clean = (val) => (val && !val.includes('http') && val !== "-" && val !== "0" && val.trim() !== "") ? val.trim() : "";
                     const img = (val) => (val && val.includes('http')) ? val.trim() : "";
                     const rel = (n, i) => n ? `<div class="rel-item"><img src="${img(i)}" class="img-mini" onerror="this.style.display='none'"><span>${clean(n)}</span></div>` : "";
+
+                    // Lógica de roles centrados
+                    const rolesHtml = [clean(d.rol1), clean(d.rol2), clean(d.rol3)]
+                        .filter(r => r !== "")
+                        .map(r => `<span class="role-item">${r}</span>`)
+                        .join('');
 
                     const tr = document.createElement('tr');
                     tr.className = 'hero-row';
@@ -102,7 +118,7 @@
                                 <div><span class="name-txt">${d.nombre}</span><span class="type-txt">${clean(d.tipo)}</span></div>
                             </div>
                         </td>
-                        <td><div class="type-txt">${clean(d.rol1)}<br>${clean(d.rol2)}</div></td>
+                        <td><div class="roles-container">${rolesHtml}</div></td>
                         <td><span class="stat-txt">${clean(d.win)}</span></td>
                         <td><span class="stat-txt">${clean(d.pick)}</span></td>
                         <td><span class="stat-txt">${clean(d.ban)}</span></td>
