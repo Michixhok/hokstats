@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HoKstats | v7.1 Tier Fixed</title>
+    <title>HoKstats | v8.2 Tier & Analytics</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root { --bg: #0b0e11; --card: #161b22; --brd: #30363d; --txt: #f0f6fc; --sec: #8b949e; --acc: #58a6ff; --btn-bg: #21262d; }
         body { background: var(--bg); color: var(--txt); font-family: system-ui, sans-serif; padding: 20px 10px; margin: 0; }
@@ -35,13 +36,20 @@
             gap: 20px;
             align-items: flex-start;
         }
+
+        /* --- NUEVAS PESTAÑAS --- */
+        .main-tabs { display: flex; gap: 10px; width: 1000px; max-width: 95vw; margin-bottom: 25px; border-bottom: 1px solid var(--brd); padding-bottom: 10px; }
+        .tab-btn { background: transparent; border: none; color: var(--sec); font-size: 15px; font-weight: 600; cursor: pointer; padding: 8px 16px; border-radius: 6px; transition: 0.2s; }
+        .tab-btn.active { color: var(--acc); background: rgba(88, 166, 255, 0.1); }
+        .content-section { display: none; width: 100%; flex-direction: column; align-items: center; }
+        .content-section.active { display: flex; }
+
+        /* Estilos originales de info-box y toolbar */
         .info-icon { font-size: 24px; color: var(--acc); margin-top: 2px; }
         .info-content { width: 100%; }
         .info-text { font-size: 13px; color: var(--sec); line-height: 1.6; margin: 0 0 12px 0; }
-        
         .contact-area { display: flex; gap: 20px; flex-wrap: wrap; }
         .contact-link { display: flex; align-items: center; gap: 6px; color: var(--acc); text-decoration: none; font-size: 13px; transition: opacity 0.2s; }
-        .contact-link:hover { opacity: 0.8; text-decoration: underline; }
 
         .toolbar { 
             display: flex; 
@@ -54,7 +62,6 @@
         }
         .filter-bar { display: flex; background: var(--card); border: 1px solid var(--brd); border-radius: 8px; padding: 4px; gap: 4px; }
         .filter-btn { background: transparent; border: none; color: var(--sec); padding: 8px 16px; font-size: 13px; font-weight: 600; cursor: pointer; border-radius: 6px; transition: all 0.2s; }
-        .filter-btn:hover { color: #fff; background: var(--btn-bg); }
         .filter-btn.active { background: var(--acc); color: #fff; }
 
         .search-box { 
@@ -69,13 +76,11 @@
             max-width: 300px;
         }
         .search-box input { background: transparent; border: none; color: var(--txt); padding: 10px 0; font-size: 13px; width: 100%; outline: none; }
-        .search-box input::placeholder { color: var(--sec); }
 
+        /* Tabla Original v7.1 */
         table { width: 1000px; border-collapse: separate; border-spacing: 0 2px; margin: 0 auto; table-layout: fixed; }
-
         th { color: var(--sec); font-size: 10px; text-transform: uppercase; padding: 6px 10px; text-align: center; letter-spacing: 0.5px; cursor: pointer; transition: color 0.2s; }
         th:hover { color: var(--acc); }
-
         th.w-hero { text-align: left; width: 180px; } 
         th.w-tier { width: 60px; }
         .w-roles { width: 90px; } 
@@ -89,17 +94,18 @@
         .hero-info { display: flex; align-items: center; gap: 10px; }
         .img-main { width: 38px; height: 38px; border-radius: 8px; object-fit: cover; flex-shrink: 0; }
         .img-mini { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; flex-shrink: 0; border: none; }
-
         .tier-txt { font-size: 18px; font-weight: 800; color: #fff; }
         .name-txt { font-weight: 600; font-size: 13px; color: #fff; display: block; }
         .type-txt { color: var(--sec); font-size: 10px; white-space: nowrap; }
         .stat-txt { color: var(--sec); font-size: 12px; font-weight: 500; white-space: nowrap; }
-
         .roles-flex { display: flex; flex-direction: column; align-items: center; line-height: 1.2; }
         .rel-flex { display: flex; gap: 6px; align-items: center; justify-content: center; }
 
+        /* --- ESTILO ÁREA GRÁFICO --- */
+        .chart-area { width: 1000px; max-width: 95vw; background: var(--card); border: 1px solid var(--brd); border-radius: 12px; padding: 25px; box-sizing: border-box; height: 600px; }
+
         @media (max-width: 1000px) { 
-            table, .header, .info-box, .toolbar { width: 95vw; } 
+            table, .header, .info-box, .toolbar, .main-tabs, .chart-area { width: 95vw; } 
             .toolbar { flex-direction: column; align-items: stretch; }
         }
     </style>
@@ -108,61 +114,80 @@
     <div class="container">
         <div class="header">
             <h1 style="margin:0; font-size: 20px;">HoKstats</h1>
-            <span class="v-badge">v7.1</span>
+            <span class="v-badge">v8.2</span>
         </div>
 
         <div class="info-box">
             <div class="info-icon">💡</div>
             <div class="info-content">
-                <p class="info-text">
-                    Este es un proyecto personal desarrollado originalmente para optimizar mi rendimiento en <strong>Honor of Kings</strong>. 
-                    Al notar su utilidad, decidí compartirlo con la comunidad. Esta herramienta es independiente y no tiene relación oficial con Honor of Kings; 
-                    los datos presentados se obtienen de fuentes públicas destinadas a los jugadores.
-                </p>
+                <p class="info-text">Este es un proyecto personal desarrollado originalmente para optimizar mi rendimiento en Honor of Kings.</p>
                 <div class="contact-area">
-                    <a href="mailto:michixhok@gmail.com" class="contact-link">✉ michixhok@gmail.com</a>
+                    <a href="mailto:michixhok@gmail.com" class="contact-link">✉ Email</a>
                     <a href="https://www.youtube.com/@michixhok" target="_blank" class="contact-link">▶ YouTube</a>
                 </div>
             </div>
         </div>
 
-        <div class="toolbar">
-            <div class="filter-bar">
-                <button class="filter-btn active" onclick="setFilter('Todo', this)">Todo</button>
-                <button class="filter-btn" onclick="setFilter('Choque', this)">Choque</button>
-                <button class="filter-btn" onclick="setFilter('Cazador', this)">Cazador</button>
-                <button class="filter-btn" onclick="setFilter('Medio', this)">Medio</button>
-                <button class="filter-btn" onclick="setFilter('Merodeo', this)">Merodeo</button>
-                <button class="filter-btn" onclick="setFilter('Farmeo', this)">Farmeo</button>
-            </div>
-            <div class="search-box">
-                <input type="text" id="heroSearch" placeholder="Buscar héroe..." onkeyup="applyFilters()">
-            </div>
+        <div class="main-tabs">
+            <button class="tab-btn active" onclick="switchTab('stats', this)">Estadísticas</button>
+            <button class="tab-btn" onclick="switchTab('analytics', this)">Análisis Gráfico</button>
         </div>
 
-        <table id="heroTable">
-            <thead>
-                <tr>
-                    <th class="w-hero" onclick="sortRows(0, 'str', this)">Héroe</th>
-                    <th class="w-tier" onclick="sortRows(1, 'num', this)">Tier</th>
-                    <th class="w-roles">Roles</th>
-                    <th class="w-stat" onclick="sortRows(3, 'num', this)">Tasa de victoria</th>
-                    <th class="w-stat" onclick="sortRows(4, 'num', this)">Tasa de selección</th>
-                    <th class="w-stat" onclick="sortRows(5, 'num', this)">Tasa de baneo</th>
-                    <th class="w-rel">Sinergia con</th>
-                    <th class="w-rel">Fuerte contra</th>
-                    <th class="w-rel">Débil contra</th>
-                </tr>
-            </thead>
-            <tbody id="table-body"></tbody>
-        </table>
+        <div id="section-stats" class="content-section active">
+            <div class="toolbar">
+                <div class="filter-bar">
+                    <button class="filter-btn active" onclick="setFilter('Todo', this)">Todo</button>
+                    <button class="filter-btn" onclick="setFilter('Choque', this)">Choque</button>
+                    <button class="filter-btn" onclick="setFilter('Cazador', this)">Cazador</button>
+                    <button class="filter-btn" onclick="setFilter('Medio', this)">Medio</button>
+                    <button class="filter-btn" onclick="setFilter('Merodeo', this)">Merodeo</button>
+                    <button class="filter-btn" onclick="setFilter('Farmeo', this)">Farmeo</button>
+                </div>
+                <div class="search-box">
+                    <input type="text" id="heroSearch" placeholder="Buscar héroe..." onkeyup="applyFilters()">
+                </div>
+            </div>
+            <table id="heroTable">
+                <thead>
+                    <tr>
+                        <th class="w-hero" onclick="sortRows(0, 'str', this)">Héroe</th>
+                        <th class="w-tier" onclick="sortRows(1, 'num', this)">Tier</th>
+                        <th class="w-roles">Roles</th>
+                        <th class="w-stat" onclick="sortRows(3, 'num', this)">Tasa de victoria</th>
+                        <th class="w-stat" onclick="sortRows(4, 'num', this)">Tasa de selección</th>
+                        <th class="w-stat" onclick="sortRows(5, 'num', this)">Tasa de baneo</th>
+                        <th class="w-rel">Sinergia con</th>
+                        <th class="w-rel">Fuerte contra</th>
+                        <th class="w-rel">Débil contra</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body"></tbody>
+            </table>
+        </div>
+
+        <div id="section-analytics" class="content-section">
+            <div class="chart-area">
+                <canvas id="scatterChart"></canvas>
+            </div>
+        </div>
     </div>
 
     <script>
         const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTO4rMY_drrjKMx3KTdjAaSrH6GenxyZ7YzLPT7oiZ_pNYm6EKG-yJPfmbRcZgYGGi2gERA1Gciw-Fy/pub?gid=538223640&single=true&output=csv&cache=' + Date.now();
         let currentSort = { col: 1, asc: true }; 
         let activeRole = 'Todo';
+        let allHeroes = []; // Para alimentar el gráfico
+        let myChart = null;
 
+        function switchTab(tabId, btn) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('section-' + tabId).classList.add('active');
+            if(tabId === 'analytics') renderChart();
+        }
+
+        // --- LÓGICA DE TABLA ORIGINAL (NO CAMBIA NADA) ---
         function setFilter(role, btn) {
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
@@ -185,14 +210,10 @@
         function sortRows(colIndex, type, header) {
             const tbody = document.getElementById('table-body');
             const rows = Array.from(tbody.querySelectorAll('.hero-row'));
-            
             if (currentSort.col === colIndex) currentSort.asc = !currentSort.asc;
             else { currentSort.col = colIndex; currentSort.asc = true; }
-            
             rows.sort((a, b) => {
                 let valA, valB;
-                
-                // LÓGICA CLAVE: Si se ordena por Tier (columna 1), usamos la Posición guardada en data-pos
                 if (colIndex === 1) {
                     valA = parseInt(a.getAttribute('data-pos')) || 999;
                     valB = parseInt(b.getAttribute('data-pos')) || 999;
@@ -203,10 +224,45 @@
                     valA = parseFloat(a.cells[colIndex].innerText.replace('%', '')) || 0;
                     valB = parseFloat(b.cells[colIndex].innerText.replace('%', '')) || 0;
                 }
-                
                 return currentSort.asc ? valA - valB : valB - valA;
             });
             rows.forEach(row => tbody.appendChild(row));
+        }
+
+        // --- LÓGICA DE GRÁFICO CON CARAS ---
+        function renderChart() {
+            if(myChart) myChart.destroy();
+            const ctx = document.getElementById('scatterChart').getContext('2d');
+            
+            const images = allHeroes.map(h => {
+                const img = new Image();
+                img.src = h.img;
+                return img;
+            });
+
+            myChart = new Chart(ctx, {
+                type: 'scatter',
+                data: {
+                    datasets: [{
+                        label: 'Héroes',
+                        data: allHeroes.map(h => ({ x: h.p_raw, y: h.w_raw, name: h.n })),
+                        pointStyle: images,
+                        pointRadius: 16
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { title: { display: true, text: 'Pick Rate %', color: '#8b949e' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+                        y: { title: { display: true, text: 'Win Rate %', color: '#8b949e' }, grid: { color: 'rgba(255,255,255,0.05)' }, suggestedMin: 45, suggestedMax: 55 }
+                    },
+                    plugins: { 
+                        legend: { display: false },
+                        tooltip: { callbacks: { label: (c) => `${c.raw.name}: W ${c.raw.y}% | P ${c.raw.x}%` } }
+                    }
+                }
+            });
         }
 
         async function load() {
@@ -220,21 +276,21 @@
                 });
                 
                 const body = document.getElementById('table-body');
-                const heroData = rows.slice(1).map(row => {
+                allHeroes = rows.slice(1).map(row => {
                     if (!row[1]) return null;
                     return {
                         n: row[1], img: row[3], type: row[4],
                         r1: row[5], r2: row[6], r3: row[7],
                         w: row[8], p: row[9], b: row[10],
                         s1i: row[13], s2i: row[16], f1i: row[19], f2i: row[22], d1i: row[25], d2i: row[28],
-                        tier: row[29], pos: row[30]
+                        tier: row[29], pos: row[30],
+                        w_raw: parseFloat(row[8]) || 0, p_raw: parseFloat(row[9]) || 0
                     };
                 }).filter(h => h !== null);
 
-                // Ordenar por posición AE al cargar
-                heroData.sort((a, b) => (parseInt(a.pos) || 999) - (parseInt(b.pos) || 999));
+                allHeroes.sort((a, b) => (parseInt(a.pos) || 999) - (parseInt(b.pos) || 999));
 
-                heroData.forEach(d => {
+                allHeroes.forEach(d => {
                     const clean = (v) => (v && !v.includes('http') && v !== "-" && v !== "0") ? v.trim() : "";
                     const img = (v) => (v && v.includes('http')) ? v.trim() : "";
                     const rel = (i) => i ? `<img src="${i}" class="img-mini" onerror="this.style.display='none'">` : "";
@@ -243,7 +299,7 @@
                     const tr = document.createElement('tr');
                     tr.className = 'hero-row';
                     tr.setAttribute('data-roles', `${d.r1},${d.r2},${d.r3}`);
-                    tr.setAttribute('data-pos', d.pos); // Aquí se guarda el número AE de forma invisible
+                    tr.setAttribute('data-pos', d.pos);
                     
                     tr.innerHTML = `
                         <td><div class="hero-info"><img src="${img(d.img)}" class="img-main" onerror="this.src='https://www.honorofkings.com/global/images/hero/hero_list_default.png'"><div><span class="name-txt">${d.n}</span><span class="type-txt">${clean(d.type)}</span></div></div></td>
