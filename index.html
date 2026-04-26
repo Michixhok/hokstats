@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HoKstats | v8.2 Tier & Analytics</title>
+    <title>HoKstats | v8.3</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root { --bg: #0b0e11; --card: #161b22; --brd: #30363d; --txt: #f0f6fc; --sec: #8b949e; --acc: #58a6ff; --btn-bg: #21262d; }
@@ -11,17 +11,22 @@
         
         .container { display: flex; flex-direction: column; align-items: center; width: 100%; }
         
+        /* HEADER FLEX PARA ALINEAR PESTAÑAS A LA DERECHA */
         .header { 
             width: 1000px; 
             max-width: 95vw; 
             margin-bottom: 25px; 
-            border-left: 4px solid var(--acc); 
-            padding-left: 12px; 
             display: flex; 
-            align-items: baseline; 
-            gap: 8px; 
+            justify-content: space-between; 
+            align-items: center; 
         }
+        .header-left { display: flex; align-items: baseline; gap: 8px; border-left: 4px solid var(--acc); padding-left: 12px; }
         .v-badge { background: #238636; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; font-weight: bold; }
+
+        /* PESTAÑAS EN EL HEADER */
+        .main-tabs { display: flex; gap: 5px; }
+        .tab-btn { background: transparent; border: none; color: var(--sec); font-size: 13px; font-weight: 600; cursor: pointer; padding: 6px 12px; border-radius: 6px; transition: 0.2s; }
+        .tab-btn.active { color: var(--acc); background: rgba(88, 166, 255, 0.1); }
 
         .info-box { 
             width: 1000px; 
@@ -37,14 +42,9 @@
             align-items: flex-start;
         }
 
-        /* --- NUEVAS PESTAÑAS --- */
-        .main-tabs { display: flex; gap: 10px; width: 1000px; max-width: 95vw; margin-bottom: 25px; border-bottom: 1px solid var(--brd); padding-bottom: 10px; }
-        .tab-btn { background: transparent; border: none; color: var(--sec); font-size: 15px; font-weight: 600; cursor: pointer; padding: 8px 16px; border-radius: 6px; transition: 0.2s; }
-        .tab-btn.active { color: var(--acc); background: rgba(88, 166, 255, 0.1); }
         .content-section { display: none; width: 100%; flex-direction: column; align-items: center; }
         .content-section.active { display: flex; }
 
-        /* Estilos originales de info-box y toolbar */
         .info-icon { font-size: 24px; color: var(--acc); margin-top: 2px; }
         .info-content { width: 100%; }
         .info-text { font-size: 13px; color: var(--sec); line-height: 1.6; margin: 0 0 12px 0; }
@@ -77,7 +77,7 @@
         }
         .search-box input { background: transparent; border: none; color: var(--txt); padding: 10px 0; font-size: 13px; width: 100%; outline: none; }
 
-        /* Tabla Original v7.1 */
+        /* TABLA v7.1 FIXED */
         table { width: 1000px; border-collapse: separate; border-spacing: 0 2px; margin: 0 auto; table-layout: fixed; }
         th { color: var(--sec); font-size: 10px; text-transform: uppercase; padding: 6px 10px; text-align: center; letter-spacing: 0.5px; cursor: pointer; transition: color 0.2s; }
         th:hover { color: var(--acc); }
@@ -101,11 +101,10 @@
         .roles-flex { display: flex; flex-direction: column; align-items: center; line-height: 1.2; }
         .rel-flex { display: flex; gap: 6px; align-items: center; justify-content: center; }
 
-        /* --- ESTILO ÁREA GRÁFICO --- */
         .chart-area { width: 1000px; max-width: 95vw; background: var(--card); border: 1px solid var(--brd); border-radius: 12px; padding: 25px; box-sizing: border-box; height: 600px; }
 
         @media (max-width: 1000px) { 
-            table, .header, .info-box, .toolbar, .main-tabs, .chart-area { width: 95vw; } 
+            table, .header, .info-box, .toolbar, .chart-area { width: 95vw; } 
             .toolbar { flex-direction: column; align-items: stretch; }
         }
     </style>
@@ -113,24 +112,27 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1 style="margin:0; font-size: 20px;">HoKstats</h1>
-            <span class="v-badge">v8.2</span>
+            <div class="header-left">
+                <h1 style="margin:0; font-size: 20px;">HoKstats</h1>
+                <span class="v-badge">v8.3</span>
+            </div>
+            <div class="main-tabs">
+                <button class="tab-btn active" onclick="switchTab('stats', this)">Estadísticas</button>
+                <button class="tab-btn" onclick="switchTab('analytics', this)">Análisis Gráfico</button>
+            </div>
         </div>
 
         <div class="info-box">
             <div class="info-icon">💡</div>
             <div class="info-content">
-                <p class="info-text">Este es un proyecto personal desarrollado originalmente para optimizar mi rendimiento en Honor of Kings.</p>
+                <p class="info-text">Este es un proyecto personal desarrollado originalmente para optimizar mi rendimiento en <strong>Honor of Kings</strong>. 
+                    Al notar su utilidad, decidí compartirlo con la comunidad. Esta herramienta es independiente y no tiene relación oficial con Honor of Kings; 
+                    los datos presentados se obtienen de fuentes públicas destinadas a los jugadores.</p>
                 <div class="contact-area">
                     <a href="mailto:michixhok@gmail.com" class="contact-link">✉ Email</a>
                     <a href="https://www.youtube.com/@michixhok" target="_blank" class="contact-link">▶ YouTube</a>
                 </div>
             </div>
-        </div>
-
-        <div class="main-tabs">
-            <button class="tab-btn active" onclick="switchTab('stats', this)">Estadísticas</button>
-            <button class="tab-btn" onclick="switchTab('analytics', this)">Análisis Gráfico</button>
         </div>
 
         <div id="section-stats" class="content-section active">
@@ -176,7 +178,7 @@
         const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTO4rMY_drrjKMx3KTdjAaSrH6GenxyZ7YzLPT7oiZ_pNYm6EKG-yJPfmbRcZgYGGi2gERA1Gciw-Fy/pub?gid=538223640&single=true&output=csv&cache=' + Date.now();
         let currentSort = { col: 1, asc: true }; 
         let activeRole = 'Todo';
-        let allHeroes = []; // Para alimentar el gráfico
+        let allHeroes = [];
         let myChart = null;
 
         function switchTab(tabId, btn) {
@@ -187,7 +189,6 @@
             if(tabId === 'analytics') renderChart();
         }
 
-        // --- LÓGICA DE TABLA ORIGINAL (NO CAMBIA NADA) ---
         function setFilter(role, btn) {
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
@@ -229,11 +230,9 @@
             rows.forEach(row => tbody.appendChild(row));
         }
 
-        // --- LÓGICA DE GRÁFICO CON CARAS ---
         function renderChart() {
             if(myChart) myChart.destroy();
             const ctx = document.getElementById('scatterChart').getContext('2d');
-            
             const images = allHeroes.map(h => {
                 const img = new Image();
                 img.src = h.img;
