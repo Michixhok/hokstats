@@ -424,7 +424,7 @@
                     const clean = (v) => (v && !v.includes('http') && v !== "-" && v !== "0") ? v.trim() : "";
                     const getImg = (v) => (v && v.includes('http')) ? v.trim() : "";
                     const rel = (url) => url ? `<img src="${url}" class="img-mini" onerror="this.style.display='none'">` : "";
-                    const roles = [clean(d.r1), clean(d.r2)].filter(x=>x);
+                    const roles = [clean(d.r1), clean(d.r2), clean(d.r3)].filter(x=>x);
                     const tr = document.createElement('tr');
                     tr.className = 'hero-row';
                     tr.setAttribute('data-roles', roles.join(','));
