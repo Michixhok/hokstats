@@ -395,6 +395,28 @@
                     }
                 },
                 plugins: [{
+                    id: 'quadrantBackgrounds',
+                    beforeDraw(chart) {
+                        const {ctx, chartArea: {top, bottom, left, right}, scales: {x, y}} = chart;
+                        const midX = x.getPixelForValue(1);  
+                        const midY = y.getPixelForValue(50); 
+
+                        ctx.save();
+                        // Cuadrante Superior Izquierdo (Cyan)
+                        ctx.fillStyle = 'rgba(0, 255, 255, 0.05)'; 
+                        ctx.fillRect(left, top, midX - left, midY - top);
+                        // Cuadrante Superior Derecho (Verde)
+                        ctx.fillStyle = 'rgba(0, 255, 0, 0.05)';
+                        ctx.fillRect(midX, top, right - midX, midY - top);
+                        // Cuadrante Inferior Izquierdo (Rojo)
+                        ctx.fillStyle = 'rgba(255, 0, 0, 0.05)';
+                        ctx.fillRect(left, midY, midX - left, bottom - midY);
+                        // Cuadrante Inferior Derecho (Amarillo)
+                        ctx.fillStyle = 'rgba(255, 255, 0, 0.05)';
+                        ctx.fillRect(midX, midY, right - midX, bottom - midY);
+                        ctx.restore();
+                    }
+                }, {
                     id: 'heroIcons',
                     afterDatasetDraw(chart) {
                         const {ctx} = chart;
