@@ -151,11 +151,13 @@
 
         tr.hero-row td { 
             background-color: var(--card); 
-            padding: 10px 8px; 
+            padding: 8px; 
             border-top: 1px solid var(--brd); 
             border-bottom: 1px solid var(--brd); 
             text-align: center; 
             vertical-align: middle;
+            height: 64px; 
+            overflow: hidden;
         }
 
         tr.hero-row td:first-child { border-left: 1px solid var(--brd); border-radius: 10px 0 0 10px; text-align: left; }
@@ -175,8 +177,24 @@
 
         .tier-txt { font-size: 20px; font-weight: 900; color: #ffffff; }
         .name-txt { font-weight: 700; font-size: 14px; color: #ffffff; display: block; }
-        .type-txt { color: var(--sec); font-size: 11px; }
-        .stat-txt { color: var(--sec); font-size: 12px; font-weight: 600; }
+        
+        .type-txt { 
+            color: var(--sec); 
+            font-size: 10px; 
+            display: block;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 120px;
+        }
+
+        .stat-txt { 
+            color: var(--sec); 
+            font-size: 11px; 
+            font-weight: 600;
+            line-height: 1.2;
+        }
+
         .rel-flex { display: flex; gap: 6px; justify-content: center; min-width: 70px; }
 
         .chart-area { 
@@ -215,9 +233,8 @@
             <div class="info-icon">💡</div>
             <div class="info-content">
                 <p class="info-text">
-                Este es un proyecto personal desarrollado originalmente para mejorar mi rendimiento en <strong>Honor of Kings</strong>. 
-                Al notar su utilidad, decidí compartirlo con la comunidad. Esta herramienta es independiente, sin fines de lucro y no tiene relación oficial con Honor of Kings; 
-                los datos presentados se obtienen de las fuentes oficiales públicas destinadas a los jugadores. Si quieres hacer alguna recomendación te dejo mi correo y mi canal de youtube. 
+                    Proyecto personal para optimizar el rendimiento en <strong>Honor of Kings</strong>. 
+                    Independiente de Level Infinite/TiMi Studio. Datos obtenidos de fuentes públicas.
                 </p>
                 <div class="contact-area">
                     <a href="mailto:michixhok@gmail.com" class="contact-link">✉ michixhok@gmail.com</a>
@@ -251,9 +268,9 @@
                             <th onclick="sortRows(3, 'num')">Win Rate</th>
                             <th onclick="sortRows(4, 'num')">Pick Rate</th>
                             <th onclick="sortRows(5, 'num')">Ban Rate</th>
-                            <th>Sinergia con</th>
-                            <th>Fuerte contra</th>
-                            <th>Débil contra</th>
+                            <th>Sinergia</th>
+                            <th>Fuerte</th>
+                            <th>Débil</th>
                         </tr>
                     </thead>
                     <tbody id="table-body"></tbody>
@@ -337,7 +354,7 @@
             const ctx = document.getElementById('scatterChart').getContext('2d');
             
             const filteredHeroes = allHeroes.filter(h => {
-                const roles = [h.r1, h.r2].map(r => r ? r.toLowerCase() : "");
+                const roles = [h.r1, h.r2, h.r3].map(r => r ? r.toLowerCase() : "");
                 return chartFilter === 'Todo' || roles.some(r => r.includes(chartFilter.toLowerCase()));
             });
 
