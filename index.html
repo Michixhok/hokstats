@@ -3,18 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HOKStats | v5.2 Official</title>
+    <title>HoKstats | v5.3</title>
     <style>
         :root { --bg: #0b0e11; --card: #161b22; --brd: #30363d; --txt: #f0f6fc; --sec: #8b949e; --acc: #58a6ff; --btn-bg: #21262d; }
         body { background: var(--bg); color: var(--txt); font-family: system-ui, sans-serif; padding: 20px 10px; margin: 0; }
         
         .container { display: flex; flex-direction: column; align-items: center; width: 100%; }
         
-        /* Encabezado y Badge */
-        .header { width: 1000px; max-width: 95vw; margin-bottom: 10px; border-left: 4px solid var(--acc); padding-left: 12px; display: flex; align-items: baseline; gap: 8px; }
+        /* Encabezado con el nuevo nombre y mayor margen inferior */
+        .header { 
+            width: 1000px; 
+            max-width: 95vw; 
+            margin-bottom: 25px; /* AJUSTE: Más espacio entre el nombre y el recuadro */
+            border-left: 4px solid var(--acc); 
+            padding-left: 12px; 
+            display: flex; 
+            align-items: baseline; 
+            gap: 8px; 
+        }
         .v-badge { background: #238636; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; font-weight: bold; }
 
-        /* NUEVO: Cuadro Informativo */
         .info-box { 
             width: 1000px; 
             max-width: 95vw; 
@@ -31,13 +39,11 @@
         .info-icon { font-size: 24px; color: var(--acc); }
         .info-text { font-size: 13px; color: var(--sec); line-height: 1.5; margin: 0; }
 
-        /* Filtros */
         .filter-bar { display: flex; background: var(--card); border: 1px solid var(--brd); border-radius: 8px; padding: 4px; margin-bottom: 25px; gap: 4px; }
         .filter-btn { background: transparent; border: none; color: var(--sec); padding: 8px 18px; font-size: 13px; font-weight: 600; cursor: pointer; border-radius: 6px; transition: all 0.2s; }
         .filter-btn:hover { color: #fff; background: var(--btn-bg); }
         .filter-btn.active { background: var(--acc); color: #fff; }
 
-        /* Tabla */
         table { width: 1000px; border-collapse: separate; border-spacing: 0 2px; margin: 0 auto; table-layout: fixed; }
 
         th { color: var(--sec); font-size: 10px; text-transform: uppercase; padding: 6px 10px; text-align: center; letter-spacing: 0.5px; cursor: pointer; transition: color 0.2s; position: relative; }
@@ -60,8 +66,6 @@
 
         .name-txt { font-weight: 600; font-size: 13px; color: #fff; display: block; }
         .type-txt { color: var(--sec); font-size: 10px; white-space: nowrap; }
-        
-        /* AJUSTE: Números de tasas un poco más grandes */
         .stat-txt { color: var(--sec); font-size: 12px; font-weight: 500; white-space: nowrap; }
 
         .roles-flex { display: flex; flex-direction: column; align-items: center; line-height: 1.2; }
@@ -73,8 +77,8 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1 style="margin:0; font-size: 20px;">HOKStats</h1>
-            <span class="v-badge">v5.2</span>
+            <h1 style="margin:0; font-size: 20px;">HoKstats</h1>
+            <span class="v-badge">v5.3</span>
         </div>
 
         <div class="info-box">
