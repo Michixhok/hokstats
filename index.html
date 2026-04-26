@@ -2,16 +2,15 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>HOKStats | v2.1</title>
+    <title>HOKStats | v3.0</title>
     <style>
         :root {
             --bg-body: #0b0e11;
             --bg-card: #161b22;
             --border: #30363d;
-            --text-main: #e6edf3;
+            --text-main: #f0f6fc;
             --text-sec: #8b949e;
             --accent: #58a6ff;
-            --win: #3fb950;
         }
 
         body { 
@@ -24,7 +23,6 @@
 
         .container { max-width: 1450px; margin: 0 auto; }
 
-        /* Encabezado con Versión */
         .header-section { 
             margin-bottom: 30px; 
             border-left: 4px solid var(--accent); 
@@ -40,22 +38,19 @@
             padding: 2px 8px;
             border-radius: 10px;
             font-weight: bold;
-            text-transform: uppercase;
         }
 
         table { width: 100%; border-collapse: separate; border-spacing: 0 8px; table-layout: fixed; }
         
-        /* Alineación milimétrica de títulos */
         th { 
             color: var(--text-sec); 
             font-size: 11px; 
             text-transform: uppercase; 
-            padding: 10px 20px; /* Ajustado para coincidir con el inicio del texto en la celda */
+            padding: 10px 20px;
             font-weight: 600;
             text-align: left;
         }
 
-        /* Definición estricta de anchos */
         .col-hero { width: 16%; }
         .col-role { width: 8%; }
         .col-stat { width: 9%; }
@@ -63,7 +58,7 @@
 
         tr.hero-row td {
             background: var(--bg-card);
-            padding: 16px 20px;
+            padding: 18px 20px;
             border-top: 1px solid var(--border);
             border-bottom: 1px solid var(--border);
             vertical-align: middle;
@@ -72,12 +67,14 @@
         tr.hero-row td:first-child { border-left: 1px solid var(--border); border-radius: 8px 0 0 8px; }
         tr.hero-row td:last-child { border-right: 1px solid var(--border); border-radius: 0 8px 8px 0; }
 
-        .hero-name { font-weight: bold; font-size: 15px; color: #fff; display: block; }
+        .hero-name { font-weight: bold; font-size: 15px; color: #fff; display: block; margin-bottom: 2px; }
         .hero-type { color: var(--text-sec); font-size: 11px; }
 
-        .stat-label { display: block; font-size: 10px; color: var(--text-sec); text-transform: uppercase; margin-top: 4px; }
-        .stat-val { font-weight: 600; font-size: 14px; }
-        .win-val { color: var(--win); font-size: 16px; }
+        /* Estilo para roles: más pequeños */
+        .role-text { color: var(--text-sec); font-size: 11px; }
+
+        /* Estilo unificado para números: Blanco y negrita */
+        .stat-val { font-weight: 700; font-size: 15px; color: #fff; }
 
         .pair-item { display: block; font-size: 12px; margin-bottom: 2px; }
         .blue { color: var(--accent); }
@@ -89,7 +86,7 @@
     <div class="container">
         <div class="header-section">
             <h1 style="margin:0; font-size: 24px;">HOKStats</h1>
-            <span class="version-badge">Build v2.1</span>
+            <span class="version-badge">Build v3.0</span>
             <span style="color: var(--text-sec); font-size: 14px;">| Meta Database Chile</span>
         </div>
 
@@ -101,8 +98,8 @@
                     <th class="col-role">Rol 2</th>
                     <th class="col-role">Rol 3</th>
                     <th class="col-stat">Win Rate</th>
-                    <th class="col-stat">Pick</th>
-                    <th class="col-stat">Ban</th>
+                    <th class="col-stat">Pick Rate</th>
+                    <th class="col-stat">Ban Rate</th>
                     <th class="col-pair">Sinergias</th>
                     <th class="col-pair">Fuerte vs</th>
                     <th class="col-pair">Débil vs</th>
@@ -113,7 +110,6 @@
     </div>
 
     <script>
-        // URL con parámetro de tiempo para forzar al navegador a descargar el CSV más reciente cada vez
         const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTO4rMY_drrjKMx3KTdjAaSrH6GenxyZ7YzLPT7oiZ_pNYm6EKG-yJPfmbRcZgYGGi2gERA1Gciw-Fy/pub?gid=538223640&single=true&output=csv&cache=' + new Date().getTime();
 
         async function load() {
@@ -134,21 +130,12 @@
                             <span class="hero-name">${col[1]}</span>
                             <span class="hero-type">${col[3]}</span>
                         </td>
-                        <td style="color: var(--text-sec)">${clean(col[4])}</td>
-                        <td style="color: var(--text-sec)">${clean(col[5])}</td>
-                        <td style="color: var(--text-sec)">${clean(col[6])}</td>
-                        <td>
-                            <span class="stat-val win-val">${col[7]}</span>
-                            <span class="stat-label">Win Rate</span>
-                        </td>
-                        <td>
-                            <span class="stat-val">${col[8]}</span>
-                            <span class="stat-label">Pick</span>
-                        </td>
-                        <td>
-                            <span class="stat-val">${col[9]}</span>
-                            <span class="stat-label">Ban</span>
-                        </td>
+                        <td class="role-text">${clean(col[4])}</td>
+                        <td class="role-text">${clean(col[5])}</td>
+                        <td class="role-text">${clean(col[6])}</td>
+                        <td><span class="stat-val">${col[7]}</span></td>
+                        <td><span class="stat-val">${col[8]}</span></td>
+                        <td><span class="stat-val">${col[9]}</span></td>
                         <td>
                             <span class="pair-item">${clean(col[10])}</span>
                             <span class="pair-item">${clean(col[12])}</span>
@@ -164,7 +151,7 @@
                     `;
                     tableBody.appendChild(tr);
                 });
-            } catch (e) { console.error("Error cargando el meta:", e); }
+            } catch (e) { console.error("Error:", e); }
         }
         load();
     </script>
