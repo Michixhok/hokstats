@@ -3,31 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HOKStats | v4.3 Center Edition</title>
+    <title>HOKStats | v4.4 Ultra-Compact</title>
     <style>
         :root { --bg: #0b0e11; --card: #161b22; --brd: #30363d; --txt: #f0f6fc; --sec: #8b949e; --acc: #58a6ff; }
         body { background: var(--bg); color: var(--txt); font-family: system-ui, sans-serif; padding: 20px 10px; margin: 0; }
         
-        /* EL TRUCO PARA CENTRAR: Ancho máximo definido y margen auto */
         .container { 
-            max-width: 1000px; /* Ajusta este valor si la quieres más o menos ancha en PC */
-            margin: 0 auto; 
-            overflow-x: auto; 
+            display: flex; 
+            flex-direction: column;
+            align-items: center; /* Centra la tabla horizontalmente */
+            width: 100%;
         }
         
-        .header { margin-bottom: 15px; border-left: 4px solid var(--acc); padding-left: 12px; display: flex; align-items: baseline; gap: 8px; }
+        .header { width: fit-content; margin-bottom: 15px; border-left: 4px solid var(--acc); padding-left: 12px; display: flex; align-items: baseline; gap: 8px; align-self: center; }
         .v-badge { background: #238636; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; font-weight: bold; }
         
-        table { width: 100%; border-collapse: separate; border-spacing: 0 4px; }
+        /* CAMBIO CLAVE: width auto para que no se estire sola */
+        table { width: auto; border-collapse: separate; border-spacing: 0 4px; margin: 0 auto; }
         
-        th { color: var(--sec); font-size: 10px; text-transform: uppercase; padding: 8px; text-align: left; letter-spacing: 0.5px; }
+        th { color: var(--sec); font-size: 10px; text-transform: uppercase; padding: 8px 15px; text-align: left; letter-spacing: 0.5px; }
 
-        /* Ajuste de columnas para que no haya "aire" innecesario */
-        .w-hero { width: 170px; } 
-        .w-stat { width: 75px; }
-        .w-rel { width: 70px; }
+        /* Control estricto de anchos para eliminar el "aire" rojo */
+        .w-hero { width: 160px; } 
+        .w-roles { width: 100px; } 
+        .w-stat { width: 70px; text-align: center; }
+        .w-rel { width: 80px; }
 
-        tr.hero-row td { background: var(--card); padding: 8px 12px; border-top: 1px solid var(--brd); border-bottom: 1px solid var(--brd); vertical-align: middle; }
+        tr.hero-row td { background: var(--card); padding: 8px 15px; border-top: 1px solid var(--brd); border-bottom: 1px solid var(--brd); vertical-align: middle; }
         tr.hero-row td:first-child { border-left: 1px solid var(--brd); border-radius: 6px 0 0 6px; }
         tr.hero-row td:last-child { border-right: 1px solid var(--brd); border-radius: 0 6px 6px 0; }
 
@@ -37,19 +39,18 @@
         .img-mini { 
             width: 24px; height: 24px; border-radius: 50%; 
             border: 1px solid var(--brd); object-fit: cover;
-            cursor: pointer;
         }
 
-        .name-txt { font-weight: 600; font-size: 14px; color: #fff; display: block; }
-        .type-txt, .stat-txt { color: var(--sec); font-size: 11px; font-weight: normal; }
+        .name-txt { font-weight: 600; font-size: 14px; color: #fff; display: block; white-space: nowrap; }
+        .type-txt, .stat-txt { color: var(--sec); font-size: 11px; font-weight: normal; white-space: nowrap; }
 
-        .roles-flex { display: flex; flex-direction: column; justify-content: center; }
+        .roles-flex { display: flex; flex-direction: column; justify-content: center; width: 100px; }
         .rel-flex { display: flex; flex-direction: row; gap: 5px; align-items: center; }
 
-        /* Ajustes para pantallas de tablet/móvil */
+        /* Ajuste para móvil: que la tabla no sea más grande que la pantalla */
         @media (max-width: 800px) {
-            .container { max-width: 100%; }
-            table { min-width: 750px; } /* Mantiene la legibilidad con scroll lateral */
+            .container { align-items: flex-start; overflow-x: auto; }
+            table { margin: 0; }
         }
     </style>
 </head>
@@ -57,13 +58,13 @@
     <div class="container">
         <div class="header">
             <h1 style="margin:0; font-size: 20px;">HOKStats</h1>
-            <span class="v-badge">v4.3</span>
+            <span class="v-badge">v4.4</span>
         </div>
         <table>
             <thead>
                 <tr>
                     <th class="w-hero">Héroe</th>
-                    <th class="">Roles</th>
+                    <th class="w-roles">Roles</th>
                     <th class="w-stat">Win</th>
                     <th class="w-stat">Pick</th>
                     <th class="w-stat">Ban</th>
@@ -92,7 +93,6 @@
                 const body = document.getElementById('table-body');
                 rows.slice(1).forEach(row => {
                     if (!row[1]) return;
-                    // Mapeo de columnas optimizado para Honor of Kings
                     const d = {
                         n: row[1], img: row[3], type: row[4],
                         r1: row[5], r2: row[6], r3: row[7],
@@ -121,9 +121,9 @@
                             </div>
                         </td>
                         <td><div class="roles-flex stat-txt">${roles}</div></td>
-                        <td><span class="stat-txt">${clean(d.w)}</span></td>
-                        <td><span class="stat-txt">${clean(d.p)}</span></td>
-                        <td><span class="stat-txt">${clean(d.b)}</span></td>
+                        <td class="w-stat"><span class="stat-txt">${clean(d.w)}</span></td>
+                        <td class="w-stat"><span class="stat-txt">${clean(d.p)}</span></td>
+                        <td class="w-stat"><span class="stat-txt">${clean(d.b)}</span></td>
                         <td><div class="rel-flex">${rel(d.s1n, d.s1i)}${rel(d.s2n, d.s2i)}</div></td>
                         <td><div class="rel-flex">${rel(d.f1n, d.f1i)}${rel(d.f2n, d.f2i)}</div></td>
                         <td><div class="rel-flex">${rel(d.d1n, d.d1i)}${rel(d.d2n, d.d2i)}</div></td>
