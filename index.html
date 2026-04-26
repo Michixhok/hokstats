@@ -3,41 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HOKStats | Meta Database</title>
+    <title>HOKStats Chile | Meta Database</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
     <style>
         body { background-color: #0d1117; color: #c9d1d9; font-family: 'Rajdhani', sans-serif; }
-        .table-container { background: #161b22; border: 1px solid #30363d; border-radius: 12px; overflow: hidden; }
-        .hero-img { width: 42px; height: 42px; border-radius: 50%; border: 2px solid #58a6ff; object-fit: cover; }
-        .mini-img { width: 28px; height: 28px; border-radius: 50%; border: 1px solid #30363d; margin: 0 2px; }
-        .wr-text { color: #3fb950; font-weight: bold; }
-        tr { border-bottom: 1px solid #21262d; transition: 0.2s; }
+        
+        /* Contenedor principal con efecto de fibra de carbono sutil */
+        .main-container { background-image: url('https://www.transparenttextures.com/patterns/dark-dot.png'); }
+
+        /* Estilo de la Tabla: Eliminamos bordes innecesarios */
+        .hok-table { background: #161b22; border-radius: 16px; border: 1px solid #30363d; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+        
+        /* Cabeceras de columna con colores pro */
+        th { background: #1f232c; font-size: 11px; text-transform: uppercase; letter-spacing: 2px; padding: 16px; color: #8b949e; }
+        th.col-win { color: #58a6ff; }
+        th.col-pick { color: #8b949e; }
+        th.col-ban { color: #8b949e; }
+        th.col-synergy { color: #bb86fc; }
+        th.col-counter { color: #ff7b72; }
+
+        /* Filas con efecto hover */
+        tr { border-bottom: 1px solid #21262d; transition: background-color 0.2s; }
         tr:hover { background-color: #1c2128; border-left: 4px solid #58a6ff; }
-        th { background-color: #21262d; color: #8b949e; text-transform: uppercase; font-size: 12px; letter-spacing: 1px; }
+        tr:last-child { border-bottom: none; }
+
+        /* Fotos Circulares */
+        .img-hero { width: 44px; height: 44px; border-radius: 50%; border: 2px solid #58a6ff; object-fit: cover; }
+        .img-mini { width: 30px; height: 30px; border-radius: 50%; border: 1px solid #30363d; margin: 0 3px; }
+        .img-mini.border-counter { border-color: #ff7b72; }
+        
+        /* Texto de Estadísticas */
+        .stat-win { color: #58a6ff; font-size: 1.1em; font-weight: bold; }
+        .stat-pick, .stat-ban { color: #c9d1d9; }
+
     </style>
 </head>
-<body class="p-4 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]">
-    <div class="max-w-6xl mx-auto">
-        <div class="flex justify-between items-center mb-6">
-            <h1 class="text-3xl font-bold text-[#58a6ff]">HOKSTATS <span class="text-white font-light text-xl italic">CHILE</span></h1>
-            <input type="text" id="search" placeholder="Filtrar por héroe o rol..." 
-                   class="bg-[#0d1117] border border-[#30363d] px-4 py-2 rounded-full text-sm focus:ring-2 focus:ring-[#58a6ff] outline-none w-72">
-        </div>
+<body class="main-container p-6">
+    <div class="max-w-7xl mx-auto">
+        <header class="mb-10 flex justify-between items-center border-b border-[#30363d] pb-6">
+            <div>
+                <h1 class="text-4xl font-bold tracking-wider text-[#58a6ff]">HOKSTATS</h1>
+                <p class="text-white text-sm font-light mt-1 italic">Chile's Definitive Meta Database</p>
+            </div>
+            <input type="text" id="search" placeholder="Filtrar por Lian Po, Mago, Medio..." 
+                   class="bg-[#161b22] border border-[#30363d] text-white px-5 py-3 rounded-full text-sm focus:ring-2 focus:ring-[#58a6ff] outline-none w-80 shadow-inner">
+        </header>
 
-        <div class="table-container shadow-2xl">
+        <div class="hok-table">
             <table class="w-full text-left border-collapse">
                 <thead>
                     <tr>
-                        <th class="p-4">Héroe</th>
-                        <th class="p-4">Tipo</th>
-                        <th class="p-4 text-center">Win Rate</th>
-                        <th class="p-4 text-center">Sinergias</th>
-                        <th class="p-4 text-center">Counters</th>
+                        <th class="pl-6 py-4">Héroe</th>
+                        <th class="col-win text-center">Win Rate</th>
+                        <th class="col-pick text-center">Pick Rate</th>
+                        <th class="col-ban text-center">Ban Rate</th>
+                        <th class="p-4">Tipo/Rol</th>
+                        <th class="col-synergy text-center">Sinergias (s1, s2)</th>
+                        <th class="col-counter text-center pr-6">Counters (d1, d2)</th>
                     </tr>
                 </thead>
                 <tbody id="table-body">
-                    </tbody>
+                    <tr><td colspan="7" class="text-center p-10 text-gray-500">Cargando la base de datos...</td></tr>
+                </tbody>
             </table>
         </div>
     </div>
@@ -46,48 +74,62 @@
         const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTO4rMY_drrjKMx3KTdjAaSrH6GenxyZ7YzLPT7oiZ_pNYm6EKG-yJPfmbRcZgYGGi2gERA1Gciw-Fy/pub?gid=538223640&single=true&output=csv';
 
         async function init() {
-            const res = await fetch(CSV_URL);
-            const text = await res.text();
-            // Función para procesar CSV con comas dentro de celdas
-            const rows = text.split('\n').map(r => r.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/));
-            const data = rows.slice(1).map(cols => ({
-                name: cols[1]?.replace(/"/g, ''),
-                img: cols[2]?.replace(/"/g, ''),
-                type: cols[3]?.replace(/"/g, ''),
-                wr: cols[8]?.replace(/"/g, ''),
-                s1: cols[11]?.replace(/"/g, ''), // Columna Sinergia 1
-                s2: cols[13]?.replace(/"/g, ''), // Columna Sinergia 2
-                c1: cols[19]?.replace(/"/g, ''), // Columna Counter 1
-                c2: cols[21]?.replace(/"/g, '')  // Columna Counter 2
-            })).filter(h => h.name);
+            try {
+                const res = await fetch(CSV_URL);
+                const text = await res.text();
+                // Función avanzada para procesar CSV con comas internas
+                const rows = text.split('\n').map(r => r.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/));
+                
+                // Arreglamos el orden de las columnas
+                const data = rows.slice(1).map(cols => ({
+                    name: cols[1]?.replace(/"/g, '').trim(),
+                    img: cols[2]?.replace(/"/g, '').trim(),
+                    type: cols[3]?.replace(/"/g, '').trim(),
+                    wr: cols[8]?.replace(/"/g, '').trim(),  // Columna Win Rate
+                    pr: cols[9]?.replace(/"/g, '').trim(),  // Columna Pick Rate (Zilong 0.52%)
+                    br: cols[10]?.replace(/"/g, '').trim(), // Columna Ban Rate
+                    s1: cols[11]?.replace(/"/g, '').trim(), // Foto Sinergia 1 (s1)
+                    s2: cols[13]?.replace(/"/g, '').trim(), // Foto Sinergia 2 (s2)
+                    c1: cols[19]?.replace(/"/g, '').trim(), // Foto Counter 1 (d1)
+                    c2: cols[21]?.replace(/"/g, '').trim()  // Foto Counter 2 (d2)
+                })).filter(h => h.name);
 
-            window.heroes = data;
-            render(data);
+                window.heroes = data;
+                render(data);
+            } catch (e) {
+                console.error("Error cargando el CSV:", e);
+                document.getElementById('table-body').innerHTML = '<tr><td colspan="7" class="text-center p-10 text-red-500">Error al cargar datos. Verifica la consola (F12).</td></tr>';
+            }
         }
 
         function render(list) {
             document.getElementById('table-body').innerHTML = list.map(h => `
                 <tr>
-                    <td class="p-4 flex items-center gap-4">
-                        <img src="${h.img}" class="hero-img" onerror="this.src='https://via.placeholder.com/40/333/fff?text=?'">
-                        <span class="text-white font-bold text-lg">${h.name}</span>
+                    <td class="pl-6 py-4 flex items-center gap-4">
+                        <img src="${h.img}" class="img-hero" onerror="this.src='https://via.placeholder.com/44/333/fff?text=?'">
+                        <span class="text-white font-bold text-xl">${h.name}</span>
                     </td>
-                    <td class="p-4 text-sm text-gray-400">${h.type}</td>
-                    <td class="p-4 text-center wr-text text-lg">${h.wr}</td>
-                    <td class="p-4 text-center">
-                        <img src="${h.s1}" class="mini-img inline" onerror="this.style.display='none'">
-                        <img src="${h.s2}" class="mini-img inline" onerror="this.style.display='none'">
+                    <td class="text-center stat-win text-lg">${h.wr}</td>
+                    <td class="text-center stat-pick">${h.pr}</td>
+                    <td class="text-center stat-ban">${h.br}</td>
+                    <td class="p-4">
+                        <div class="text-sm">${h.type}</div>
+                        <div class="text-xs text-gray-500">${h.rol}</div>
                     </td>
                     <td class="p-4 text-center">
-                        <img src="${h.c1}" class="mini-img inline border-red-900" onerror="this.style.display='none'">
-                        <img src="${h.c2}" class="mini-img inline border-red-900" onerror="this.style.display='none'">
+                        <img src="${h.s1}" class="img-mini inline" onerror="this.style.display='none'">
+                        <img src="${h.s2}" class="img-mini inline" onerror="this.style.display='none'">
+                    </td>
+                    <td class="p-4 text-center pr-6">
+                        <img src="${h.c1}" class="img-mini inline border-counter" onerror="this.style.display='none'">
+                        <img src="${h.c2}" class="img-mini inline border-counter" onerror="this.style.display='none'">
                     </td>
                 </tr>
             `).join('');
         }
 
         document.getElementById('search').addEventListener('input', (e) => {
-            const val = e.target.value.toLowerCase();
+            const val = e.target.value.toLowerCase().trim();
             render(window.heroes.filter(h => h.name.toLowerCase().includes(val) || h.type.toLowerCase().includes(val)));
         });
 
