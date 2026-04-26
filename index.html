@@ -3,59 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HOKStats | v4.5 Smooth & Clean</title>
+    <title>HOKStats | v4.6 Pro Filter</title>
     <style>
-        :root { --bg: #0b0e11; --card: #161b22; --brd: #30363d; --txt: #f0f6fc; --sec: #8b949e; --acc: #58a6ff; }
+        :root { --bg: #0b0e11; --card: #161b22; --brd: #30363d; --txt: #f0f6fc; --sec: #8b949e; --acc: #58a6ff; --btn-bg: #21262d; }
         body { background: var(--bg); color: var(--txt); font-family: system-ui, sans-serif; padding: 20px 10px; margin: 0; }
         
         .container { display: flex; flex-direction: column; align-items: center; width: 100%; }
         
-        .header { width: fit-content; margin-bottom: 15px; border-left: 4px solid var(--acc); padding-left: 12px; display: flex; align-items: baseline; gap: 8px; align-self: center; }
+        .header { width: fit-content; margin-bottom: 20px; border-left: 4px solid var(--acc); padding-left: 12px; display: flex; align-items: baseline; gap: 8px; }
         .v-badge { background: #238636; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; font-weight: bold; }
-        
+
+        /* --- BARRA DE FILTROS ESTILO PROFESIONAL --- */
+        .filter-bar { 
+            display: flex; 
+            background: var(--card); 
+            border: 1px solid var(--brd); 
+            border-radius: 8px; 
+            padding: 4px; 
+            margin-bottom: 25px; 
+            gap: 4px;
+        }
+        .filter-btn {
+            background: transparent;
+            border: none;
+            color: var(--sec);
+            padding: 8px 20px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+        .filter-btn:hover { color: #fff; background: var(--btn-bg); }
+        .filter-btn.active { background: var(--acc); color: #fff; }
+
         table { width: auto; border-collapse: separate; border-spacing: 0 4px; margin: 0 auto; }
-        
         th { color: var(--sec); font-size: 10px; text-transform: uppercase; padding: 8px 15px; text-align: left; letter-spacing: 0.5px; white-space: nowrap; }
 
-        /* Control de anchos actualizado para nombres de columnas largos */
         .w-hero { width: 160px; } 
         .w-roles { width: 100px; } 
-        .w-stat { width: 110px; text-align: center; } /* Un poco más ancho para los títulos largos */
-        .w-rel { width: 90px; }
+        .w-stat { width: 110px; text-align: center; }
+        .w-rel { width: 95px; }
 
         tr.hero-row td { background: var(--card); padding: 8px 15px; border-top: 1px solid var(--brd); border-bottom: 1px solid var(--brd); vertical-align: middle; }
         tr.hero-row td:first-child { border-left: 1px solid var(--brd); border-radius: 6px 0 0 6px; }
         tr.hero-row td:last-child { border-right: 1px solid var(--brd); border-radius: 0 6px 6px 0; }
 
-        .hero-info { display: flex; align-items: center; gap: 10px; }
-        
-        /* IMAGEN HÉROE: Bordes eliminados y estilo iPhone */
-        .img-main { 
-            width: 40px; 
-            height: 40px; 
-            border-radius: 10px; 
-            border: none; /* Quitamos el contorno */
-            object-fit: cover;
-        }
-        
-        /* ICONOS RELACIONES: Tamaño aumentado y bordes eliminados */
-        .img-mini { 
-            width: 28px; /* Un toque más grandes */
-            height: 28px; 
-            border-radius: 50%; 
-            border: none; /* Quitamos el contorno */
-            object-fit: cover;
-        }
+        .img-main { width: 40px; height: 40px; border-radius: 10px; border: none; object-fit: cover; }
+        .img-mini { width: 28px; height: 28px; border-radius: 50%; border: none; object-fit: cover; }
 
         .name-txt { font-weight: 600; font-size: 14px; color: #fff; display: block; white-space: nowrap; }
-        .type-txt, .stat-txt { color: var(--sec); font-size: 11px; font-weight: normal; white-space: nowrap; }
+        .type-txt, .stat-txt { color: var(--sec); font-size: 11px; white-space: nowrap; }
 
         .roles-flex { display: flex; flex-direction: column; justify-content: center; width: 100px; }
         .rel-flex { display: flex; flex-direction: row; gap: 6px; align-items: center; }
 
         @media (max-width: 800px) {
-            .container { align-items: flex-start; overflow-x: auto; }
-            table { margin: 0; }
+            .container { align-items: center; }
+            .filter-bar { flex-wrap: wrap; justify-content: center; }
+            table { display: block; overflow-x: auto; }
         }
     </style>
 </head>
@@ -63,8 +69,18 @@
     <div class="container">
         <div class="header">
             <h1 style="margin:0; font-size: 20px;">HOKStats</h1>
-            <span class="v-badge">v4.5</span>
+            <span class="v-badge">v4.6</span>
         </div>
+
+        <div class="filter-bar">
+            <button class="filter-btn active" onclick="filterHeroes('Todo', this)">Todo</button>
+            <button class="filter-btn" onclick="filterHeroes('Choque', this)">Choque</button>
+            <button class="filter-btn" onclick="filterHeroes('Cazador', this)">Cazador</button>
+            <button class="filter-btn" onclick="filterHeroes('Medio', this)">Medio</button>
+            <button class="filter-btn" onclick="filterHeroes('Soporte', this)">Soporte</button>
+            <button class="filter-btn" onclick="filterHeroes('Farmeo', this)">Farmeo</button>
+        </div>
+
         <table>
             <thead>
                 <tr>
@@ -84,6 +100,25 @@
 
     <script>
         const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTO4rMY_drrjKMx3KTdjAaSrH6GenxyZ7YzLPT7oiZ_pNYm6EKG-yJPfmbRcZgYGGi2gERA1Gciw-Fy/pub?gid=538223640&single=true&output=csv&cache=' + Date.now();
+        let allHeroesData = [];
+
+        // Función para filtrar
+        function filterHeroes(role, btn) {
+            // Actualizar botones
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            const rows = document.querySelectorAll('.hero-row');
+            rows.forEach(row => {
+                // Obtenemos los roles guardados en el atributo de datos de la fila
+                const heroRoles = row.getAttribute('data-roles');
+                if (role === 'Todo' || heroRoles.includes(role)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
 
         async function load() {
             try {
@@ -114,10 +149,16 @@
                         return name ? `<img src="${img(i)}" class="img-mini" title="${name}" alt="${name}" onerror="this.style.display='none'">` : "";
                     };
 
-                    const roles = [clean(d.r1), clean(d.r2), clean(d.r3)].filter(r => r !== "").join('<br>');
+                    const r1 = clean(d.r1), r2 = clean(d.r2), r3 = clean(d.r3);
+                    const rolesHTML = [r1, r2, r3].filter(r => r !== "").join('<br>');
+                    
+                    // Guardamos todos los roles en un string para facilitar la búsqueda
+                    const rolesString = `${r1},${r2},${r3}`;
 
                     const tr = document.createElement('tr');
                     tr.className = 'hero-row';
+                    tr.setAttribute('data-roles', rolesString); // Atributo clave para el filtro
+                    
                     tr.innerHTML = `
                         <td>
                             <div class="hero-info">
@@ -125,7 +166,7 @@
                                 <div><span class="name-txt">${d.n}</span><span class="type-txt">${clean(d.type)}</span></div>
                             </div>
                         </td>
-                        <td><div class="roles-flex stat-txt">${roles}</div></td>
+                        <td><div class="roles-flex stat-txt">${rolesHTML}</div></td>
                         <td class="w-stat"><span class="stat-txt">${clean(d.w)}</span></td>
                         <td class="w-stat"><span class="stat-txt">${clean(d.p)}</span></td>
                         <td class="w-stat"><span class="stat-txt">${clean(d.b)}</span></td>
