@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>HOKStats | v3.2 revisada</title>
+    <title>HOKStats | v3.2 final</title>
     <style>
         :root {
             --bg-body: #0b0e11;
@@ -42,10 +42,10 @@
             padding: 8px 15px; font-weight: 600; text-align: left;
         }
 
-        .col-hero { width: 15%; }
+        .col-hero { width: 16%; }
         .col-role { width: 7%; }
         .col-stat { width: 8%; }
-        .col-pair { width: 11%; }
+        .col-pair { width: 12%; }
 
         tr.hero-row td {
             background: var(--bg-card); padding: 10px 15px;
@@ -56,14 +56,15 @@
         tr.hero-row td:first-child { border-left: 1px solid var(--border); border-radius: 6px 0 0 6px; }
         tr.hero-row td:last-child { border-right: 1px solid var(--border); border-radius: 0 6px 6px 0; }
 
-        /* Avatares */
-        .img-hero { width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--border); }
-        .img-rel { width: 20px; height: 20px; border-radius: 50%; border: 1px solid var(--border); }
+        /* Estilos de Imagen para que NO se vea el texto del link */
+        .img-hero { width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--border); flex-shrink: 0; }
+        .img-rel { width: 20px; height: 20px; border-radius: 50%; border: 1px solid var(--border); flex-shrink: 0; }
         
-        .flex-cell { display: flex; align-items: center; gap: 10px; }
-        .rel-item { display: flex; align-items: center; gap: 6px; margin-bottom: 3px; font-size: 11px; }
+        .hero-cell { display: flex; align-items: center; gap: 10px; }
+        .rel-container { display: flex; flex-direction: column; gap: 4px; }
+        .rel-item { display: flex; align-items: center; gap: 6px; font-size: 11px; }
 
-        .hero-name { font-weight: bold; font-size: 14px; color: #fff; }
+        .hero-name { font-weight: bold; font-size: 14px; color: #fff; display: block; }
         .hero-type { color: var(--text-sec); font-size: 10px; display: block; }
         .role-text { color: var(--text-sec); font-size: 10px; }
         .stat-val { font-weight: 600; font-size: 13px; color: #fff; }
@@ -107,6 +108,7 @@
             try {
                 const res = await fetch(CSV_URL);
                 const text = await res.text();
+                // El split por coma mejorado para evitar errores con los links
                 const rows = text.split('\n').map(r => r.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/));
                 const tableBody = document.getElementById('table-body');
                 
@@ -114,24 +116,29 @@
                     if (!col[1] || col[1].trim() === "") return;
                     const clean = (v) => (v && v.trim() !== "-" && v.trim() !== "" && v.trim() !== "0.00%") ? v.replace(/"/g, '').trim() : "";
 
-                    // Mapeo exacto según tus instrucciones (A=0, B=1, C=2, D=3...)
-                    const imgHero = clean(col[3]);
-                    const sin1Img = clean(col[13]), sin1Name = clean(col[10]);
-                    const sin2Img = clean(col[16]), sin2Name = clean(col[12]);
-                    const fte1Img = clean(col[19]), fte1Name = clean(col[14]);
-                    const fte2Img = clean(col[22]), fte2Name = clean(col[16]);
-                    const dbl1Img = clean(col[25]), dbl1Name = clean(col[18]);
-                    const dbl2Img = clean(col[28]), dbl2Name = clean(col[20]);
+                    // MAPEO DE COLUMNAS SEGÚN TU INDICACIÓN (A=0, B=1, C=2...)
+                    const imgH = clean(col[3]);  // D
+                    const s1N = clean(col[10]), s1I = clean(col[13]); // N
+                    const s2N = clean(col[12]), s2I = clean(col[16]); // Q
+                    const f1N = clean(col[14]), f1I = clean(col[19]); // T
+                    const f2N = clean(col[16]), f2I = clean(col[22]); // W
+                    const d1N = clean(col[18]), d1I = clean(col[25]); // Z
+                    const d2N = clean(col[20]), d2I = clean(col[28]); // AC
+
+                    const renderRel = (name, img) => {
+                        if(!name) return "";
+                        return `<div class="rel-item">
+                            <img src="${img}" class="img-rel" onerror="this.style.visibility='hidden'">
+                            <span>${name}</span>
+                        </div>`;
+                    };
 
                     const tr = document.createElement('tr');
                     tr.className = 'hero-row';
-                    
-                    const renderRel = (img, name) => name ? `<div class="rel-item"><img src="${img}" class="img-rel" onerror="this.style.display='none'"><span>${name}</span></div>` : "";
-
                     tr.innerHTML = `
                         <td>
-                            <div class="flex-cell">
-                                <img src="${imgHero}" class="img-hero" onerror="this.src='https://www.honorofkings.com/global/images/hero/hero_list_default.png'">
+                            <div class="hero-cell">
+                                <img src="${imgH}" class="img-hero" onerror="this.src='https://www.honorofkings.com/global/images/hero/hero_list_default.png'">
                                 <div><span class="hero-name">${col[1]}</span><span class="hero-type">${col[3]}</span></div>
                             </div>
                         </td>
@@ -141,9 +148,9 @@
                         <td><span class="stat-val">${col[7]}</span></td>
                         <td><span class="stat-val">${col[8]}</span></td>
                         <td><span class="stat-val">${col[9]}</span></td>
-                        <td>${renderRel(sin1Img, sin1Name)}${renderRel(sin2Img, sin2Name)}</td>
-                        <td class="blue">${renderRel(fte1Img, fte1Name)}${renderRel(fte2Img, fte2Name)}</td>
-                        <td class="red">${renderRel(dbl1Img, dbl1Name)}${renderRel(dbl2Img, dbl2Name)}</td>
+                        <td><div class="rel-container">${renderRel(s1N, s1I)}${renderRel(s2N, s2I)}</div></td>
+                        <td class="blue"><div class="rel-container">${renderRel(f1N, f1I)}${renderRel(f2N, f2I)}</div></td>
+                        <td class="red"><div class="rel-container">${renderRel(d1N, d1I)}${renderRel(d2N, d2I)}</div></td>
                     `;
                     tableBody.appendChild(tr);
                 });
