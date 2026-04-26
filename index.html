@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HoKstats | v5.7 Fixed Alignment</title>
+    <title>HoKstats | v5.8</title>
     <style>
         :root { --bg: #0b0e11; --card: #161b22; --brd: #30363d; --txt: #f0f6fc; --sec: #8b949e; --acc: #58a6ff; --btn-bg: #21262d; }
         body { background: var(--bg); color: var(--txt); font-family: system-ui, sans-serif; padding: 20px 10px; margin: 0; }
         
         .container { display: flex; flex-direction: column; align-items: center; width: 100%; }
         
-        /* El secreto está en este wrapper de 1000px que contiene todo */
+        /* Contenedor maestro con ancho fijo para control total */
         .main-wrapper { width: 1000px; max-width: 95vw; display: flex; flex-direction: column; }
 
         .header { 
@@ -24,49 +24,58 @@
         }
         .v-badge { background: #238636; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; font-weight: bold; }
 
+        /* Recuadro corregido para llegar al borde derecho */
         .info-box { 
             background: rgba(88, 166, 255, 0.05); 
             border: 1px solid var(--brd); 
             border-radius: 12px; 
             padding: 16px; 
-            margin-bottom: 25px; 
-            box-sizing: border-box; /* Esto hace que el borde derecho coincida con la tabla */
+            margin-bottom: 30px; 
+            box-sizing: border-box; 
             display: flex;
             gap: 15px;
             align-items: center;
-            width: 100%; 
+            width: 100%; /* Ahora sí cubre todo el ancho del wrapper */
         }
         .info-icon { font-size: 24px; color: var(--acc); }
-        .info-text { font-size: 13px; color: var(--sec); line-height: 1.5; margin: 0; }
+        .info-text { font-size: 13px; color: var(--sec); line-height: 1.5; margin: 0; flex: 1; }
 
-        .filter-container { display: flex; justify-content: center; width: 100%; margin-bottom: 25px; }
-        .filter-bar { display: flex; background: var(--card); border: 1px solid var(--brd); border-radius: 8px; padding: 4px; gap: 4px; }
-        .filter-btn { background: transparent; border: none; color: var(--sec); padding: 8px 18px; font-size: 13px; font-weight: 600; cursor: pointer; border-radius: 6px; transition: all 0.2s; }
+        /* Barra de filtros centrada y alineada */
+        .filter-container { 
+            display: flex; 
+            justify-content: center; /* Centra la barra respecto a la tabla */
+            width: 100%; 
+            margin-bottom: 30px; 
+        }
+        .filter-bar { 
+            display: flex; 
+            justify-content: center; /* Centra los botones dentro de la barra */
+            background: var(--card); 
+            border: 1px solid var(--brd); 
+            border-radius: 10px; 
+            padding: 6px; 
+            gap: 8px;
+            width: fit-content; /* Se ajusta a los botones pero se mantiene centrada */
+        }
+        .filter-btn { background: transparent; border: none; color: var(--sec); padding: 8px 20px; font-size: 13px; font-weight: 600; cursor: pointer; border-radius: 6px; transition: all 0.2s; }
         .filter-btn:hover { color: #fff; background: var(--btn-bg); }
         .filter-btn.active { background: var(--acc); color: #fff; }
 
-        table { width: 100%; border-collapse: separate; border-spacing: 0 2px; table-layout: fixed; }
-
-        th { color: var(--sec); font-size: 10px; text-transform: uppercase; padding: 6px 10px; text-align: center; letter-spacing: 0.5px; cursor: pointer; position: relative; }
+        /* Tabla alineada */
+        table { width: 100%; border-collapse: separate; border-spacing: 0 4px; table-layout: fixed; }
+        th { color: var(--sec); font-size: 10px; text-transform: uppercase; padding: 8px 10px; text-align: center; }
         th.w-hero { text-align: left; width: 180px; } 
-        .w-roles { width: 110px; } 
-        .w-stat { width: 120px; }
-        .w-rel { width: 105px; }
 
-        tr.hero-row td { background: var(--card); padding: 5px 15px; border-top: 1px solid var(--brd); border-bottom: 1px solid var(--brd); vertical-align: middle; text-align: center; }
-        tr.hero-row td:first-child { border-left: 1px solid var(--brd); border-radius: 6px 0 0 6px; text-align: left; }
-        tr.hero-row td:last-child { border-right: 1px solid var(--brd); border-radius: 0 6px 6px 0; }
+        tr.hero-row td { background: var(--card); padding: 8px 15px; border-top: 1px solid var(--brd); border-bottom: 1px solid var(--brd); vertical-align: middle; }
+        tr.hero-row td:first-child { border-left: 1px solid var(--brd); border-radius: 8px 0 0 8px; text-align: left; }
+        tr.hero-row td:last-child { border-right: 1px solid var(--brd); border-radius: 0 8px 8px 0; text-align: center; }
 
-        .hero-info { display: flex; align-items: center; gap: 10px; }
-        .img-main { width: 36px; height: 36px; border-radius: 8px; object-fit: cover; flex-shrink: 0; }
-        .img-mini { width: 26px; height: 26px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
-
-        .name-txt { font-weight: 600; font-size: 13px; color: #fff; display: block; }
-        .type-txt { color: var(--sec); font-size: 10px; white-space: nowrap; }
-        .stat-txt { color: var(--sec); font-size: 12px; font-weight: 500; white-space: nowrap; }
-
-        .roles-flex { display: flex; flex-direction: column; align-items: center; line-height: 1.2; }
-        .rel-flex { display: flex; gap: 5px; align-items: center; justify-content: center; }
+        .hero-info { display: flex; align-items: center; gap: 12px; }
+        .img-main { width: 40px; height: 40px; border-radius: 8px; object-fit: cover; }
+        .img-mini { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; border: 1px solid var(--brd); }
+        .name-txt { font-weight: 600; font-size: 14px; color: #fff; display: block; }
+        .stat-txt { color: var(--sec); font-size: 12px; font-weight: 500; }
+        .rel-flex { display: flex; gap: 6px; justify-content: center; }
     </style>
 </head>
 <body>
@@ -74,7 +83,7 @@
         <div class="main-wrapper">
             <div class="header">
                 <h1 style="margin:0; font-size: 20px;">HoKstats</h1>
-                <span class="v-badge">v5.7</span>
+                <span class="v-badge">v5.8</span>
             </div>
 
             <div class="info-box">
@@ -98,14 +107,14 @@
             <table id="heroTable">
                 <thead>
                     <tr>
-                        <th class="w-hero" onclick="sortRows(0, 'str', this)">Héroe</th>
-                        <th class="w-roles">Roles</th>
-                        <th class="w-stat" onclick="sortRows(2, 'num', this)">Tasa de victoria</th>
-                        <th class="w-stat" onclick="sortRows(3, 'num', this)">Tasa de selección</th>
-                        <th class="w-stat" onclick="sortRows(4, 'num', this)">Tasa de baneo</th>
-                        <th class="w-rel">Sinergia con</th>
-                        <th class="w-rel">Fuerte contra</th>
-                        <th class="w-rel">Débil contra</th>
+                        <th class="w-hero">Héroe</th>
+                        <th style="width:110px">Roles</th>
+                        <th style="width:120px">Tasa Victoria</th>
+                        <th style="width:120px">Tasa Selección</th>
+                        <th style="width:120px">Tasa Baneo</th>
+                        <th style="width:105px">Sinergia</th>
+                        <th style="width:105px">Fuerte</th>
+                        <th style="width:105px">Débil</th>
                     </tr>
                 </thead>
                 <tbody id="table-body"></tbody>
@@ -115,38 +124,6 @@
 
     <script>
         const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTO4rMY_drrjKMx3KTdjAaSrH6GenxyZ7YzLPT7oiZ_pNYm6EKG-yJPfmbRcZgYGGi2gERA1Gciw-Fy/pub?gid=538223640&single=true&output=csv&cache=' + Date.now();
-        let currentSort = { col: null, asc: true };
-
-        function filterHeroes(role, btn) {
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            const rows = document.querySelectorAll('.hero-row');
-            rows.forEach(row => {
-                const heroRoles = row.getAttribute('data-roles');
-                row.style.display = (role === 'Todo' || heroRoles.toLowerCase().includes(role.toLowerCase())) ? '' : 'none';
-            });
-        }
-
-        function sortRows(colIndex, type, header) {
-            const tbody = document.getElementById('table-body');
-            const rows = Array.from(tbody.querySelectorAll('.hero-row'));
-            if (currentSort.col === colIndex) currentSort.asc = !currentSort.asc;
-            else { currentSort.col = colIndex; currentSort.asc = true; }
-            document.querySelectorAll('th').forEach(th => th.classList.remove('sort-asc', 'sort-desc'));
-            header.classList.add(currentSort.asc ? 'sort-asc' : 'sort-desc');
-            rows.sort((a, b) => {
-                let valA, valB;
-                if (type === 'str') {
-                    valA = a.cells[colIndex].querySelector('.name-txt').innerText.toLowerCase();
-                    valB = b.cells[colIndex].querySelector('.name-txt').innerText.toLowerCase();
-                } else {
-                    valA = parseFloat(a.cells[colIndex].innerText.replace('%', '')) || 0;
-                    valB = parseFloat(b.cells[colIndex].innerText.replace('%', '')) || 0;
-                }
-                return currentSort.asc ? valA - valB : valB - valA;
-            });
-            rows.forEach(row => tbody.appendChild(row));
-        }
 
         async function load() {
             try {
@@ -157,36 +134,41 @@
                     for (let c of line) { if (c === '"') q = !q; else if (c === ',' && !q) { parts.push(curr); curr = ''; } else curr += c; }
                     parts.push(curr); return parts;
                 });
+
                 const body = document.getElementById('table-body');
                 rows.slice(1).forEach(row => {
                     if (!row[1]) return;
-                    const d = {
-                        n: row[1], img: row[3], type: row[4],
-                        r1: row[5], r2: row[6], r3: row[7],
-                        w: row[8], p: row[9], b: row[10],
-                        s1i: row[13], s2i: row[16], f1i: row[19], f2i: row[22], d1i: row[25], d2i: row[28]
+                    const d = { 
+                        n: row[1], img: row[3], type: row[4], r1: row[5],
+                        win: row[8], pick: row[9], ban: row[10],
+                        s1: row[13], s2: row[16], f1: row[19], f2: row[22], d1: row[25], d2: row[28]
                     };
-                    const clean = (v) => (v && !v.includes('http') && v !== "-" && v !== "0") ? v.trim() : "";
-                    const img = (v) => (v && v.includes('http')) ? v.trim() : "";
-                    const rel = (i) => i ? `<img src="${i}" class="img-mini" onerror="this.style.display='none'">` : "";
-                    const r1 = clean(d.r1), r2 = clean(d.r2), r3 = clean(d.r3);
-                    const rolesHTML = [r1, r2, r3].filter(r => r !== "").join('<br>');
+                    const imgTag = (url) => (url && url.includes('http')) ? `<img src="${url.trim()}" class="img-mini" onerror="this.style.display='none'">` : "";
+
                     const tr = document.createElement('tr');
                     tr.className = 'hero-row';
-                    tr.setAttribute('data-roles', `${r1},${r2},${r3}`);
+                    tr.setAttribute('data-roles', d.r1);
                     tr.innerHTML = `
-                        <td><div class="hero-info"><img src="${img(d.img)}" class="img-main"><div><span class="name-txt">${d.n}</span><span class="type-txt">${clean(d.type)}</span></div></div></td>
-                        <td><div class="roles-flex stat-txt">${rolesHTML}</div></td>
-                        <td><span class="stat-txt">${clean(d.w)}</span></td>
-                        <td><span class="stat-txt">${clean(d.p)}</span></td>
-                        <td><span class="stat-txt">${clean(d.b)}</span></td>
-                        <td><div class="rel-flex">${rel(img(d.s1i))}${rel(img(d.s2i))}</div></td>
-                        <td><div class="rel-flex">${rel(img(d.f1i))}${rel(img(d.f2i))}</div></td>
-                        <td><div class="rel-flex">${rel(img(d.d1i))}${rel(img(d.d2i))}</div></td>
+                        <td><div class="hero-info"><img src="${d.img}" class="img-main"><div><span class="name-txt">${d.n}</span><small style="color:var(--sec)">${d.type}</small></div></div></td>
+                        <td class="stat-txt" style="text-align:center">${d.r1}</td>
+                        <td class="stat-txt" style="text-align:center">${d.win}</td>
+                        <td class="stat-txt" style="text-align:center">${d.pick}</td>
+                        <td class="stat-txt" style="text-align:center">${d.ban}</td>
+                        <td><div class="rel-flex">${imgTag(d.s1)}${imgTag(d.s2)}</div></td>
+                        <td><div class="rel-flex">${imgTag(d.f1)}${imgTag(d.f2)}</div></td>
+                        <td><div class="rel-flex">${imgTag(d.d1)}${imgTag(d.d2)}</div></td>
                     `;
                     body.appendChild(tr);
                 });
             } catch (e) { console.error(e); }
+        }
+
+        function filterHeroes(role, btn) {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.querySelectorAll('.hero-row').forEach(row => {
+                row.style.display = (role === 'Todo' || row.getAttribute('data-roles').includes(role)) ? '' : 'none';
+            });
         }
         load();
     </script>
