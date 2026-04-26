@@ -6,114 +6,97 @@
     <title>HoKstats | v9.0</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-    :root { 
-        --bg: #0f111a;           /* Fondo más profundo */
-        --card: #1a1c24;         /* Azul oscuro para filas */
-        --card-alt: #22252e;     /* Azul sutilmente más claro para filas pares */
-        --brd: #2a2e39;          /* Bordes más integrados */
-        --txt: #ffffff; 
-        --sec: #9ba3af;          /* Texto secundario más legible */
-        --acc: #3182ce;          /* Azul brillante tipo ejemplo */
-        --btn-bg: #2d3748; 
-        --green: #238636;
-    }
+        :root { 
+            --bg: #0b0d14;           
+            --card: #161923;         
+            --card-alt: #1c1f2a;     
+            --brd: #2d313e; 
+            --txt: #ffffff; 
+            --sec: #9499a3; 
+            --acc: #3182ce;          
+        }
 
-    body { 
-        background-color: var(--bg); 
-        color: var(--txt); 
-        font-family: 'Inter', -apple-system, sans-serif; 
-        padding: 20px 10px; 
-        margin: 0; 
-        display: flex;
-        justify-content: center;
-    }
-    
-    .container { display: flex; flex-direction: column; align-items: center; width: 100%; }
-    
-    .header { width: 1080px; max-width: 98vw; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; }
-    .header-left { display: flex; align-items: baseline; gap: 10px; border-left: 4px solid var(--acc); padding-left: 15px; }
-    .header-left h1 { margin: 0; font-size: 22px; font-weight: 700; }
+        body { 
+            background-color: var(--bg); color: var(--txt); 
+            font-family: 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 20px;
+        }
+        
+        .container { max-width: 1100px; margin: 0 auto; width: 100%; }
+        
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .header-left { border-left: 4px solid var(--acc); padding-left: 15px; }
+        .header-left h1 { margin: 0; font-size: 22px; letter-spacing: 1px; }
 
-    .tab-btn { background: transparent; border: none; color: var(--sec); font-size: 13px; font-weight: 600; cursor: pointer; padding: 10px 20px; border-radius: 6px; }
-    .tab-btn.active { color: #fff; background-color: var(--acc); }
+        .main-tabs { display: flex; background: #1c1f2a; border-radius: 8px; padding: 4px; gap: 5px; }
+        .tab-btn { border: none; background: transparent; color: var(--sec); padding: 8px 16px; cursor: pointer; font-size: 13px; font-weight: 600; border-radius: 6px; }
+        .tab-btn.active { background: var(--acc); color: white; }
 
-    /* Barra de filtros estilo ejemplo */
-    .filter-bar { display: flex; background-color: #22252e; border-radius: 6px; padding: 4px; gap: 2px; }
-    .filter-btn { background: transparent; border: none; color: var(--sec); padding: 8px 24px; font-size: 12px; font-weight: 600; cursor: pointer; border-radius: 4px; }
-    .filter-btn.active { background-color: var(--acc); color: #fff; }
+        .content-section { display: none; flex-direction: column; width: 100%; }
+        .content-section.active { display: flex; }
 
-    /* Estilización de la Tabla */
-    .table-wrapper { width: 1080px; max-width: 98vw; }
-    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-    
-    th { color: var(--sec); font-size: 11px; text-transform: uppercase; padding: 15px 10px; text-align: center; border-bottom: 2px solid var(--brd); letter-spacing: 0.5px; }
-    th.w-hero { text-align: left; }
+        .toolbar { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 20px; 
+            gap: 20px;
+        }
+        
+        .filter-bar { display: flex; background: #1c1f2a; border-radius: 8px; padding: 4px; gap: 5px; }
+        .filter-btn { border: none; background: transparent; color: var(--sec); padding: 8px 15px; cursor: pointer; font-size: 12px; border-radius: 5px; }
+        .filter-btn.active { background: var(--acc); color: white; }
 
-    tr.hero-row td { 
-        background-color: var(--card); 
-        padding: 8px 10px; 
-        border-bottom: 1px solid var(--bg); /* Separador sutil */
-        text-align: center; 
-        font-size: 12px; /* Un nivel menos */
-    }
+        .search-box { 
+            background: #1c1f2a; 
+            border: 1px solid var(--brd);
+            border-radius: 8px; 
+            padding: 8px 15px; 
+            display: flex; 
+            align-items: center;
+            width: 250px; 
+        }
+        .search-box input { background: transparent; border: none; color: white; outline: none; width: 100%; font-size: 13px; }
 
-    /* Efecto cebra sutil */
-    tr.hero-row:nth-child(even) td { background-color: var(--card-alt); }
+        table { width: 100%; border-collapse: collapse; background: var(--card); border-radius: 10px; overflow: hidden; }
+        th { color: var(--sec); font-size: 11px; text-transform: uppercase; padding: 15px 10px; border-bottom: 1px solid var(--brd); text-align: center; }
+        th.w-hero { text-align: left; padding-left: 20px; }
 
-    /* Estilo del Tier (El diamante azul) */
-    .tier-box {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        background-color: var(--acc);
-        color: white;
-        width: 22px;
-        height: 22px;
-        font-weight: 900;
-        font-size: 13px;
-        clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); /* Forma de diamante */
-    }
+        tr.hero-row td { padding: 10px; border-bottom: 1px solid #00000022; text-align: center; font-size: 12px; }
+        tr.hero-row:nth-child(even) td { background-color: var(--card-alt); }
 
-    .hero-info { display: flex; align-items: center; gap: 10px; }
-    .img-main { width: 34px; height: 34px; border-radius: 6px; }
-    
-    .name-txt { font-weight: 600; font-size: 13px; color: #fff; }
-    .type-txt { color: var(--sec); font-size: 10px; }
-    
-    .stat-txt { color: #cbd5e0; font-size: 12px; font-weight: 400; }
+        .tier-box {
+            display: inline-flex; align-items: center; justify-content: center;
+            background-color: var(--acc); color: white;
+            width: 22px; height: 22px; font-weight: 800; font-size: 12px;
+            clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+        }
 
-    .img-mini { width: 24px; height: 24px; border-radius: 50%; margin: 0 2px; }
-    .rel-flex { display: flex; gap: 4px; justify-content: center; }
+        .hero-info { display: flex; align-items: center; gap: 12px; padding-left: 10px; }
+        .img-main { width: 36px; height: 36px; border-radius: 8px; border: 1px solid var(--brd); }
+        .name-txt { font-weight: 600; font-size: 13px; display: block; text-align: left; color: #fff; }
+        .type-txt { color: var(--sec); font-size: 10px; display: block; text-align: left; }
+        
+        .img-mini { width: 22px; height: 22px; border-radius: 50%; border: 1px solid #000; }
+        .rel-flex { display: flex; gap: 4px; justify-content: center; }
+        
+        .chart-area { background: var(--card); border-radius: 15px; padding: 25px; border: 1px solid var(--brd); height: 500px; }
 
-    .chart-area { width: 1080px; max-width: 98vw; background-color: var(--card); border-radius: 12px; padding: 25px; height: 600px; }
-</style>
+        .analysis-container { 
+            width: 100%; margin: 40px auto; color: var(--sec); 
+            background-color: var(--card); padding: 30px; border-radius: 14px; 
+            border: 1px solid var(--brd); box-sizing: border-box; 
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
             <div class="header-left">
                 <h1>HoKstats</h1>
-                <span class="v-badge">v9.0</span>
             </div>
             <div class="main-tabs">
                 <button class="tab-btn active" onclick="switchTab('stats', this)">Estadísticas</button>
                 <button class="tab-btn" onclick="switchTab('analytics', this)">Análisis Gráfico</button>
-            </div>
-        </div>
-
-        <div class="info-box">
-            <div class="info-icon">💡</div>
-            <div class="info-content">
-                <p class="info-text">
-                Este es un proyecto personal desarrollado originalmente para mejorar mi rendimiento en <strong>Honor of Kings</strong>. 
-                Al notar su utilidad, decidí compartirlo con la comunidad. Esta herramienta es independiente, sin fines de lucro y no tiene relación oficial con Honor of Kings, 
-                los datos presentados se obtienen de las fuentes oficiales públicas destinadas a los jugadores. Se recomienda visualizar la pagina con el smartphone en horizontal 
-                para una mejor experiencia. Si tienes alguna observación te dejo mi correo y mi canal de youtube.                
-                </p>
-                <div class="contact-area">
-                    <a href="mailto:michixhok@gmail.com" class="contact-link">📧 michixhok@gmail.com</a>
-                    <a href="https://www.youtube.com/@michixhok" target="_blank" class="contact-link">📺 YouTube</a>
-                </div>
             </div>
         </div>
 
@@ -128,28 +111,26 @@
                     <button class="filter-btn" onclick="setFilter('Farmeo', this)">Farmeo</button>
                 </div>
                 <div class="search-box">
-                    <input type="text" id="heroSearch" placeholder="Buscar héroe..." onkeyup="applyFilters()">
+                    <input type="text" id="heroSearch" placeholder="Buscar héroe..." onkeyup="filterTable()">
                 </div>
             </div>
-            
-            <div class="table-wrapper">
-                <table id="heroTable">
-                    <thead>
-                        <tr>
-                            <th class="w-hero" onclick="sortRows(0, 'str')">Héroe</th>
-                            <th style="width:60px" onclick="sortRows(1, 'num')">Tier</th>
-                            <th style="width:90px">Roles</th>
-                            <th onclick="sortRows(3, 'num')">Win Rate</th>
-                            <th onclick="sortRows(4, 'num')">Pick Rate</th>
-                            <th onclick="sortRows(5, 'num')">Ban Rate</th>
-                            <th>Sinergia con</th>
-                            <th>Fuerte contra</th>
-                            <th>Débil contra</th>
-                        </tr>
-                    </thead>
-                    <tbody id="table-body"></tbody>
-                </table>
-            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th class="w-hero">Héroe</th>
+                        <th>Tier</th>
+                        <th>Roles</th>
+                        <th>Win%</th>
+                        <th>Pick%</th>
+                        <th>Ban%</th>
+                        <th>Sinergia</th>
+                        <th>Fuerte vs</th>
+                        <th>Débil vs</th>
+                    </tr>
+                </thead>
+                <tbody id="heroBody"></tbody>
+            </table>
         </div>
 
         <div id="section-analytics" class="content-section">
@@ -166,244 +147,182 @@
             <div class="chart-area">
                 <canvas id="scatterChart"></canvas>
             </div>
-        <div class="analysis-container" style="width: 1080px; max-width: 98vw; margin: 40px auto; color: var(--sec); font-family: sans-serif; background-color: var(--card); padding: 30px; border-radius: 14px; border: 1px solid var(--brd); box-sizing: border-box; display: block;">
-    <h2 style="color: var(--acc); border-bottom: 1px solid var(--brd); padding-bottom: 10px; margin-top: 0; font-size: 18px;">Interpretación de la matriz</h2>
-    
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 30px; margin-top: 20px;">
-        
-        <div>
-            <h3 style="color: #00ff00; font-size: 14px;">🟢 Pilares del meta</h3>
-            <p style="font-size: 12px;"><strong>Análisis:</strong> Representan las selecciones dominantes del meta actual. Su combinación de alto win rate y presencia (elección y baneo) sostenida sugiere no solo fortaleza estadística, sino también consistencia en distintos contextos de juego.</p>
-            <p style="font-size: 12px;"><strong>Estrategia:</strong> Prioridad alta en fase de bans o first pick. Son elecciones seguras que definen el ritmo del meta.</p>
-        </div>
 
-        <div>
-            <h3 style="color: #00ffff; font-size: 14px;">🔵 Especialistas y selecciones infravaloradas</h3>
-            <p style="font-size: 12px;"><strong>Análisis:</strong> Picks de nicho con rendimiento sólido en manos experimentadas. Su baja presencia no refleja debilidad, sino una barrera de ejecución o conocimiento. Suelen explotar lagunas en el entendimiento del rival.</p>
-            <p style="font-size: 12px;"><strong>Estrategia:</strong> Invertir en su dominio puede generar ventajas competitivas.</p>
-        </div>
-
-        <div>
-            <h3 style="color: #ffff00; font-size: 14px;">🟡 Populares en transición</h3>
-            <p style="font-size: 12px;"><strong>Análisis:</strong> Héroes con alta adopción pero rendimiento inconsistente. Suelen estar influenciados por tendencias, percepción del meta o facilidad de uso, aunque sus resultados no siempre respaldan su popularidad.</p>
-            <p style="font-size: 12px;"><strong>Estrategia:</strong> Uso condicionado al contexto y a la maestría individual. Requieren evaluación crítica antes de ser seleccionados.</p>
-        </div>
-
-        <div>
-            <h3 style="color: #ff4444; font-size: 14px;">🔴 Bajo rendimiento</h3>
-            <p style="font-size: 12px;"><strong>Análisis:</strong> En términos generales, presentan métricas desfavorables en el entorno actual, lo que sugiere dificultades de adaptación al meta o menor impacto en composiciones estándar.
-Es importante matizar que los héroes que se sitúan en el rango cercano al 48%–50% de win rate deben interpretarse con cautela. Dado el alto volumen de datos, pequeñas variaciones estadísticas pueden no ser suficientemente representativas de su verdadero potencial, especialmente si existen sesgos de uso, baja especialización o contextos de ejecución específicos.</p>
-            <p style="font-size: 12px;"><strong>Estrategia:</strong> Evitar como regla general en entornos competitivos, pero considerar casos puntuales donde el contexto, la composición o la experiencia del jugador puedan mitigar sus debilidades.</p>
-        </div>
-    </div>
-</div>
+            <div class="analysis-container">
+                <h2 style="color: var(--acc); border-bottom: 1px solid var(--brd); padding-bottom: 10px; margin-top: 0; font-size: 18px;">Interpretación Profesional de la Matriz</h2>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 30px; margin-top: 20px;">
+                    <div>
+                        <h3 style="color: #00ff00; font-size: 14px;">🟢 Pilares del Meta</h3>
+                        <p style="font-size: 12px;"><strong>Análisis:</strong> Dominadores actuales. Su alto desempeño indica mecánicas sólidas.</p>
+                    </div>
+                    <div>
+                        <h3 style="color: #00ffff; font-size: 14px;">🔵 Especialistas y Sleepers</h3>
+                        <p style="font-size: 12px;"><strong>Análisis:</strong> Potencial oculto. Efectivos en manos expertas.</p>
+                    </div>
+                    <div>
+                        <h3 style="color: #ffff00; font-size: 14px;">🟡 Populares en Transición</h3>
+                        <p style="font-size: 12px;"><strong>Análisis:</strong> Los cercanos al 49% son viables pero sensibles al volumen de uso.</p>
+                    </div>
+                    <div>
+                        <h3 style="color: #ff4444; font-size: 14px;">🔴 Bajo Rendimiento</h3>
+                        <p style="font-size: 12px;"><strong>Análisis:</strong> Zona de riesgo. No encajan en el meta actual.</p>
+                    </div>
+                </div>
             </div>
-            <div style="width: 1080px; max-width: 98vw; margin: 20px auto; padding: 15px 0; border-top: 1px solid var(--brd); display: flex; justify-content: center; align-items: center; gap: 8px;">
-    <span style="color: var(--acc); font-size: 12px;">🕒</span>
-    <p style="color: var(--sec); font-size: 10px; margin: 0; font-family: sans-serif; letter-spacing: 0.5px; text-transform: uppercase;">
-        Última actualización de parámetros y métricas: <strong>26 de Abril, 2026</strong>
-    </p>
-</div>
-    
+        </div>
+
+        <div style="width: 100%; margin-top: 30px; padding: 15px 0; border-top: 1px solid var(--brd); display: flex; justify-content: center; align-items: center; gap: 8px;">
+            <p style="color: var(--sec); font-size: 10px; margin: 0; text-transform: uppercase;">Última actualización: 26 de Abril, 2026</p>
+        </div>
     </div>
 
-    
     <script>
-        const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTO4rMY_drrjKMx3KTdjAaSrH6GenxyZ7YzLPT7oiZ_pNYm6EKG-yJPfmbRcZgYGGi2gERA1Gciw-Fy/pub?gid=538223640&single=true&output=csv&cache=' + Date.now();
-        let currentSort = { col: 1, asc: true }; 
-        let activeRole = 'Todo';
-        let chartFilter = 'Todo';
-        let allHeroes = [];
-        let myChart = null;
+        const SHEET_ID = '12nS_m2_oN9fV00I0073Uu0X1kO13N7N71yV00p0_000'; // Tu ID real
+        const SHEET_TITLE = 'HoK';
+        const SHEET_RANGE = 'A2:AB200';
+        const FULL_URL = `https://docs.google.com/spreadsheets/d/1X9N_lZ_m4qV_j6S5Uu0Z1kO13N7N71yV66p9_eYvY_M/gviz/tq?sheet=${SHEET_TITLE}&range=${SHEET_RANGE}`;
 
-        function switchTab(tabId, btn) {
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
-            btn.classList.add('active');
-            document.getElementById('section-' + tabId).classList.add('active');
-            if(tabId === 'analytics') setTimeout(renderChart, 100);
-        }
-
-        function setFilter(role, btn) {
-            document.querySelectorAll('#section-stats .filter-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            activeRole = role;
-            applyFilters();
-        }
-
-        function setFilterChart(role, btn) {
-            document.querySelectorAll('#section-analytics .filter-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            chartFilter = role;
-            renderChart();
-        }
-
-        function applyFilters() {
-            const query = document.getElementById('heroSearch').value.toLowerCase();
-            document.querySelectorAll('.hero-row').forEach(row => {
-                const name = row.querySelector('.name-txt').innerText.toLowerCase();
-                const roles = row.getAttribute('data-roles').toLowerCase();
-                row.style.display = ((activeRole === 'Todo' || roles.includes(activeRole.toLowerCase())) && name.includes(query)) ? '' : 'none';
-            });
-        }
-
-        function sortRows(col, type) {
-            const tbody = document.getElementById('table-body');
-            const rows = Array.from(tbody.querySelectorAll('.hero-row'));
-            if (currentSort.col === col) currentSort.asc = !currentSort.asc;
-            else { currentSort.col = col; currentSort.asc = true; }
-            rows.sort((a, b) => {
-                let vA, vB;
-                if (col === 1) { vA = parseInt(a.getAttribute('data-pos')) || 999; vB = parseInt(b.getAttribute('data-pos')) || 999; }
-                else if (type === 'str') { vA = a.cells[col].innerText.toLowerCase(); vB = b.cells[col].innerText.toLowerCase(); }
-                else { vA = parseFloat(a.cells[col].innerText.replace('%','')) || 0; vB = parseFloat(b.cells[col].innerText.replace('%','')) || 0; }
-                return currentSort.asc ? vA - vB : vB - vA;
-            });
-            rows.forEach(r => tbody.appendChild(r));
-        }
-
-        function renderChart() {
-            if(myChart) myChart.destroy();
-            const ctx = document.getElementById('scatterChart').getContext('2d');
-            
-            const filteredHeroes = allHeroes.filter(h => {
-                const roles = [h.r1, h.r2, h.r3].map(r => r ? r.toLowerCase() : "");
-                return chartFilter === 'Todo' || roles.some(r => r.includes(chartFilter.toLowerCase()));
-            });
-
-            const heroPoints = filteredHeroes.map(h => {
-                const img = new Image();
-                img.src = h.img;
-                return { img, x: (h.p_raw + h.b_raw), y: h.w_raw, name: h.n };
-            });
-
-            myChart = new Chart(ctx, {
-                type: 'scatter',
-                data: { datasets: [{ data: heroPoints, pointRadius: 8, pointHoverRadius: 22 }] },
-                options: {
-                    responsive: true, maintainAspectRatio: false,
-                    scales: {
-                        x: { 
-                            title: { display: true, text: 'Tasa de presencia %', color: '#8b949e' }, 
-                            min: 0, max: 7,
-                            grid: {
-                                color: (context) => context.tick.value === 1 ? 'rgba(88, 166, 255, 0.4)' : 'rgba(48, 54, 61, 0.5)',
-                                lineWidth: (context) => context.tick.value === 1 ? 2 : 1
-                            }
-                        },
-                        y: { 
-                            title: { display: true, text: 'Tasa de victoria %', color: '#8b949e' }, 
-                            min: 40, max: 60,
-                            grid: {
-                                color: (context) => context.tick.value === 50 ? 'rgba(88, 166, 255, 0.4)' : 'rgba(48, 54, 61, 0.5)',
-                                lineWidth: (context) => context.tick.value === 50 ? 2 : 1
-                            }
-                        }
-                    },
-                    plugins: { 
-                        legend: { display: false },
-                        tooltip: { callbacks: { label: (c) => ` ${c.raw.name}: Win ${c.raw.y}% | Presencia ${c.raw.x.toFixed(2)}%` } }
-                    }
-                },
-                plugins: [{
-                    id: 'quadrantBackgrounds',
-                    beforeDraw(chart) {
-                        const {ctx, chartArea: {top, bottom, left, right}, scales: {x, y}} = chart;
-                        const midX = x.getPixelForValue(1);  
-                        const midY = y.getPixelForValue(50); 
-
-                        ctx.save();
-                        // Cuadrante Superior Izquierdo (Cyan)
-                        ctx.fillStyle = 'rgba(0, 255, 255, 0.05)'; 
-                        ctx.fillRect(left, top, midX - left, midY - top);
-                        // Cuadrante Superior Derecho (Verde)
-                        ctx.fillStyle = 'rgba(0, 255, 0, 0.05)';
-                        ctx.fillRect(midX, top, right - midX, midY - top);
-                        // Cuadrante Inferior Izquierdo (Rojo)
-                        ctx.fillStyle = 'rgba(255, 0, 0, 0.05)';
-                        ctx.fillRect(left, midY, midX - left, bottom - midY);
-                        // Cuadrante Inferior Derecho (Amarillo)
-                        ctx.fillStyle = 'rgba(255, 255, 0, 0.05)';
-                        ctx.fillRect(midX, midY, right - midX, bottom - midY);
-                        ctx.restore();
-                    }
-                }, {
-                    id: 'heroIcons',
-                    afterDatasetDraw(chart) {
-                        const {ctx} = chart;
-                        chart.getDatasetMeta(0).data.forEach((point, index) => {
-                            const {x, y} = point;
-                            const hero = heroPoints[index];
-                            const size = 26;
-                            if (hero.img.complete) {
-                                ctx.save();
-                                ctx.beginPath();
-                                ctx.arc(x, y, size / 2, 0, Math.PI * 2);
-                                ctx.clip();
-                                ctx.drawImage(hero.img, x - size / 2, y - size / 2, size, size);
-                                ctx.restore();
-                            }
-                        });
-                    }
-                }]
-            });
-        }
+        let allData = [];
+        let chartInstance = null;
 
         async function loadData() {
             try {
-                const res = await fetch(CSV_URL);
-                const text = await res.text();
-                const rows = text.split('\n').map(l => {
-                    const p = []; let c = '', q = false;
-                    for (let x of l) { if (x === '"') q = !q; else if (x === ',' && !q) { p.push(c); c = ''; } else c += x; }
-                    p.push(c); return p;
-                });
-                const tbody = document.getElementById('table-body');
-                allHeroes = rows.slice(1).map(r => {
-                    if (!r[1]) return null;
-                    return {
-                        n: r[1], img: r[3], type: r[4], r1: r[5], r2: r[6], r3: r[7],
-                        w: r[8], p: r[9], b: r[10],
-                        s1i: r[13], s2i: r[16], f1i: r[19], f2i: r[22], d1i: r[25], d2i: r[28],
-                        tier: r[29], pos: r[30],
-                        w_raw: parseFloat(r[8]) || 0, p_raw: parseFloat(r[9]) || 0, b_raw: parseFloat(r[10]) || 0
-                    };
-                }).filter(h => h !== null);
+                const response = await fetch(FULL_URL);
+                const text = await response.text();
+                const json = JSON.parse(text.substr(47).slice(0, -2));
+                const rows = json.table.rows;
 
-                allHeroes.sort((a, b) => (parseInt(a.pos) || 999) - (parseInt(b.pos) || 999));
+                allData = rows.map(r => ({
+                    n: r.c[0]?.v || '',
+                    type: r.c[1]?.v || '',
+                    tier: r.c[2]?.v || '',
+                    r1: r.c[3]?.v || '', r2: r.c[4]?.v || '', r3: r.c[5]?.v || '',
+                    w: r.c[6]?.f || r.c[6]?.v || '0%',
+                    p: r.c[7]?.f || r.c[7]?.v || '0%',
+                    b: r.c[8]?.f || r.c[8]?.v || '0%',
+                    img: r.c[9]?.v || '',
+                    s1i: r.c[10]?.v || '', s2i: r.c[11]?.v || '',
+                    f1i: r.c[14]?.v || '', f2i: r.c[15]?.v || '',
+                    d1i: r.c[18]?.v || '', d2i: r.c[19]?.v || '',
+                    pos: r.c[27]?.v || ''
+                })).filter(d => d.n);
 
-                allHeroes.forEach(d => {
-                    const clean = (v) => (v && !v.includes('http') && v !== "-" && v !== "0") ? v.trim() : "";
-                    const getImg = (v) => (v && v.includes('http')) ? v.trim() : "";
-                    const rel = (url) => url ? `<img src="${url}" class="img-mini" onerror="this.style.display='none'">` : "";
-                    const roles = [clean(d.r1), clean(d.r2), clean(d.r3)].filter(x=>x);
-                    const tr = document.createElement('tr');
-                    tr.className = 'hero-row';
-                    tr.setAttribute('data-roles', roles.join(','));
-                    tr.setAttribute('data-pos', d.pos);
-                    tr.innerHTML = `
-    <td>
-        <div class="hero-info">
-            <img src="${getImg(d.img)}" class="img-main">
-            <div>
-                <span class="name-txt">${d.n}</span>
-                <span class="type-txt">${clean(d.type)}</span>
-            </div>
-        </div>
-    </td>
-    <td><div class="tier-box">${clean(d.tier).replace('T', '')}</div></td>
-    <td><div class="stat-txt">${roles.join('<br>')}</div></td>
-    <td><span class="stat-txt">${d.w}</span></td>
-    <td><span class="stat-txt">${d.p}</span></td>
-    <td><span class="stat-txt">${d.b}</span></td>
-    <td><div class="rel-flex">${rel(getImg(d.s1i))}${rel(getImg(d.s2i))}</div></td>
-    <td><div class="rel-flex">${rel(getImg(d.f1i))}${rel(getImg(d.f2i))}</div></td>
-    <td><div class="rel-flex">${rel(getImg(d.d1i))}${rel(getImg(d.d2i))}</div></td>
-                    `;
-                    tbody.appendChild(tr);
-                });
-            } catch (e) { console.error(e); }
+                renderTable(allData);
+                renderChart(allData);
+            } catch (e) { console.error("Error:", e); }
         }
+
+        function clean(v) { return v ? v.toString().trim() : ''; }
+        function getImg(url) { return url ? url : ''; }
+        function rel(img) { return img ? `<img src="${img}" class="img-mini" onerror="this.style.display='none'">` : ""; }
+
+        function renderTable(data) {
+            const tbody = document.getElementById('heroBody');
+            tbody.innerHTML = '';
+            data.forEach(d => {
+                const roles = [clean(d.r1), clean(d.r2), clean(d.r3)].filter(x=>x);
+                const tr = document.createElement('tr');
+                tr.className = 'hero-row';
+                tr.setAttribute('data-roles', roles.join(','));
+                tr.setAttribute('data-pos', d.pos);
+                tr.innerHTML = `
+                    <td>
+                        <div class="hero-info">
+                            <img src="${getImg(d.img)}" class="img-main">
+                            <div style="text-align: left;">
+                                <span class="name-txt">${d.n}</span>
+                                <span class="type-txt">${clean(d.type)}</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td><div class="tier-box">${clean(d.tier).replace('T', '')}</div></td>
+                    <td style="color: var(--sec);">${roles.join('<br>')}</td>
+                    <td style="font-weight: 600;">${d.w}</td>
+                    <td style="color: var(--sec);">${d.p}</td>
+                    <td style="color: var(--sec);">${d.b}</td>
+                    <td><div class="rel-flex">${rel(getImg(d.s1i))}${rel(getImg(d.s2i))}</div></td>
+                    <td><div class="rel-flex">${rel(getImg(d.f1i))}${rel(getImg(d.f2i))}</div></td>
+                    <td><div class="rel-flex">${rel(getImg(d.d1i))}${rel(getImg(d.d2i))}</div></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function switchTab(tabId, btn) {
+            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('section-' + tabId).classList.add('active');
+            btn.classList.add('active');
+        }
+
+        function setFilter(role, btn) {
+            const btns = btn.parentElement.querySelectorAll('.filter-btn');
+            btns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            filterTable(role);
+        }
+
+        function filterTable(role = null) {
+            const query = document.getElementById('heroSearch').value.toLowerCase();
+            const activeRoleBtn = document.querySelector('.filter-bar .filter-btn.active');
+            const currentRole = role || activeRoleBtn.innerText;
+            
+            const rows = document.querySelectorAll('.hero-row');
+            rows.forEach(row => {
+                const name = row.querySelector('.name-txt').innerText.toLowerCase();
+                const roles = row.getAttribute('data-roles');
+                const matchesSearch = name.includes(query);
+                const matchesRole = (currentRole === 'Todo' || roles.includes(currentRole));
+                row.style.display = (matchesSearch && matchesRole) ? '' : 'none';
+            });
+        }
+
+        function renderChart(data) {
+            const ctx = document.getElementById('scatterChart').getContext('2d');
+            const chartData = data.map(d => ({
+                x: parseFloat(d.p.replace('%','')),
+                y: parseFloat(d.w.replace('%','')),
+                label: d.n
+            }));
+
+            if(chartInstance) chartInstance.destroy();
+
+            chartInstance = new Chart(ctx, {
+                type: 'scatter',
+                data: {
+                    datasets: [{
+                        label: 'Héroes',
+                        data: chartData,
+                        backgroundColor: '#3182ce',
+                        pointRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { min: 0, max: 7, title: { display: true, text: 'Presencia (%)', color: '#fff' } },
+                        y: { min: 40, max: 60, title: { display: true, text: 'Win Rate (%)', color: '#fff' } }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: (c) => `${c.raw.label}: ${c.raw.y}% WR / ${c.raw.x}% Presencia`
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function setFilterChart(role, btn) {
+            const btns = btn.parentElement.querySelectorAll('.filter-btn');
+            btns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const filtered = role === 'Todo' ? allData : allData.filter(d => [d.r1, d.r2, d.r3].includes(role));
+            renderChart(filtered);
+        }
+
         window.onload = loadData;
     </script>
 </body>
