@@ -3,210 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HoKstats | v9.0 - Corrección de Tabla</title>
+    <title>HoKstats | v9.5 - Estructura Modular</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
     <style>
         :root { 
-            --bg: #0b0e11; 
-            --card: #161b22; 
-            --brd: #30363d; 
-            --txt: #f0f6fc; 
-            --sec: #8b949e; 
-            --acc: #58a6ff; 
-            --btn-bg: #21262d; 
-            --green: #238636;
+            --bg: #0b0e11; --card: #161b22; --brd: #30363d; --txt: #f0f6fc; 
+            --sec: #8b949e; --acc: #58a6ff; --btn-bg: #21262d; --green: #238636;
         }
-
-        body { 
-            background-color: var(--bg); 
-            color: var(--txt); 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; 
-            padding: 20px 10px; 
-            margin: 0; 
-            display: flex;
-            justify-content: center;
-        }
-        
+        body { background-color: var(--bg); color: var(--txt); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; padding: 20px 10px; margin: 0; display: flex; justify-content: center; }
         .container { display: flex; flex-direction: column; align-items: center; width: 100%; }
-        
-        .header { 
-            width: 1080px; 
-            max-width: 98vw; 
-            margin-bottom: 25px; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-        }
-
-        .header-left { 
-            display: flex; 
-            align-items: baseline; 
-            gap: 10px; 
-            border-left: 4px solid var(--acc); 
-            padding-left: 15px; 
-        }
-
+        .header { width: 1080px; max-width: 98vw; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; }
+        .header-left { display: flex; align-items: baseline; gap: 10px; border-left: 4px solid var(--acc); padding-left: 15px; }
         .header-left h1 { margin: 0; font-size: 24px; font-weight: 600; }
         .v-badge { background-color: var(--green); color: white; font-size: 11px; padding: 3px 8px; border-radius: 12px; font-weight: bold; }
-
         .main-tabs { display: flex; gap: 8px; }
-
-        .tab-btn { 
-            background: transparent; 
-            border: 1px solid transparent; 
-            color: var(--sec); 
-            font-size: 14px; 
-            font-weight: 600; 
-            cursor: pointer; 
-            padding: 8px 16px; 
-            border-radius: 6px; 
-            transition: all 0.3s ease; 
-        }
-
-        .tab-btn.active { 
-            color: var(--acc); 
-            background-color: rgba(88, 166, 255, 0.1); 
-            border-color: rgba(88, 166, 255, 0.2);
-        }
-
-        .info-box { 
-            width: 1080px; 
-            max-width: 98vw; 
-            background-color: rgba(88, 166, 255, 0.05); 
-            border: 1px solid var(--brd); 
-            border-radius: 12px; 
-            padding: 24px; 
-            margin-bottom: 30px; 
-            box-sizing: border-box;
-            display: flex;
-            gap: 20px;
-        }
-
+        .tab-btn { background: transparent; border: 1px solid transparent; color: var(--sec); font-size: 14px; font-weight: 600; cursor: pointer; padding: 8px 16px; border-radius: 6px; transition: all 0.3s ease; }
+        .tab-btn.active { color: var(--acc); background-color: rgba(88, 166, 255, 0.1); border-color: rgba(88, 166, 255, 0.2); }
+        .info-box { width: 1080px; max-width: 98vw; background-color: rgba(88, 166, 255, 0.05); border: 1px solid var(--brd); border-radius: 12px; padding: 24px; margin-bottom: 30px; box-sizing: border-box; display: flex; gap: 20px; }
         .info-icon { font-size: 26px; color: var(--acc); }
         .info-text { font-size: 14px; color: var(--sec); line-height: 1.7; margin: 0 0 16px 0; }
         .contact-area { display: flex; gap: 25px; }
         .contact-link { display: flex; align-items: center; gap: 8px; color: var(--acc); text-decoration: none; font-size: 13px; }
-
         .content-section { display: none; width: 100%; flex-direction: column; align-items: center; }
         .content-section.active { display: flex; }
-
-        .toolbar { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            width: 1080px; 
-            max-width: 98vw; 
-            margin-bottom: 25px; 
-            gap: 20px; 
-        }
-
-        .filter-bar { 
-            display: flex; 
-            background-color: var(--card); 
-            border: 1px solid var(--brd); 
-            border-radius: 10px; 
-            padding: 5px; 
-            gap: 5px; 
-        }
-
-        .filter-btn { 
-            background: transparent; 
-            border: none; 
-            color: var(--sec); 
-            padding: 8px 18px; 
-            font-size: 13px; 
-            font-weight: 600; 
-            cursor: pointer; 
-            border-radius: 7px; 
-        }
-
+        .toolbar { display: flex; justify-content: space-between; align-items: center; width: 1080px; max-width: 98vw; margin-bottom: 25px; gap: 20px; }
+        .filter-bar { display: flex; background-color: var(--card); border: 1px solid var(--brd); border-radius: 10px; padding: 5px; gap: 5px; }
+        .filter-btn { background: transparent; border: none; color: var(--sec); padding: 8px 18px; font-size: 13px; font-weight: 600; cursor: pointer; border-radius: 7px; }
         .filter-btn.active { background-color: var(--acc); color: #ffffff; }
-
-        .search-box { 
-            display: flex; 
-            align-items: center; 
-            background-color: var(--card); 
-            border: 1px solid var(--brd); 
-            border-radius: 10px; 
-            padding: 0 15px;
-            flex-grow: 1;
-            max-width: 320px;
-        }
-
-        .search-box input { 
-            background: transparent; 
-            border: none; 
-            color: var(--txt); 
-            padding: 12px 0; 
-            font-size: 14px; 
-            width: 100%; 
-            outline: none; 
-        }
-
-        /* CORRECCIÓN: Eliminada barra de desplazamiento y ajustado ancho para visibilidad total */
+        .search-box { display: flex; align-items: center; background-color: var(--card); border: 1px solid var(--brd); border-radius: 10px; padding: 0 15px; flex-grow: 1; max-width: 320px; }
+        .search-box input { background: transparent; border: none; color: var(--txt); padding: 12px 0; font-size: 14px; width: 100%; outline: none; }
         .table-wrapper { width: 1080px; max-width: 98vw; overflow: visible; }
         table { width: 100%; border-collapse: separate; border-spacing: 0 4px; table-layout: auto; }
-        
         th { color: var(--sec); font-size: 11px; text-transform: uppercase; padding: 12px 8px; text-align: center; cursor: pointer; font-weight: 700; white-space: nowrap; }
         th.w-hero { text-align: left; width: 180px; } 
-
-        tr.hero-row td { 
-            background-color: var(--card); 
-            padding: 10px 8px; 
-            border-top: 1px solid var(--brd); 
-            border-bottom: 1px solid var(--brd); 
-            text-align: center; 
-            vertical-align: middle;
-        }
-
+        tr.hero-row td { background-color: var(--card); padding: 10px 8px; border-top: 1px solid var(--brd); border-bottom: 1px solid var(--brd); text-align: center; vertical-align: middle; }
         tr.hero-row td:first-child { border-left: 1px solid var(--brd); border-radius: 10px 0 0 10px; text-align: left; }
         tr.hero-row td:last-child { border-right: 1px solid var(--brd); border-radius: 0 10px 10px 0; }
-
         .hero-info { display: flex; align-items: center; gap: 12px; }
         .img-main { width: 44px; height: 44px; border-radius: 10px; object-fit: cover; }
-        
-        /* CORRECCIÓN: Sin bordes en sinergias/counters */
-        .img-mini { 
-            width: 32px; 
-            height: 32px; 
-            border-radius: 50%; 
-            object-fit: cover; 
-            border: none !important; 
-            display: block;
-        }
-
+        .img-mini { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: none !important; display: block; }
         .tier-txt { font-size: 20px; font-weight: 900; color: #ffffff; }
         .name-txt { font-weight: 700; font-size: 14px; color: #ffffff; display: block; }
         .type-txt { color: var(--sec); font-size: 11px; }
         .stat-txt { color: var(--sec); font-size: 12px; font-weight: 600; }
         .rel-flex { display: flex; gap: 6px; justify-content: center; min-width: 70px; }
-
-        .chart-area { 
-            width: 1080px; 
-            max-width: 98vw; 
-            background-color: var(--card); 
-            border: 1px solid var(--brd); 
-            border-radius: 14px; 
-            padding: 35px; 
-            box-sizing: border-box; 
-            height: 680px; 
-        }
-
-        @media (max-width: 1100px) { 
-            .header, .info-box, .toolbar, .chart-area, .table-wrapper { width: 98vw; }
-            .name-txt { font-size: 13px; }
-            .img-main { width: 38px; height: 38px; }
-            .img-mini { width: 28px; height: 28px; }
-        }
+        .chart-area { width: 1080px; max-width: 98vw; background-color: var(--card); border: 1px solid var(--brd); border-radius: 14px; padding: 35px; box-sizing: border-box; height: 680px; }
+        @media (max-width: 1100px) { .header, .info-box, .toolbar, .chart-area, .table-wrapper { width: 98vw; } .name-txt { font-size: 13px; } .img-main { width: 38px; height: 38px; } .img-mini { width: 28px; height: 28px; } }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <div class="header-left">
-                <h1>HoKstats</h1>
-                <span class="v-badge">v9.0</span>
-            </div>
+            <div class="header-left"><h1>HoKstats</h1><span class="v-badge">v9.5</span></div>
             <div class="main-tabs">
                 <button class="tab-btn active" onclick="switchTab('stats', this)">Estadísticas</button>
                 <button class="tab-btn" onclick="switchTab('analytics', this)">Análisis Gráfico</button>
@@ -216,10 +65,7 @@
         <div class="info-box">
             <div class="info-icon">💡</div>
             <div class="info-content">
-                <p class="info-text">
-                    Proyecto personal para optimizar el rendimiento en <strong>Honor of Kings</strong>. 
-                    Independiente de Level Infinite/TiMi Studio. Datos obtenidos de fuentes públicas.
-                </p>
+                <p class="info-text">Proyecto personal para optimizar el rendimiento en <strong>Honor of Kings</strong>. Independiente de Level Infinite/TiMi Studio. Datos obtenidos de fuentes públicas.</p>
                 <div class="contact-area">
                     <a href="mailto:michixhok@gmail.com" class="contact-link">✉ michixhok@gmail.com</a>
                     <a href="https://www.youtube.com/@michixhok" target="_blank" class="contact-link">▶ YouTube</a>
@@ -237,11 +83,8 @@
                     <button class="filter-btn" onclick="setFilter('Merodeo', this)">Merodeo</button>
                     <button class="filter-btn" onclick="setFilter('Farmeo', this)">Farmeo</button>
                 </div>
-                <div class="search-box">
-                    <input type="text" id="heroSearch" placeholder="Buscar héroe..." onkeyup="applyFilters()">
-                </div>
+                <div class="search-box"><input type="text" id="heroSearch" placeholder="Buscar héroe..." onkeyup="applyFilters()"></div>
             </div>
-            
             <div class="table-wrapper">
                 <table id="heroTable">
                     <thead>
@@ -252,9 +95,7 @@
                             <th onclick="sortRows(3, 'num')">Win Rate</th>
                             <th onclick="sortRows(4, 'num')">Pick Rate</th>
                             <th onclick="sortRows(5, 'num')">Ban Rate</th>
-                            <th>Sinergia</th>
-                            <th>Fuerte</th>
-                            <th>Débil</th>
+                            <th>Sinergia</th><th>Fuerte</th><th>Débil</th>
                         </tr>
                     </thead>
                     <tbody id="table-body"></tbody>
@@ -284,6 +125,7 @@
             if(tabId === 'analytics') setTimeout(renderChart, 100);
         }
 
+        // --- LÓGICA BLOQUE 2 (TABLA) ---
         function setFilter(role, btn) {
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
@@ -315,6 +157,7 @@
             rows.forEach(r => tbody.appendChild(r));
         }
 
+        // --- LÓGICA BLOQUE 3 (GRÁFICO) ---
         function renderChart() {
             if(myChart) myChart.destroy();
             const ctx = document.getElementById('scatterChart').getContext('2d');
@@ -347,11 +190,9 @@
                             const hero = heroPoints[index];
                             const size = point.options.radius * 2.2;
                             if (hero.img.complete) {
-                                ctx.save();
-                                ctx.beginPath();
+                                ctx.save(); ctx.beginPath();
                                 ctx.arc(x, y, size / 2, 0, Math.PI * 2);
-                                ctx.clip();
-                                ctx.drawImage(hero.img, x - size / 2, y - size / 2, size, size);
+                                ctx.clip(); ctx.drawImage(hero.img, x - size / 2, y - size / 2, size, size);
                                 ctx.restore();
                             }
                         });
@@ -360,6 +201,7 @@
             });
         }
 
+        // --- CARGA DE DATOS ---
         async function loadData() {
             try {
                 const res = await fetch(CSV_URL);
@@ -382,7 +224,6 @@
                 }).filter(h => h !== null);
 
                 allHeroes.sort((a, b) => (parseInt(a.pos) || 999) - (parseInt(b.pos) || 999));
-
                 allHeroes.forEach(d => {
                     const clean = (v) => (v && !v.includes('http') && v !== "-" && v !== "0") ? v.trim() : "";
                     const getImg = (v) => (v && v.includes('http')) ? v.trim() : "";
