@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HOKStats | v4.6 Pro Filter</title>
+    <title>HOKStats | v4.7 Fixed</title>
     <style>
         :root { --bg: #0b0e11; --card: #161b22; --brd: #30363d; --txt: #f0f6fc; --sec: #8b949e; --acc: #58a6ff; --btn-bg: #21262d; }
         body { background: var(--bg); color: var(--txt); font-family: system-ui, sans-serif; padding: 20px 10px; margin: 0; }
@@ -13,7 +13,6 @@
         .header { width: fit-content; margin-bottom: 20px; border-left: 4px solid var(--acc); padding-left: 12px; display: flex; align-items: baseline; gap: 8px; }
         .v-badge { background: #238636; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; font-weight: bold; }
 
-        /* --- BARRA DE FILTROS ESTILO PROFESIONAL --- */
         .filter-bar { 
             display: flex; 
             background: var(--card); 
@@ -37,31 +36,42 @@
         .filter-btn:hover { color: #fff; background: var(--btn-bg); }
         .filter-btn.active { background: var(--acc); color: #fff; }
 
-        table { width: auto; border-collapse: separate; border-spacing: 0 4px; margin: 0 auto; }
-        th { color: var(--sec); font-size: 10px; text-transform: uppercase; padding: 8px 15px; text-align: left; letter-spacing: 0.5px; white-space: nowrap; }
+        /* AJUSTE CLAVE: table-layout fixed para que las columnas no se deformen */
+        table { 
+            width: 1000px; /* Ancho fijo para estabilidad total */
+            border-collapse: separate; 
+            border-spacing: 0 4px; 
+            margin: 0 auto;
+            table-layout: fixed; 
+        }
 
-        .w-hero { width: 160px; } 
-        .w-roles { width: 100px; } 
-        .w-stat { width: 110px; text-align: center; }
+        th { color: var(--sec); font-size: 10px; text-transform: uppercase; padding: 8px 15px; text-align: left; letter-spacing: 0.5px; }
+
+        /* Definición estricta de anchos */
+        .w-hero { width: 180px; } 
+        .w-roles { width: 110px; } 
+        .w-stat { width: 120px; text-align: center; }
         .w-rel { width: 95px; }
 
-        tr.hero-row td { background: var(--card); padding: 8px 15px; border-top: 1px solid var(--brd); border-bottom: 1px solid var(--brd); vertical-align: middle; }
+        tr.hero-row td { background: var(--card); padding: 8px 15px; border-top: 1px solid var(--brd); border-bottom: 1px solid var(--brd); vertical-align: middle; overflow: hidden; }
         tr.hero-row td:first-child { border-left: 1px solid var(--brd); border-radius: 6px 0 0 6px; }
         tr.hero-row td:last-child { border-right: 1px solid var(--brd); border-radius: 0 6px 6px 0; }
 
-        .img-main { width: 40px; height: 40px; border-radius: 10px; border: none; object-fit: cover; }
-        .img-mini { width: 28px; height: 28px; border-radius: 50%; border: none; object-fit: cover; }
+        /* Evita que el nombre y la foto se amontonen */
+        .hero-info { display: flex; align-items: center; gap: 12px; min-width: 150px; }
+        
+        .img-main { width: 40px; height: 40px; border-radius: 10px; border: none; object-fit: cover; flex-shrink: 0; }
+        .img-mini { width: 28px; height: 28px; border-radius: 50%; border: none; object-fit: cover; flex-shrink: 0; }
 
         .name-txt { font-weight: 600; font-size: 14px; color: #fff; display: block; white-space: nowrap; }
         .type-txt, .stat-txt { color: var(--sec); font-size: 11px; white-space: nowrap; }
 
-        .roles-flex { display: flex; flex-direction: column; justify-content: center; width: 100px; }
+        .roles-flex { display: flex; flex-direction: column; justify-content: center; }
         .rel-flex { display: flex; flex-direction: row; gap: 6px; align-items: center; }
 
-        @media (max-width: 800px) {
+        @media (max-width: 1000px) {
             .container { align-items: center; }
-            .filter-bar { flex-wrap: wrap; justify-content: center; }
-            table { display: block; overflow-x: auto; }
+            table { width: 95vw; }
         }
     </style>
 </head>
@@ -69,7 +79,7 @@
     <div class="container">
         <div class="header">
             <h1 style="margin:0; font-size: 20px;">HOKStats</h1>
-            <span class="v-badge">v4.6</span>
+            <span class="v-badge">v4.7</span>
         </div>
 
         <div class="filter-bar">
@@ -100,23 +110,14 @@
 
     <script>
         const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTO4rMY_drrjKMx3KTdjAaSrH6GenxyZ7YzLPT7oiZ_pNYm6EKG-yJPfmbRcZgYGGi2gERA1Gciw-Fy/pub?gid=538223640&single=true&output=csv&cache=' + Date.now();
-        let allHeroesData = [];
 
-        // Función para filtrar
         function filterHeroes(role, btn) {
-            // Actualizar botones
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-
             const rows = document.querySelectorAll('.hero-row');
             rows.forEach(row => {
-                // Obtenemos los roles guardados en el atributo de datos de la fila
                 const heroRoles = row.getAttribute('data-roles');
-                if (role === 'Todo' || heroRoles.includes(role)) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
+                row.style.display = (role === 'Todo' || heroRoles.includes(role)) ? '' : 'none';
             });
         }
 
@@ -137,27 +138,19 @@
                         n: row[1], img: row[3], type: row[4],
                         r1: row[5], r2: row[6], r3: row[7],
                         w: row[8], p: row[9], b: row[10],
-                        s1n: row[11], s1i: row[13], s2n: row[14], s2i: row[16],
-                        f1n: row[17], f1i: row[19], f2n: row[20], f2i: row[22],
-                        d1n: row[23], d1i: row[25], d2n: row[26], d2i: row[28]
+                        s1i: row[13], s2i: row[16], f1i: row[19], f2i: row[22], d1i: row[25], d2i: row[28]
                     };
 
                     const clean = (v) => (v && !v.includes('http') && v !== "-" && v !== "0") ? v.trim() : "";
                     const img = (v) => (v && v.includes('http')) ? v.trim() : "";
-                    const rel = (n, i) => {
-                        const name = clean(n);
-                        return name ? `<img src="${img(i)}" class="img-mini" title="${name}" alt="${name}" onerror="this.style.display='none'">` : "";
-                    };
+                    const rel = (i) => i ? `<img src="${i}" class="img-mini" onerror="this.style.display='none'">` : "";
 
                     const r1 = clean(d.r1), r2 = clean(d.r2), r3 = clean(d.r3);
                     const rolesHTML = [r1, r2, r3].filter(r => r !== "").join('<br>');
                     
-                    // Guardamos todos los roles en un string para facilitar la búsqueda
-                    const rolesString = `${r1},${r2},${r3}`;
-
                     const tr = document.createElement('tr');
                     tr.className = 'hero-row';
-                    tr.setAttribute('data-roles', rolesString); // Atributo clave para el filtro
+                    tr.setAttribute('data-roles', `${r1},${r2},${r3}`);
                     
                     tr.innerHTML = `
                         <td>
@@ -170,9 +163,9 @@
                         <td class="w-stat"><span class="stat-txt">${clean(d.w)}</span></td>
                         <td class="w-stat"><span class="stat-txt">${clean(d.p)}</span></td>
                         <td class="w-stat"><span class="stat-txt">${clean(d.b)}</span></td>
-                        <td><div class="rel-flex">${rel(d.s1n, d.s1i)}${rel(d.s2n, d.s2i)}</div></td>
-                        <td><div class="rel-flex">${rel(d.f1n, d.f1i)}${rel(d.f2n, d.f2i)}</div></td>
-                        <td><div class="rel-flex">${rel(d.d1n, d.d1i)}${rel(d.d2n, d.d2i)}</div></td>
+                        <td><div class="rel-flex">${rel(img(d.s1i))}${rel(img(d.s2i))}</div></td>
+                        <td><div class="rel-flex">${rel(img(d.f1i))}${rel(img(d.f2i))}</div></td>
+                        <td><div class="rel-flex">${rel(img(d.d1i))}${rel(img(d.d2i))}</div></td>
                     `;
                     body.appendChild(tr);
                 });
