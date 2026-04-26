@@ -3,68 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HOKStats | v4.2 Responsive</title>
+    <title>HOKStats | v4.3 Center Edition</title>
     <style>
         :root { --bg: #0b0e11; --card: #161b22; --brd: #30363d; --txt: #f0f6fc; --sec: #8b949e; --acc: #58a6ff; }
-        body { background: var(--bg); color: var(--txt); font-family: system-ui, -apple-system, sans-serif; padding: 10px; margin: 0; }
+        body { background: var(--bg); color: var(--txt); font-family: system-ui, sans-serif; padding: 20px 10px; margin: 0; }
         
-        .container { max-width: 100%; margin: 0 auto; overflow-x: auto; } /* Permite scroll horizontal en móvil si es necesario */
+        /* EL TRUCO PARA CENTRAR: Ancho máximo definido y margen auto */
+        .container { 
+            max-width: 1000px; /* Ajusta este valor si la quieres más o menos ancha en PC */
+            margin: 0 auto; 
+            overflow-x: auto; 
+        }
         
         .header { margin-bottom: 15px; border-left: 4px solid var(--acc); padding-left: 12px; display: flex; align-items: baseline; gap: 8px; }
         .v-badge { background: #238636; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; font-weight: bold; }
         
-        table { width: 100%; border-collapse: separate; border-spacing: 0 4px; min-width: 800px; } /* Evita que se rompa el diseño en pantallas muy pequeñas */
+        table { width: 100%; border-collapse: separate; border-spacing: 0 4px; }
         
-        th { color: var(--sec); font-size: 10px; text-transform: uppercase; padding: 8px; text-align: left; letter-spacing: 0.5px; white-space: nowrap; }
+        th { color: var(--sec); font-size: 10px; text-transform: uppercase; padding: 8px; text-align: left; letter-spacing: 0.5px; }
 
-        /* REDUCCIÓN ESTRATÉGICA DE ESPACIOS */
-        .w-hero { width: 180px; } 
-        .w-auto { width: auto; } /* Deja que el contenido defina el ancho */
+        /* Ajuste de columnas para que no haya "aire" innecesario */
+        .w-hero { width: 170px; } 
+        .w-stat { width: 75px; }
+        .w-rel { width: 70px; }
 
-        tr.hero-row td { background: var(--card); padding: 8px 10px; border-top: 1px solid var(--brd); border-bottom: 1px solid var(--brd); vertical-align: middle; }
+        tr.hero-row td { background: var(--card); padding: 8px 12px; border-top: 1px solid var(--brd); border-bottom: 1px solid var(--brd); vertical-align: middle; }
         tr.hero-row td:first-child { border-left: 1px solid var(--brd); border-radius: 6px 0 0 6px; }
         tr.hero-row td:last-child { border-right: 1px solid var(--brd); border-radius: 0 6px 6px 0; }
 
-        .hero-info { display: flex; align-items: center; gap: 8px; }
-        .img-main { width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--brd); object-fit: cover; }
+        .hero-info { display: flex; align-items: center; gap: 10px; }
+        .img-main { width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--brd); object-fit: cover; }
         
-        /* Iconos de relación ultra compactos con tooltip */
         .img-mini { 
-            width: 22px; height: 22px; border-radius: 50%; 
+            width: 24px; height: 24px; border-radius: 50%; 
             border: 1px solid var(--brd); object-fit: cover;
             cursor: pointer;
         }
 
-        .name-txt { font-weight: 600; font-size: 13px; color: #fff; display: block; }
-        .type-txt, .stat-txt { color: var(--sec); font-size: 11px; font-weight: normal; line-height: 1.2; }
+        .name-txt { font-weight: 600; font-size: 14px; color: #fff; display: block; }
+        .type-txt, .stat-txt { color: var(--sec); font-size: 11px; font-weight: normal; }
 
-        /* Contenedores flexibles */
         .roles-flex { display: flex; flex-direction: column; justify-content: center; }
-        .rel-flex { display: flex; flex-direction: row; gap: 3px; align-items: center; }
+        .rel-flex { display: flex; flex-direction: row; gap: 5px; align-items: center; }
 
-        @media (max-width: 600px) {
-            body { padding: 5px; }
-            .name-txt { font-size: 12px; }
+        /* Ajustes para pantallas de tablet/móvil */
+        @media (max-width: 800px) {
+            .container { max-width: 100%; }
+            table { min-width: 750px; } /* Mantiene la legibilidad con scroll lateral */
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1 style="margin:0; font-size: 18px;">HOKStats</h1>
-            <span class="v-badge">v4.2</span>
+            <h1 style="margin:0; font-size: 20px;">HOKStats</h1>
+            <span class="v-badge">v4.3</span>
         </div>
         <table>
             <thead>
                 <tr>
                     <th class="w-hero">Héroe</th>
-                    <th class="w-auto">Roles</th>
-                    <th class="w-auto">Win</th>
-                    <th class="w-auto">Pick</th>
-                    <th class="w-auto">Ban</th>
-                    <th class="w-auto">Sinergia</th>
-                    <th class="w-auto">Fuerte</th>
-                    <th class="w-auto">Débil</th>
+                    <th class="">Roles</th>
+                    <th class="w-stat">Win</th>
+                    <th class="w-stat">Pick</th>
+                    <th class="w-stat">Ban</th>
+                    <th class="w-rel">Sinergia</th>
+                    <th class="w-rel">Fuerte</th>
+                    <th class="w-rel">Débil</th>
                 </tr>
             </thead>
             <tbody id="table-body"></tbody>
@@ -87,24 +92,24 @@
                 const body = document.getElementById('table-body');
                 rows.slice(1).forEach(row => {
                     if (!row[1]) return;
-
+                    // Mapeo de columnas optimizado para Honor of Kings
                     const d = {
-                        nombre: row[1], img: row[3], tipo: row[4],
-                        rol1: row[5], rol2: row[6], rol3: row[7],
-                        win: row[8], pick: row[9], ban: row[10],
-                        s1_n: row[11], s1_i: row[13], s2_n: row[14], s2_i: row[16],
-                        f1_n: row[17], f1_i: row[19], f2_n: row[20], f2_i: row[22],
-                        d1_n: row[23], d1_i: row[25], d2_n: row[26], d2_i: row[28]
+                        n: row[1], img: row[3], type: row[4],
+                        r1: row[5], r2: row[6], r3: row[7],
+                        w: row[8], p: row[9], b: row[10],
+                        s1n: row[11], s1i: row[13], s2n: row[14], s2i: row[16],
+                        f1n: row[17], f1i: row[19], f2n: row[20], f2i: row[22],
+                        d1n: row[23], d1i: row[25], d2n: row[26], d2i: row[28]
                     };
 
-                    const clean = (v) => (v && !v.includes('http') && v !== "-" && v !== "0" && v.trim() !== "") ? v.trim() : "";
+                    const clean = (v) => (v && !v.includes('http') && v !== "-" && v !== "0") ? v.trim() : "";
                     const img = (v) => (v && v.includes('http')) ? v.trim() : "";
-                    const relIcon = (n, i) => {
+                    const rel = (n, i) => {
                         const name = clean(n);
                         return name ? `<img src="${img(i)}" class="img-mini" title="${name}" alt="${name}" onerror="this.style.display='none'">` : "";
                     };
 
-                    const roles = [clean(d.rol1), clean(d.rol2), clean(d.rol3)].filter(r => r !== "").join('<br>');
+                    const roles = [clean(d.r1), clean(d.r2), clean(d.r3)].filter(r => r !== "").join('<br>');
 
                     const tr = document.createElement('tr');
                     tr.className = 'hero-row';
@@ -112,16 +117,16 @@
                         <td>
                             <div class="hero-info">
                                 <img src="${img(d.img)}" class="img-main" onerror="this.src='https://www.honorofkings.com/global/images/hero/hero_list_default.png'">
-                                <div><span class="name-txt">${d.nombre}</span><span class="type-txt">${clean(d.tipo)}</span></div>
+                                <div><span class="name-txt">${d.n}</span><span class="type-txt">${clean(d.type)}</span></div>
                             </div>
                         </td>
                         <td><div class="roles-flex stat-txt">${roles}</div></td>
-                        <td><span class="stat-txt">${clean(d.win)}</span></td>
-                        <td><span class="stat-txt">${clean(d.pick)}</span></td>
-                        <td><span class="stat-txt">${clean(d.ban)}</span></td>
-                        <td><div class="rel-flex">${relIcon(d.s1_n, d.s1_i)}${relIcon(d.s2_n, d.s2_i)}</div></td>
-                        <td><div class="rel-flex">${relIcon(d.f1_n, d.f1_i)}${relIcon(d.f2_n, d.f2_i)}</div></td>
-                        <td><div class="rel-flex">${relIcon(d.d1_n, d.d1_i)}${relIcon(d.d2_n, d.d2_i)}</div></td>
+                        <td><span class="stat-txt">${clean(d.w)}</span></td>
+                        <td><span class="stat-txt">${clean(d.p)}</span></td>
+                        <td><span class="stat-txt">${clean(d.b)}</span></td>
+                        <td><div class="rel-flex">${rel(d.s1n, d.s1i)}${rel(d.s2n, d.s2i)}</div></td>
+                        <td><div class="rel-flex">${rel(d.f1n, d.f1i)}${rel(d.f2n, d.f2i)}</div></td>
+                        <td><div class="rel-flex">${rel(d.d1n, d.d1i)}${rel(d.d2n, d.d2i)}</div></td>
                     `;
                     body.appendChild(tr);
                 });
