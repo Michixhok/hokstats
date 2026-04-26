@@ -143,7 +143,6 @@
             outline: none; 
         }
 
-        /* CORRECCIÓN: Eliminada barra de desplazamiento y ajustado ancho para visibilidad total */
         .table-wrapper { width: 1080px; max-width: 98vw; overflow: visible; }
         table { width: 100%; border-collapse: separate; border-spacing: 0 4px; table-layout: auto; }
         
@@ -165,7 +164,6 @@
         .hero-info { display: flex; align-items: center; gap: 12px; }
         .img-main { width: 44px; height: 44px; border-radius: 10px; object-fit: cover; }
         
-        /* CORRECCIÓN: Sin bordes en sinergias/counters */
         .img-mini { 
             width: 32px; 
             height: 32px; 
@@ -263,26 +261,27 @@
         </div>
 
         <div id="section-analytics" class="content-section">
-    <div class="toolbar">
-        <div class="filter-bar">
-            <button class="filter-btn active" onclick="setFilterChart('Todo', this)">Todo</button>
-            <button class="filter-btn" onclick="setFilterChart('Choque', this)">Choque</button>
-            <button class="filter-btn" onclick="setFilterChart('Cazador', this)">Cazador</button>
-            <button class="filter-btn" onclick="setFilterChart('Medio', this)">Medio</button>
-            <button class="filter-btn" onclick="setFilterChart('Merodeo', this)">Merodeo</button>
-            <button class="filter-btn" onclick="setFilterChart('Farmeo', this)">Farmeo</button>
+            <div class="toolbar">
+                <div class="filter-bar">
+                    <button class="filter-btn active" onclick="setFilterChart('Todo', this)">Todo</button>
+                    <button class="filter-btn" onclick="setFilterChart('Choque', this)">Choque</button>
+                    <button class="filter-btn" onclick="setFilterChart('Cazador', this)">Cazador</button>
+                    <button class="filter-btn" onclick="setFilterChart('Medio', this)">Medio</button>
+                    <button class="filter-btn" onclick="setFilterChart('Merodeo', this)">Merodeo</button>
+                    <button class="filter-btn" onclick="setFilterChart('Farmeo', this)">Farmeo</button>
+                </div>
+            </div>
+            <div class="chart-area">
+                <canvas id="scatterChart"></canvas>
+            </div>
         </div>
-    </div>
-    <div class="chart-area">
-        <canvas id="scatterChart"></canvas>
-    </div>
-</div>
     </div>
 
     <script>
         const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTO4rMY_drrjKMx3KTdjAaSrH6GenxyZ7YzLPT7oiZ_pNYm6EKG-yJPfmbRcZgYGGi2gERA1Gciw-Fy/pub?gid=538223640&single=true&output=csv&cache=' + Date.now();
         let currentSort = { col: 1, asc: true }; 
         let activeRole = 'Todo';
+        let chartFilter = 'Todo';
         let allHeroes = [];
         let myChart = null;
 
@@ -295,10 +294,17 @@
         }
 
         function setFilter(role, btn) {
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('#section-stats .filter-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             activeRole = role;
             applyFilters();
+        }
+
+        function setFilterChart(role, btn) {
+            document.querySelectorAll('#section-analytics .filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            chartFilter = role;
+            renderChart();
         }
 
         function applyFilters() {
@@ -328,7 +334,13 @@
         function renderChart() {
             if(myChart) myChart.destroy();
             const ctx = document.getElementById('scatterChart').getContext('2d');
-            const heroPoints = allHeroes.map(h => {
+            
+            const filteredHeroes = allHeroes.filter(h => {
+                const roles = [h.r1, h.r2].map(r => r ? r.toLowerCase() : "");
+                return chartFilter === 'Todo' || roles.some(r => r.includes(chartFilter.toLowerCase()));
+            });
+
+            const heroPoints = filteredHeroes.map(h => {
                 const img = new Image();
                 img.src = h.img;
                 return { img, x: (h.p_raw + h.b_raw), y: h.w_raw, name: h.n };
@@ -340,12 +352,26 @@
                 options: {
                     responsive: true, maintainAspectRatio: false,
                     scales: {
-                        x: { title: { display: true, text: 'Presence Rate %', color: '#8b949e' }, min: 0, max: 6 },
-                        y: { title: { display: true, text: 'Win Rate %', color: '#8b949e' }, min: 40, max: 60 }
+                        x: { 
+                            title: { display: true, text: 'Presencia %', color: '#8b949e' }, 
+                            min: 0, max: 6,
+                            grid: {
+                                color: (context) => context.tick.value === 1 ? 'rgba(88, 166, 255, 0.4)' : 'rgba(48, 54, 61, 0.5)',
+                                lineWidth: (context) => context.tick.value === 1 ? 2 : 1
+                            }
+                        },
+                        y: { 
+                            title: { display: true, text: 'Win Rate %', color: '#8b949e' }, 
+                            min: 40, max: 60,
+                            grid: {
+                                color: (context) => context.tick.value === 50 ? 'rgba(88, 166, 255, 0.4)' : 'rgba(48, 54, 61, 0.5)',
+                                lineWidth: (context) => context.tick.value === 50 ? 2 : 1
+                            }
+                        }
                     },
                     plugins: { 
                         legend: { display: false },
-                        tooltip: { callbacks: { label: (c) => ` ${c.raw.name}: Win ${c.raw.y}% | Presence ${c.raw.x.toFixed(2)}%` } }
+                        tooltip: { callbacks: { label: (c) => ` ${c.raw.name}: Win ${c.raw.y}% | Presencia ${c.raw.x.toFixed(2)}%` } }
                     }
                 },
                 plugins: [{
@@ -355,7 +381,7 @@
                         chart.getDatasetMeta(0).data.forEach((point, index) => {
                             const {x, y} = point;
                             const hero = heroPoints[index];
-                            const size = point.options.radius * 2.2;
+                            const size = 26;
                             if (hero.img.complete) {
                                 ctx.save();
                                 ctx.beginPath();
