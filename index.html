@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HoKstats | v8.7</title>
+    <title>HoKstats | v8.9 - Versión Final Corregida</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root { 
@@ -14,18 +14,26 @@
             --sec: #8b949e; 
             --acc: #58a6ff; 
             --btn-bg: #21262d; 
+            --green: #238636;
         }
+
         body { 
-            background: var(--bg); 
+            background-color: var(--bg); 
             color: var(--txt); 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; 
             padding: 20px 10px; 
             margin: 0; 
+            display: flex;
+            justify-content: center;
         }
         
-        .container { display: flex; flex-direction: column; align-items: center; width: 100%; }
+        .container { 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            width: 100%; 
+        }
         
-        /* HEADER */
         .header { 
             width: 1000px; 
             max-width: 95vw; 
@@ -34,71 +42,67 @@
             justify-content: space-between; 
             align-items: center; 
         }
+
         .header-left { 
             display: flex; 
             align-items: baseline; 
-            gap: 8px; 
+            gap: 10px; 
             border-left: 4px solid var(--acc); 
-            padding-left: 12px; 
+            padding-left: 15px; 
         }
+
+        .header-left h1 { margin: 0; font-size: 24px; font-weight: 600; }
+
         .v-badge { 
-            background: #238636; 
+            background-color: var(--green); 
             color: white; 
-            font-size: 10px; 
-            padding: 2px 6px; 
-            border-radius: 10px; 
+            font-size: 11px; 
+            padding: 3px 8px; 
+            border-radius: 12px; 
             font-weight: bold; 
         }
 
-        .main-tabs { display: flex; gap: 5px; }
+        .main-tabs { display: flex; gap: 8px; }
+
         .tab-btn { 
             background: transparent; 
-            border: none; 
+            border: 1px solid transparent; 
             color: var(--sec); 
-            font-size: 13px; 
+            font-size: 14px; 
             font-weight: 600; 
             cursor: pointer; 
             padding: 8px 16px; 
             border-radius: 6px; 
-            transition: 0.2s; 
+            transition: all 0.3s ease; 
         }
-        .tab-btn.active { color: var(--acc); background: rgba(88, 166, 255, 0.1); }
 
-        /* INFO BOX */
+        .tab-btn.active { 
+            color: var(--acc); 
+            background-color: rgba(88, 166, 255, 0.1); 
+            border-color: rgba(88, 166, 255, 0.2);
+        }
+
         .info-box { 
             width: 1000px; 
             max-width: 95vw; 
-            background: rgba(88, 166, 255, 0.05); 
+            background-color: rgba(88, 166, 255, 0.05); 
             border: 1px solid var(--brd); 
             border-radius: 12px; 
             padding: 24px; 
-            margin-bottom: 25px; 
+            margin-bottom: 30px; 
             box-sizing: border-box;
             display: flex;
             gap: 20px;
-            align-items: flex-start;
         }
-        .info-icon { font-size: 24px; color: var(--acc); }
-        .info-text { 
-            font-size: 14px; 
-            color: var(--sec); 
-            line-height: 1.6; 
-            margin: 0 0 16px 0; 
-        }
-        .contact-area { display: flex; gap: 24px; }
-        .contact-link { 
-            display: flex; 
-            align-items: center; 
-            gap: 8px; 
-            color: var(--acc); 
-            text-decoration: none; 
-            font-size: 13px; 
-        }
+
+        .info-icon { font-size: 26px; color: var(--acc); }
+        .info-text { font-size: 14px; color: var(--sec); line-height: 1.7; margin: 0 0 16px 0; }
+        .contact-area { display: flex; gap: 25px; }
+        .contact-link { display: flex; align-items: center; gap: 8px; color: var(--acc); text-decoration: none; font-size: 13px; }
 
         .content-section { display: none; width: 100%; flex-direction: column; align-items: center; }
         .content-section.active { display: flex; }
 
-        /* TOOLBAR */
         .toolbar { 
             display: flex; 
             justify-content: space-between; 
@@ -106,104 +110,106 @@
             width: 1000px; 
             max-width: 95vw; 
             margin-bottom: 25px; 
-            gap: 15px; 
+            gap: 20px; 
         }
+
         .filter-bar { 
             display: flex; 
-            background: var(--card); 
+            background-color: var(--card); 
             border: 1px solid var(--brd); 
-            border-radius: 8px; 
-            padding: 4px; 
-            gap: 4px; 
+            border-radius: 10px; 
+            padding: 5px; 
+            gap: 5px; 
         }
+
         .filter-btn { 
             background: transparent; 
             border: none; 
             color: var(--sec); 
-            padding: 8px 16px; 
+            padding: 8px 18px; 
             font-size: 13px; 
             font-weight: 600; 
             cursor: pointer; 
-            border-radius: 6px; 
+            border-radius: 7px; 
         }
-        .filter-btn.active { background: var(--acc); color: #fff; }
+
+        .filter-btn.active { background-color: var(--acc); color: #ffffff; }
 
         .search-box { 
             display: flex; 
             align-items: center; 
-            background: var(--card); 
+            background-color: var(--card); 
             border: 1px solid var(--brd); 
-            border-radius: 8px; 
-            padding: 0 12px;
+            border-radius: 10px; 
+            padding: 0 15px;
             flex-grow: 1;
-            max-width: 300px;
+            max-width: 320px;
         }
+
         .search-box input { 
             background: transparent; 
             border: none; 
             color: var(--txt); 
-            padding: 10px 0; 
-            font-size: 13px; 
+            padding: 12px 0; 
+            font-size: 14px; 
             width: 100%; 
             outline: none; 
         }
 
-        /* TABLE */
-        table { 
-            width: 1000px; 
-            border-collapse: separate; 
-            border-spacing: 0 2px; 
-            margin: 0 auto; 
-            table-layout: fixed; 
-        }
-        th { 
-            color: var(--sec); 
-            font-size: 10px; 
-            text-transform: uppercase; 
-            padding: 8px; 
-            text-align: center; 
-            cursor: pointer; 
-        }
+        .table-wrapper { width: 1000px; max-width: 95vw; overflow-x: auto; }
+        table { width: 100%; border-collapse: separate; border-spacing: 0 4px; table-layout: fixed; }
+        th { color: var(--sec); font-size: 11px; text-transform: uppercase; padding: 12px; text-align: center; cursor: pointer; font-weight: 700; }
+        th.w-hero { text-align: left; width: 200px; } 
+
         tr.hero-row td { 
-            background: var(--card); 
-            padding: 10px 15px; 
+            background-color: var(--card); 
+            padding: 12px 15px; 
             border-top: 1px solid var(--brd); 
             border-bottom: 1px solid var(--brd); 
             text-align: center; 
         }
-        tr.hero-row td:first-child { border-left: 1px solid var(--brd); border-radius: 8px 0 0 8px; text-align: left; }
-        tr.hero-row td:last-child { border-right: 1px solid var(--brd); border-radius: 0 8px 8px 0; }
 
-        .hero-info { display: flex; align-items: center; gap: 12px; }
-        .img-main { width: 40px; height: 40px; border-radius: 8px; object-fit: cover; }
-        .img-mini { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; border: 1px solid var(--brd); }
-        .tier-txt { font-size: 18px; font-weight: 800; color: #fff; }
-        .name-txt { font-weight: 600; font-size: 14px; color: #fff; display: block; }
-        .type-txt { color: var(--sec); font-size: 11px; }
-        .stat-txt { color: var(--sec); font-size: 12px; }
-        .rel-flex { display: flex; gap: 5px; justify-content: center; }
+        tr.hero-row td:first-child { border-left: 1px solid var(--brd); border-radius: 10px 0 0 10px; text-align: left; }
+        tr.hero-row td:last-child { border-right: 1px solid var(--brd); border-radius: 0 10px 10px 0; }
 
-        /* CHART AREA */
+        .hero-info { display: flex; align-items: center; gap: 15px; }
+        .img-main { width: 44px; height: 44px; border-radius: 10px; object-fit: cover; }
+        
+        /* SOLUCIÓN: Quitados los bordes de las fotos de relación */
+        .img-mini { 
+            width: 34px; 
+            height: 34px; 
+            border-radius: 50%; 
+            object-fit: cover; 
+            border: none !important; 
+        }
+
+        .tier-txt { font-size: 20px; font-weight: 900; color: #ffffff; }
+        .name-txt { font-weight: 700; font-size: 15px; color: #ffffff; display: block; }
+        .type-txt { color: var(--sec); font-size: 12px; }
+        .stat-txt { color: var(--sec); font-size: 13px; font-weight: 600; }
+        .rel-flex { display: flex; gap: 8px; justify-content: center; }
+
         .chart-area { 
             width: 1000px; 
             max-width: 95vw; 
-            background: var(--card); 
+            background-color: var(--card); 
             border: 1px solid var(--brd); 
-            border-radius: 12px; 
-            padding: 30px; 
+            border-radius: 14px; 
+            padding: 35px; 
             box-sizing: border-box; 
-            height: 650px; 
+            height: 680px; 
         }
 
-        @media (max-width: 1000px) { table, .header, .info-box, .toolbar, .chart-area { width: 95vw; } }
+        @media (max-width: 1000px) { .header, .info-box, .toolbar, .chart-area, .table-wrapper { width: 95vw; } }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
             <div class="header-left">
-                <h1 style="margin:0; font-size: 22px;">HoKstats</h1>
-                <span class="v-badge">v8.7</span>
+                <h1>HoKstats</h1>
+                <span class="v-badge">v8.9</span>
             </div>
             <div class="main-tabs">
                 <button class="tab-btn active" onclick="switchTab('stats', this)">Estadísticas</button>
@@ -216,8 +222,7 @@
             <div class="info-content">
                 <p class="info-text">
                     Este es un proyecto personal desarrollado originalmente para optimizar mi rendimiento en <strong>Honor of Kings</strong>. 
-                    Al notar su utilidad, decidí compartirlo con la comunidad. Esta herramienta es independiente y no tiene relación oficial con Honor of Kings; 
-                    los datos presentados se obtienen de fuentes públicas destinadas a los jugadores.
+                    Al notar su utilidad, decidí compartirlo con la comunidad. Esta herramienta es independiente y no tiene relación oficial con Honor of Kings.
                 </p>
                 <div class="contact-area">
                     <a href="mailto:michixhok@gmail.com" class="contact-link">✉ michixhok@gmail.com</a>
@@ -240,22 +245,25 @@
                     <input type="text" id="heroSearch" placeholder="Buscar héroe..." onkeyup="applyFilters()">
                 </div>
             </div>
-            <table id="heroTable">
-                <thead>
-                    <tr>
-                        <th style="width:180px; text-align:left" onclick="sortRows(0, 'str')">Héroe</th>
-                        <th style="width:70px" onclick="sortRows(1, 'num')">Tier</th>
-                        <th style="width:100px">Roles</th>
-                        <th style="width:110px" onclick="sortRows(3, 'num')">Win Rate</th>
-                        <th style="width:110px" onclick="sortRows(4, 'num')">Pick Rate</th>
-                        <th style="width:110px" onclick="sortRows(5, 'num')">Ban Rate</th>
-                        <th style="width:110px">Sinergia</th>
-                        <th style="width:110px">Fuerte</th>
-                        <th style="width:110px">Débil</th>
-                    </tr>
-                </thead>
-                <tbody id="table-body"></tbody>
-            </table>
+            
+            <div class="table-wrapper">
+                <table id="heroTable">
+                    <thead>
+                        <tr>
+                            <th class="w-hero" onclick="sortRows(0, 'str')">Héroe</th>
+                            <th style="width:75px" onclick="sortRows(1, 'num')">Tier</th>
+                            <th style="width:110px">Roles</th>
+                            <th style="width:115px" onclick="sortRows(3, 'num')">Win Rate</th>
+                            <th style="width:115px" onclick="sortRows(4, 'num')">Pick Rate</th>
+                            <th style="width:115px" onclick="sortRows(5, 'num')">Ban Rate</th>
+                            <th style="width:115px">Sinergia</th>
+                            <th style="width:115px">Fuerte</th>
+                            <th style="width:115px">Débil</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body"></tbody>
+                </table>
+            </div>
         </div>
 
         <div id="section-analytics" class="content-section">
@@ -277,7 +285,7 @@
             document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
             btn.classList.add('active');
             document.getElementById('section-' + tabId).classList.add('active');
-            if(tabId === 'analytics') renderChart();
+            if(tabId === 'analytics') setTimeout(renderChart, 100);
         }
 
         function setFilter(role, btn) {
@@ -311,40 +319,63 @@
             rows.forEach(r => tbody.appendChild(r));
         }
 
+        // SOLUCIÓN: Función para dibujar círculos en el gráfico
         function renderChart() {
             if(myChart) myChart.destroy();
             const ctx = document.getElementById('scatterChart').getContext('2d');
-            const icons = allHeroes.map(h => { const i = new Image(); i.src = h.img; return i; });
+
+            const heroPoints = allHeroes.map(h => {
+                const img = new Image();
+                img.src = h.img;
+                return { img, x: (h.p_raw + h.b_raw), y: h.w_raw, name: h.n };
+            });
 
             myChart = new Chart(ctx, {
                 type: 'scatter',
                 data: {
                     datasets: [{
-                        data: allHeroes.map(h => ({ x: (h.p_raw + h.b_raw), y: h.w_raw, name: h.n })),
-                        pointStyle: icons,
-                        pointRadius: 6,
-                        pointHoverRadius: 15,
-                        borderWidth: 1,
-                        borderColor: 'rgba(255,255,255,0.2)'
+                        data: heroPoints,
+                        pointRadius: 8,
+                        pointHoverRadius: 20
                     }]
                 },
                 options: {
                     responsive: true, maintainAspectRatio: false,
                     scales: {
-                        x: { title: { display: true, text: 'Presence Rate (Pick% + Ban%)', color: '#8b949e' }, min: 0, max: 6, grid: { color: 'rgba(255,255,255,0.05)' } },
-                        y: { title: { display: true, text: 'Win Rate %', color: '#8b949e' }, min: 40, max: 60, grid: { color: 'rgba(255,255,255,0.05)' } }
+                        x: { title: { display: true, text: 'Presence Rate %', color: '#8b949e' }, min: 0, max: 6 },
+                        y: { title: { display: true, text: 'Win Rate %', color: '#8b949e' }, min: 40, max: 60 }
                     },
-                    plugins: { 
+                    plugins: {
                         legend: { display: false },
-                        tooltip: { 
-                            callbacks: { label: (c) => ` ${c.raw.name}: Win ${c.raw.y}% | Presence ${c.raw.x.toFixed(2)}%` } 
+                        tooltip: {
+                            callbacks: { label: (c) => ` ${c.raw.name}: Win ${c.raw.y}% | Presence ${c.raw.x.toFixed(2)}%` }
                         }
                     }
-                }
+                },
+                plugins: [{
+                    id: 'heroIcons',
+                    afterDatasetDraw(chart, args, options) {
+                        const {ctx} = chart;
+                        chart.getDatasetMeta(0).data.forEach((point, index) => {
+                            const {x, y} = point;
+                            const hero = heroPoints[index];
+                            const size = point.options.radius * 2.2;
+                            
+                            if (hero.img.complete) {
+                                ctx.save();
+                                ctx.beginPath();
+                                ctx.arc(x, y, size / 2, 0, Math.PI * 2);
+                                ctx.clip();
+                                ctx.drawImage(hero.img, x - size / 2, y - size / 2, size, size);
+                                ctx.restore();
+                            }
+                        });
+                    }
+                }]
             });
         }
 
-        async function load() {
+        async function loadData() {
             try {
                 const res = await fetch(CSV_URL);
                 const text = await res.text();
@@ -353,8 +384,7 @@
                     for (let x of l) { if (x === '"') q = !q; else if (x === ',' && !q) { p.push(c); c = ''; } else c += x; }
                     p.push(c); return p;
                 });
-                
-                const body = document.getElementById('table-body');
+                const tbody = document.getElementById('table-body');
                 allHeroes = rows.slice(1).map(r => {
                     if (!r[1]) return null;
                     return {
@@ -370,28 +400,28 @@
 
                 allHeroes.forEach(d => {
                     const clean = (v) => (v && !v.includes('http') && v !== "-" && v !== "0") ? v.trim() : "";
-                    const img = (v) => (v && v.includes('http')) ? v.trim() : "";
-                    const rel = (i) => i ? `<img src="${i}" class="img-mini" onerror="this.style.display='none'">` : "";
+                    const getImg = (v) => (v && v.includes('http')) ? v.trim() : "";
+                    const rel = (url) => url ? `<img src="${url}" class="img-mini" onerror="this.style.display='none'">` : "";
                     const tr = document.createElement('tr');
                     tr.className = 'hero-row';
-                    tr.setAttribute('data-roles', `${d.r1},${d.r2},${d.r3}`);
+                    tr.setAttribute('data-roles', `${clean(d.r1)},${clean(d.r2)},${clean(d.r3)}`);
                     tr.setAttribute('data-pos', d.pos);
                     tr.innerHTML = `
-                        <td><div class="hero-info"><img src="${img(d.img)}" class="img-main"><div><span class="name-txt">${d.n}</span><span class="type-txt">${clean(d.type)}</span></div></div></td>
+                        <td><div class="hero-info"><img src="${getImg(d.img)}" class="img-main"><div><span class="name-txt">${d.n}</span><span class="type-txt">${clean(d.type)}</span></div></div></td>
                         <td><span class="tier-txt">${clean(d.tier)}</span></td>
                         <td><div class="stat-txt">${[clean(d.r1), clean(d.r2)].filter(x=>x).join('<br>')}</div></td>
                         <td><span class="stat-txt">${d.w}</span></td>
                         <td><span class="stat-txt">${d.p}</span></td>
                         <td><span class="stat-txt">${d.b}</span></td>
-                        <td><div class="rel-flex">${rel(img(d.s1i))}${rel(img(d.s2i))}</div></td>
-                        <td><div class="rel-flex">${rel(img(d.f1i))}${rel(img(d.f2i))}</div></td>
-                        <td><div class="rel-flex">${rel(img(d.d1i))}${rel(img(d.d2i))}</div></td>
+                        <td><div class="rel-flex">${rel(getImg(d.s1i))}${rel(getImg(d.s2i))}</div></td>
+                        <td><div class="rel-flex">${rel(getImg(d.f1i))}${rel(getImg(d.f2i))}</div></td>
+                        <td><div class="rel-flex">${rel(getImg(d.d1i))}${rel(getImg(d.d2i))}</div></td>
                     `;
-                    body.appendChild(tr);
+                    tbody.appendChild(tr);
                 });
             } catch (e) { console.error(e); }
         }
-        load();
+        window.onload = loadData;
     </script>
 </body>
 </html>
