@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HOKStats | v4.4 Aesthetic Update</title>
+    <title>HOKStats | v4.5 Smooth & Clean</title>
     <style>
         :root { --bg: #0b0e11; --card: #161b22; --brd: #30363d; --txt: #f0f6fc; --sec: #8b949e; --acc: #58a6ff; }
         body { background: var(--bg); color: var(--txt); font-family: system-ui, sans-serif; padding: 20px 10px; margin: 0; }
@@ -15,12 +15,13 @@
         
         table { width: auto; border-collapse: separate; border-spacing: 0 4px; margin: 0 auto; }
         
-        th { color: var(--sec); font-size: 10px; text-transform: uppercase; padding: 8px 15px; text-align: left; letter-spacing: 0.5px; }
+        th { color: var(--sec); font-size: 10px; text-transform: uppercase; padding: 8px 15px; text-align: left; letter-spacing: 0.5px; white-space: nowrap; }
 
+        /* Control de anchos actualizado para nombres de columnas largos */
         .w-hero { width: 160px; } 
         .w-roles { width: 100px; } 
-        .w-stat { width: 70px; text-align: center; }
-        .w-rel { width: 80px; }
+        .w-stat { width: 110px; text-align: center; } /* Un poco más ancho para los títulos largos */
+        .w-rel { width: 90px; }
 
         tr.hero-row td { background: var(--card); padding: 8px 15px; border-top: 1px solid var(--brd); border-bottom: 1px solid var(--brd); vertical-align: middle; }
         tr.hero-row td:first-child { border-left: 1px solid var(--brd); border-radius: 6px 0 0 6px; }
@@ -28,22 +29,21 @@
 
         .hero-info { display: flex; align-items: center; gap: 10px; }
         
-        /* --- ESTILO ACTUALIZADO: ICONO DE IPHONE --- */
+        /* IMAGEN HÉROE: Bordes eliminados y estilo iPhone */
         .img-main { 
-            width: 38px; 
-            height: 38px; 
-            border-radius: 9px; /* Bordes muy redondeados tipo iPhone */
-            border: 1.5px solid var(--brd); 
+            width: 40px; 
+            height: 40px; 
+            border-radius: 10px; 
+            border: none; /* Quitamos el contorno */
             object-fit: cover;
-            background-color: var(--brd); /* Fondo de seguridad */
         }
         
-        /* Los iconos pequeños se mantienen circulares */
+        /* ICONOS RELACIONES: Tamaño aumentado y bordes eliminados */
         .img-mini { 
-            width: 24px; 
-            height: 24px; 
+            width: 28px; /* Un toque más grandes */
+            height: 28px; 
             border-radius: 50%; 
-            border: 1px solid var(--brd); 
+            border: none; /* Quitamos el contorno */
             object-fit: cover;
         }
 
@@ -51,7 +51,7 @@
         .type-txt, .stat-txt { color: var(--sec); font-size: 11px; font-weight: normal; white-space: nowrap; }
 
         .roles-flex { display: flex; flex-direction: column; justify-content: center; width: 100px; }
-        .rel-flex { display: flex; flex-direction: row; gap: 5px; align-items: center; }
+        .rel-flex { display: flex; flex-direction: row; gap: 6px; align-items: center; }
 
         @media (max-width: 800px) {
             .container { align-items: flex-start; overflow-x: auto; }
@@ -63,16 +63,16 @@
     <div class="container">
         <div class="header">
             <h1 style="margin:0; font-size: 20px;">HOKStats</h1>
-            <span class="v-badge">v4.4</span>
+            <span class="v-badge">v4.5</span>
         </div>
         <table>
             <thead>
                 <tr>
                     <th class="w-hero">Héroe</th>
                     <th class="w-roles">Roles</th>
-                    <th class="w-stat">Win</th>
-                    <th class="w-stat">Pick</th>
-                    <th class="w-stat">Ban</th>
+                    <th class="w-stat">Tasa de victoria</th>
+                    <th class="w-stat">Tasa de selección</th>
+                    <th class="w-stat">Tasa de baneo</th>
                     <th class="w-rel">Sinergia</th>
                     <th class="w-rel">Fuerte</th>
                     <th class="w-rel">Débil</th>
