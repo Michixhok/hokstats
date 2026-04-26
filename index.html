@@ -2,34 +2,83 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>HOKStats | Estructura Profesional</title>
+    <title>HOKStats | Meta Analysis</title>
     <style>
-        body { background: #0b0e14; color: #e1e1e1; font-family: sans-serif; padding: 20px; }
-        table { width: 100%; border-collapse: collapse; background: #161b22; }
-        th { background: #1f232c; color: #58a6ff; text-align: left; padding: 12px; border-bottom: 2px solid #30363d; font-size: 11px; text-transform: uppercase; }
-        td { padding: 12px; border-bottom: 1px solid #21262d; font-size: 13px; vertical-align: middle; }
-        .win { color: #3fb950; font-weight: bold; font-size: 15px; }
-        .hero-main { font-weight: bold; color: #fff; display: block; font-size: 14px; }
-        .hero-type { color: #8b949e; font-size: 11px; }
-        .empty-cell { color: #333; }
-        .pair-text { display: block; font-size: 12px; }
+        :root {
+            --bg-body: #0b0e11;
+            --bg-card: #161b22;
+            --border: #30363d;
+            --text-main: #e6edf3;
+            --text-sec: #8b949e;
+            --accent: #58a6ff;
+            --win: #3fb950;
+        }
+
+        body { 
+            background: var(--bg-body); 
+            color: var(--text-main); 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            padding: 40px;
+        }
+
+        .header-section { margin-bottom: 30px; border-left: 4px solid var(--accent); padding-left: 15px; }
+
+        table { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
+        
+        th { 
+            color: var(--text-sec); 
+            font-size: 11px; 
+            text-transform: uppercase; 
+            padding: 10px 15px;
+            font-weight: 600;
+        }
+
+        /* Estilo de Tarjeta por fila */
+        tr.hero-row td {
+            background: var(--bg-card);
+            padding: 16px 15px;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
+        }
+
+        tr.hero-row td:first-child { border-left: 1px solid var(--border); border-radius: 8px 0 0 8px; }
+        tr.hero-row td:last-child { border-right: 1px solid var(--border); border-radius: 0 8px 8px 0; }
+
+        .hero-info { display: flex; flex-direction: column; }
+        .hero-name { font-weight: bold; font-size: 15px; color: #fff; }
+        .hero-type { color: var(--text-sec); font-size: 12px; margin-top: 2px; }
+
+        .stat-label { display: block; font-size: 10px; color: var(--text-sec); text-transform: uppercase; margin-top: 4px; }
+        .stat-val { font-weight: 600; font-size: 14px; }
+        .win-val { color: var(--win); font-size: 16px; }
+
+        .role-tag { font-size: 12px; color: var(--text-main); }
+        .pair-list { font-size: 12px; line-height: 1.4; }
+        .red-text { color: #f85149; }
+        .blue-text { color: var(--accent); }
     </style>
 </head>
 <body>
-    <h2 style="color: white; margin-bottom: 20px;">HOKStats - Base de Datos Actualizada</h2>
+
+    <div class="header-section">
+        <h1 style="margin:0; font-size: 24px;">HOKStats</h1>
+        <span style="color: var(--text-sec);">Meta Analysis & Database</span>
+    </div>
+
     <table>
         <thead>
             <tr>
-                <th>Héroe / Tipo</th>
+                <th style="width: 15%;">Héroe</th>
                 <th>Rol 1</th>
                 <th>Rol 2</th>
                 <th>Rol 3</th>
                 <th>Win Rate</th>
-                <th>Pick Rate</th>
-                <th>Ban Rate</th>
+                <th>Pick</th>
+                <th>Ban</th>
                 <th>Sinergias</th>
-                <th>Fuerte contra</th>
-                <th>Débil contra</th>
+                <th>Fuerte vs</th>
+                <th>Débil vs</th>
             </tr>
         </thead>
         <tbody id="table-body"></tbody>
@@ -38,51 +87,59 @@
     <script>
         const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTO4rMY_drrjKMx3KTdjAaSrH6GenxyZ7YzLPT7oiZ_pNYm6EKG-yJPfmbRcZgYGGi2gERA1Gciw-Fy/pub?gid=538223640&single=true&output=csv';
 
-        async function loadData() {
+        async function load() {
             try {
                 const res = await fetch(CSV_URL);
                 const text = await res.text();
                 const rows = text.split('\n').map(r => r.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/));
-                
                 const tableBody = document.getElementById('table-body');
-                tableBody.innerHTML = '';
-
+                
                 rows.slice(1).forEach(col => {
                     if (!col[1] || col[1].trim() === "") return;
-
-                    // Función para limpiar celdas vacías o con "-"
-                    const clean = (val) => (val && val.trim() !== "-" && val.trim() !== "") ? val : "";
+                    const clean = (v) => (v && v.trim() !== "-" && v.trim() !== "") ? v : "";
 
                     const tr = document.createElement('tr');
+                    tr.className = 'hero-row';
                     tr.innerHTML = `
                         <td>
-                            <span class="hero-main">${col[1]}</span>
-                            <span class="hero-type">${col[3]}</span>
+                            <div class="hero-info">
+                                <span class="hero-name">${col[1]}</span>
+                                <span class="hero-type">${col[3]}</span>
+                            </div>
                         </td>
-                        <td>${clean(col[4])}</td>
-                        <td>${clean(col[5])}</td>
-                        <td>${clean(col[6])}</td>
-                        <td class="win">${col[7]}</td>
-                        <td>${col[8]}</td>
-                        <td>${col[9]}</td>
+                        <td class="role-tag">${clean(col[4])}</td>
+                        <td class="role-tag">${clean(col[5])}</td>
+                        <td class="role-tag">${clean(col[6])}</td>
                         <td>
-                            <span class="pair-text">${clean(col[10])}</span>
-                            <span class="pair-text">${clean(col[12])}</span>
+                            <span class="stat-val win-val">${col[7]}</span>
+                            <span class="stat-label">Win Rate</span>
                         </td>
-                        <td style="color: #58a6ff">
-                            <span class="pair-text">${clean(col[14])}</span>
-                            <span class="pair-text">${clean(col[16])}</span>
+                        <td>
+                            <span class="stat-val">${col[8]}</span>
+                            <span class="stat-label">Pick</span>
                         </td>
-                        <td style="color: #ff7b72">
-                            <span class="pair-text">${clean(col[18])}</span>
-                            <span class="pair-text">${clean(col[20])}</span>
+                        <td>
+                            <span class="stat-val">${col[9]}</span>
+                            <span class="stat-label">Ban</span>
+                        </td>
+                        <td class="pair-list">
+                            <div>${clean(col[10])}</div>
+                            <div>${clean(col[12])}</div>
+                        </td>
+                        <td class="pair-list blue-text">
+                            <div>${clean(col[14])}</div>
+                            <div>${clean(col[16])}</div>
+                        </td>
+                        <td class="pair-list red-text">
+                            <div>${clean(col[18])}</div>
+                            <div>${clean(col[20])}</div>
                         </td>
                     `;
                     tableBody.appendChild(tr);
                 });
-            } catch (e) { console.error("Error:", e); }
+            } catch (e) { console.error(e); }
         }
-        loadData();
+        load();
     </script>
 </body>
 </html>
