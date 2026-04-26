@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>HOKStats | v3.2.2 Stable</title>
+    <title>HOKStats | v3.3 Final Fix</title>
     <style>
         :root {
             --bg-body: #0b0e11;
@@ -16,7 +16,7 @@
         body { 
             background: var(--bg-body); color: var(--text-main); 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            padding: 30px; margin: 0;
+            padding: 20px; margin: 0;
         }
 
         .container { max-width: 1400px; margin: 0 auto; }
@@ -34,36 +34,38 @@
         
         th { 
             color: var(--text-sec); font-size: 10px; text-transform: uppercase; 
-            padding: 8px 15px; font-weight: 600; text-align: left;
+            padding: 8px 12px; font-weight: 600; text-align: left;
         }
 
-        /* Anchos ajustados para que nada se desplace */
-        .col-hero { width: 18%; }
-        .col-role { width: 8%; }
-        .col-stat { width: 7%; }
-        .col-pair { width: 12%; }
+        /* Bloqueo de anchos para evitar que se corra a la derecha */
+        .w-hero { width: 15%; }
+        .w-role { width: 8%; }
+        .w-stat { width: 7%; }
+        .w-rel  { width: 13%; }
 
         tr.hero-row td {
-            background: var(--bg-card); padding: 10px 15px;
+            background: var(--bg-card); padding: 12px;
             border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
             vertical-align: middle; overflow: hidden;
         }
 
-        tr.hero-row td:first-child { border-left: 1px solid var(--border); border-radius: 6px 0 0 6px; }
-        tr.hero-row td:last-child { border-right: 1px solid var(--border); border-radius: 0 6px 6px 0; }
+        tr.hero-row td:first-child { border-left: 1px solid var(--border); border-radius: 8px 0 0 8px; }
+        tr.hero-row td:last-child { border-right: 1px solid var(--border); border-radius: 0 8px 8px 0; }
 
-        .hero-flex { display: flex; align-items: center; gap: 10px; }
-        .img-main { width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--border); flex-shrink: 0; }
+        .hero-flex { display: flex; align-items: center; gap: 12px; }
+        .img-main { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--border); flex-shrink: 0; object-fit: cover; }
         .img-mini { width: 22px; height: 22px; border-radius: 50%; border: 1px solid var(--border); flex-shrink: 0; }
 
-        .rel-item { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+        .rel-container { display: flex; flex-direction: column; gap: 6px; }
+        .rel-item { display: flex; align-items: center; gap: 8px; }
+        
         .hero-name { font-weight: bold; font-size: 14px; color: #fff; display: block; }
         .hero-type { color: var(--text-sec); font-size: 10px; display: block; }
         .stat-val { font-weight: 600; font-size: 13px; color: #fff; }
 
         .blue { color: var(--accent); }
         .red { color: #f85149; }
-        .name-tag { font-size: 11px; white-space: nowrap; }
+        .name-tag { font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     </style>
 </head>
 <body>
@@ -71,23 +73,23 @@
     <div class="container">
         <div class="header-section">
             <h1 style="margin:0; font-size: 20px;">HOKStats</h1>
-            <span class="version-badge">Build v3.2.2</span>
+            <span class="version-badge">Build v3.3</span>
             <span style="color: var(--text-sec); font-size: 12px;">| Meta Database Chile</span>
         </div>
 
         <table>
             <thead>
                 <tr>
-                    <th class="col-hero">Héroe / Tipo</th>
-                    <th class="col-role">Rol 1</th>
-                    <th class="col-role">Rol 2</th>
-                    <th class="col-role">Rol 3</th>
-                    <th class="col-stat">Win Rate</th>
-                    <th class="col-stat">Pick Rate</th>
-                    <th class="col-stat">Ban Rate</th>
-                    <th class="col-pair">Sinergias</th>
-                    <th class="col-pair">Fuerte vs</th>
-                    <th class="col-pair">Débil vs</th>
+                    <th class="w-hero">Héroe</th>
+                    <th class="w-role">Rol 1</th>
+                    <th class="w-role">Rol 2</th>
+                    <th class="w-role">Rol 3</th>
+                    <th class="w-stat">Win Rate</th>
+                    <th class="w-stat">Pick Rate</th>
+                    <th class="w-stat">Ban Rate</th>
+                    <th class="w-rel">Sinergias</th>
+                    <th class="w-rel">Fuerte vs</th>
+                    <th class="w-rel">Débil vs</th>
                 </tr>
             </thead>
             <tbody id="table-body"></tbody>
@@ -101,41 +103,35 @@
             try {
                 const res = await fetch(CSV_URL);
                 const text = await res.text();
-                const rows = text.split('\n').map(r => r.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/));
+                
+                // Procesamiento de CSV ultra-seguro para que nada se corra a la derecha
+                const rows = text.split('\n').map(line => {
+                    const result = [];
+                    let cell = '', inQuotes = false;
+                    for (let char of line) {
+                        if (char === '"') inQuotes = !inQuotes;
+                        else if (char === ',' && !inQuotes) { result.push(cell); cell = ''; }
+                        else cell += char;
+                    }
+                    result.push(cell);
+                    return result;
+                });
+
                 const tableBody = document.getElementById('table-body');
                 
                 rows.slice(1).forEach(col => {
                     if (!col[1] || col[1].trim() === "") return;
 
-                    const clean = (val) => {
-                        if (!val) return "";
-                        let s = val.trim().replace(/^"|"$/g, '');
-                        return (s === "-" || s === "0.00%" || s === "#N/A" || s.startsWith("http")) ? "" : s;
-                    };
-
-                    const getImg = (val) => {
-                        if (!val) return "";
-                        let s = val.trim().replace(/^"|"$/g, '');
-                        return s.startsWith("http") ? s : "";
-                    };
-
-                    // MAPEADO ESTRICTO PARA EVITAR DESPLAZAMIENTOS
-                    const heroName = col[1];
-                    const heroType = col[2]; 
-                    const heroImg  = getImg(col[3]); // Col D
-
-                    const s1Name = clean(col[10]), s1Img = getImg(col[13]); // N
-                    const s2Name = clean(col[12]), s2Img = getImg(col[16]); // Q
-                    const f1Name = clean(col[14]), f1Img = getImg(col[19]); // T
-                    const f2Name = clean(col[16]), f2Img = getImg(col[22]); // W
-                    const d1Name = clean(col[18]), d1Img = getImg(col[25]); // Z
-                    const d2Name = clean(col[20]), d2Img = getImg(col[28]); // AC
-
-                    const renderPair = (name, img) => {
-                        if (!name) return "";
+                    const clean = (val) => val ? val.trim().replace(/^"|"$/g, '') : "";
+                    
+                    // Función para renderizar relaciones (asegura que aparezcan las dos)
+                    const renderRel = (name, img) => {
+                        const cName = clean(name);
+                        const cImg = clean(img);
+                        if (!cName || cName === "-" || cName === "0") return "";
                         return `<div class="rel-item">
-                                    <img src="${img}" class="img-mini" onerror="this.style.display='none'">
-                                    <span class="name-tag">${name}</span>
+                                    <img src="${cImg}" class="img-mini" onerror="this.style.visibility='hidden'">
+                                    <span class="name-tag">${cName}</span>
                                 </div>`;
                     };
 
@@ -144,19 +140,34 @@
                     tr.innerHTML = `
                         <td>
                             <div class="hero-flex">
-                                <img src="${heroImg}" class="img-main" onerror="this.src='https://www.honorofkings.com/global/images/hero/hero_list_default.png'">
-                                <div><span class="hero-name">${heroName}</span><span class="hero-type">${heroType}</span></div>
+                                <img src="${clean(col[3])}" class="img-main" onerror="this.src='https://www.honorofkings.com/global/images/hero/hero_list_default.png'">
+                                <div><span class="hero-name">${col[1]}</span><span class="hero-type">${col[2]}</span></div>
                             </div>
                         </td>
-                        <td class="role-text">${clean(col[4])}</td>
-                        <td class="role-text">${clean(col[5])}</td>
-                        <td class="role-text">${clean(col[6])}</td>
-                        <td><span class="stat-val">${col[7]}</span></td>
-                        <td><span class="stat-val">${col[8]}</span></td>
-                        <td><span class="stat-val">${col[9]}</span></td>
-                        <td>${renderPair(s1Name, s1Img)}${renderPair(s2Name, s2Img)}</td>
-                        <td class="blue">${renderPair(f1Name, f1Img)}${renderPair(f2Name, f2Img)}</td>
-                        <td class="red">${renderPair(d1Name, d1Img)}${renderPair(d2Name, d2Img)}</td>
+                        <td class="role-text" style="color:var(--text-sec); font-size:11px;">${clean(col[4])}</td>
+                        <td class="role-text" style="color:var(--text-sec); font-size:11px;">${clean(col[5])}</td>
+                        <td class="role-text" style="color:var(--text-sec); font-size:11px;">${clean(col[6])}</td>
+                        <td><span class="stat-val">${clean(col[7])}</span></td>
+                        <td><span class="stat-val">${clean(col[8])}</span></td>
+                        <td><span class="stat-val">${clean(col[9])}</span></td>
+                        <td>
+                            <div class="rel-container">
+                                ${renderRel(col[10], col[13])}
+                                ${renderRel(col[12], col[16])}
+                            </div>
+                        </td>
+                        <td class="blue">
+                            <div class="rel-container">
+                                ${renderRel(col[14], col[19])}
+                                ${renderRel(col[16], col[22])}
+                            </div>
+                        </td>
+                        <td class="red">
+                            <div class="rel-container">
+                                ${renderRel(col[18], col[25])}
+                                ${renderRel(col[20], col[28])}
+                            </div>
+                        </td>
                     `;
                     tableBody.appendChild(tr);
                 });
