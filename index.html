@@ -120,23 +120,37 @@ td {
   font-weight: bold;
 }
 
+/* 🔥 ROMBO TIER */
 .tier-badge {
-  font-weight: bold;
-  text-align: center;
+  width: 26px;
+  height: 26px;
+  margin: auto;
+  transform: rotate(45deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.tier-S { color: #ff4d4d; }
-.tier-A { color: #ff9f43; }
-.tier-B { color: #ffd93d; }
-.tier-C { color: #6bcf63; }
-.tier-D { color: #4dabf7; }
-.tier-E { color: #9aa0a6; }
+/* texto dentro */
+.tier-badge span {
+  transform: rotate(-45deg);
+  color: white;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+/* COLORES */
+.tier-S { background: #ff4d4d; }
+.tier-A { background: #ff9f43; }
+.tier-B { background: #ffd93d; }
+.tier-C { background: #6bcf63; }
+.tier-D { background: #4dabf7; }
+.tier-E { background: #9aa0a6; }
 
 .stat {
   font-size: 12px;
 }
 
-/* 🔥 MEJORA VISUAL */
 .role-cell {
   display: flex;
   flex-direction: column;
@@ -259,7 +273,9 @@ function renderTable(data) {
       </td>
 
       <td class="col-tier">
-        <div class="tier-badge ${tierClass}">${item.tier}</div>
+        <div class="tier-badge ${tierClass}">
+          <span>${item.tier}</span>
+        </div>
       </td>
 
       <td class="col-rol">
