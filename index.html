@@ -1,125 +1,179 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Tier List</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #1f2937;
-      color: #e5e7eb;
-      margin: 0;
-      padding: 20px;
-    }
+<meta charset="UTF-8">
+<title>Tier List</title>
 
-    .table-container {
-      max-width: 1200px;
-      margin: auto;
-      background: #111827;
-      border-radius: 10px;
-      overflow: hidden;
-    }
+<style>
+body {
+  background: #2b2d3a;
+  font-family: Arial, sans-serif;
+  color: #cbd5e1;
+  margin: 0;
+  padding: 20px;
+}
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
+/* CONTENEDOR */
+.container {
+  max-width: 1100px;
+  margin: auto;
+  background: #2f3142;
+  border-radius: 8px;
+  overflow: hidden;
+}
 
-    thead {
-      background: #374151;
-      text-align: left;
-    }
+/* TABS */
+.tabs {
+  display: flex;
+  background: #3a3c50;
+}
 
-    th, td {
-      padding: 12px 10px;
-      font-size: 14px;
-    }
+.tab {
+  flex: 1;
+  text-align: center;
+  padding: 12px;
+  cursor: pointer;
+  color: #aab0d0;
+}
 
-    th {
-      color: #9ca3af;
-      font-weight: 500;
-    }
+.tab.active {
+  background: #4f6edb;
+  color: white;
+  font-weight: bold;
+}
 
-    tbody tr {
-      border-bottom: 1px solid #374151;
-    }
+/* TABLA */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
 
-    tbody tr:hover {
-      background: #1f2937;
-    }
+thead {
+  background: #2a2c3a;
+  font-size: 13px;
+  color: #8b90b3;
+}
 
-    .rank {
-      width: 60px;
-      text-align: center;
-      font-weight: bold;
-    }
+th, td {
+  padding: 10px;
+  text-align: left;
+}
 
-    .champion {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
+tbody tr {
+  border-top: 1px solid #3a3c50;
+}
 
-    .champion img {
-      width: 32px;
-      height: 32px;
-      border-radius: 6px;
-    }
+tbody tr:hover {
+  background: #3a3c50;
+}
 
-    .tier {
-      font-weight: bold;
-      color: #fbbf24;
-    }
+/* COLUMNAS */
+.rank {
+  width: 40px;
+  text-align: center;
+  color: #8b90b3;
+}
 
-    .stat {
-      text-align: center;
-    }
-  </style>
+.champion {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.champion img {
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+}
+
+/* TIER BADGE */
+.tier-badge {
+  background: #2f80ed;
+  color: white;
+  font-weight: bold;
+  padding: 4px 8px;
+  border-radius: 6px;
+  text-align: center;
+  width: 24px;
+}
+
+/* STATS */
+.stat {
+  text-align: center;
+}
+
+/* ICONOS */
+.icons {
+  display: flex;
+  gap: 5px;
+}
+
+.icons img {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+}
+</style>
 </head>
+
 <body>
 
-<div class="table-container">
+<div class="container">
+
+  <!-- TABS -->
+  <div class="tabs">
+    <div class="tab active">Todo</div>
+    <div class="tab">Top</div>
+    <div class="tab">Jungla</div>
+    <div class="tab">Mid</div>
+    <div class="tab">Bot</div>
+    <div class="tab">Soporte</div>
+  </div>
+
+  <!-- TABLA -->
   <table>
     <thead>
       <tr>
         <th class="rank">#</th>
         <th>Campeón</th>
         <th class="stat">Tier</th>
-        <th class="stat">Win Rate</th>
-        <th class="stat">Pick Rate</th>
-        <th class="stat">Ban Rate</th>
+        <th class="stat">Rol</th>
+        <th class="stat">Tasa de victoria</th>
+        <th class="stat">Tasa de selección</th>
+        <th class="stat">Tasa de baneo</th>
+        <th>Débil contra</th>
       </tr>
     </thead>
 
     <tbody>
       <tr>
         <td class="rank">1</td>
-        <td>
-          <div class="champion">
-            <img src="https://via.placeholder.com/32" alt="">
-            <span>Ahri</span>
-          </div>
-        </td>
-        <td class="stat tier">S+</td>
-        <td class="stat">52.3%</td>
-        <td class="stat">18.1%</td>
-        <td class="stat">12.4%</td>
-      </tr>
 
-      <tr>
-        <td class="rank">2</td>
         <td>
           <div class="champion">
-            <img src="https://via.placeholder.com/32" alt="">
-            <span>Lee Sin</span>
+            <img src="https://via.placeholder.com/36">
+            <span>Taliyah</span>
           </div>
         </td>
-        <td class="stat tier">S</td>
-        <td class="stat">50.8%</td>
-        <td class="stat">22.5%</td>
-        <td class="stat">18.2%</td>
+
+        <td class="stat"><div class="tier-badge">1</div></td>
+
+        <td class="stat">🌿</td>
+
+        <td class="stat">57.42%</td>
+        <td class="stat">0.62%</td>
+        <td class="stat">0.19%</td>
+
+        <td>
+          <div class="icons">
+            <img src="https://via.placeholder.com/28">
+            <img src="https://via.placeholder.com/28">
+            <img src="https://via.placeholder.com/28">
+          </div>
+        </td>
       </tr>
     </tbody>
+
   </table>
 </div>
 
