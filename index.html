@@ -30,6 +30,7 @@ body {
   flex: 1;
   text-align: center;
   padding: 12px;
+  cursor: pointer;
 }
 
 .tab.active {
@@ -60,6 +61,7 @@ th {
 tbody tr {
   background: #31313c;
   border-top: 1px solid #282830;
+  height: 60px; /* altura fija */
 }
 
 tbody tr:hover {
@@ -111,19 +113,13 @@ td {
 .role-cell {
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
-  gap: 3px;
-  font-size: 12px;
-  line-height: 1.2;
-  min-height: 40px;
-}
-
-.role-item {
-  background: #282830;
-  padding: 2px 6px;
-  border-radius: 4px;
+  align-items: center;
+  gap: 1px;
   font-size: 11px;
+  line-height: 1.1;
+  height: 40px;
+  overflow: hidden;
 }
 </style>
 </head>
@@ -134,12 +130,12 @@ td {
 
   <!-- TABS -->
   <div class="tabs">
-    <div class="tab active">Todo</div>
-    <div class="tab">Top</div>
-    <div class="tab">Jungla</div>
-    <div class="tab">Mid</div>
-    <div class="tab">Bot</div>
-    <div class="tab">Soporte</div>
+    <div class="tab active" data-role="all">Todo</div>
+    <div class="tab" data-role="Choque">Choque</div>
+    <div class="tab" data-role="Cazador">Cazador</div>
+    <div class="tab" data-role="Medio">Medio</div>
+    <div class="tab" data-role="Merodeo">Merodeo</div>
+    <div class="tab" data-role="Farmeo">Farmeo</div>
   </div>
 
   <!-- TABLA -->
@@ -164,71 +160,91 @@ td {
 <script>
 const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTO4rMY_drrjKMx3KTdjAaSrH6GenxyZ7YzLPT7oiZ_pNYm6EKG-yJPfmbRcZgYGGi2gERA1Gciw-Fy/pub?gid=538223640&single=true&output=csv";
 
+let allData = [];
+
 fetch(CSV_URL)
   .then(res => res.text())
   .then(csv => {
 
     const rows = csv.split("\n").slice(1);
-    const tbody = document.querySelector("tbody");
 
-    rows.forEach((row, index) => {
-
+    rows.forEach(row => {
       if (!row.trim()) return;
 
       const cols = row.split(",");
 
       const nombre = cols[1];
-      const imagen = cols[3];
-
-      // ROLES
-      const rol1 = cols[5];
-      const rol2 = cols[6];
-      const rol3 = cols[7];
-
-      const roles = [rol1, rol2, rol3].filter(r => r && r.trim() !== "");
-
-      const rolesHTML = roles.map(r => 
-        `<div class="role-item">${r}</div>`
-      ).join("");
-
-      const win = cols[8];
-      const pick = cols[9];
-      const ban = cols[10];
-
       if (!nombre) return;
 
-      const tr = document.createElement("tr");
-
-      tr.innerHTML = `
-        <td class="rank">${index + 1}</td>
-
-        <td>
-          <div class="champion">
-            <img src="${imagen}" onerror="this.style.display='none'">
-            <span>${nombre}</span>
-          </div>
-        </td>
-
-        <td class="stat"><div class="tier-badge">1</div></td>
-
-        <td class="stat">
-          <div class="role-cell">
-            ${rolesHTML}
-          </div>
-        </td>
-
-        <td class="stat">${win}</td>
-        <td class="stat">${pick}</td>
-        <td class="stat">${ban}</td>
-      `;
-
-      tbody.appendChild(tr);
+      allData.push({
+        nombre,
+        imagen: cols[3],
+        roles: [cols[5], cols[6], cols[7]].filter(r => r && r.trim() !== ""),
+        win: cols[8],
+        pick: cols[9],
+        ban: cols[10]
+      });
     });
 
-  })
-  .catch(err => {
-    console.error("Error cargando CSV:", err);
+    renderTable(allData);
   });
+
+function renderTable(data) {
+  const tbody = document.querySelector("tbody");
+  tbody.innerHTML = "";
+
+  data.forEach((item, index) => {
+
+    const rolesHTML = item.roles.map(r => `<div>${r}</div>`).join("");
+
+    const tr = document.createElement("tr");
+
+    tr.innerHTML = `
+      <td class="rank">${index + 1}</td>
+
+      <td>
+        <div class="champion">
+          <img src="${item.imagen}" onerror="this.style.display='none'">
+          <span>${item.nombre}</span>
+        </div>
+      </td>
+
+      <td class="stat"><div class="tier-badge">1</div></td>
+
+      <td class="stat">
+        <div class="role-cell">
+          ${rolesHTML}
+        </div>
+      </td>
+
+      <td class="stat">${item.win}</td>
+      <td class="stat">${item.pick}</td>
+      <td class="stat">${item.ban}</td>
+    `;
+
+    tbody.appendChild(tr);
+  });
+}
+
+/* FILTROS */
+document.querySelectorAll(".tab").forEach(tab => {
+  tab.addEventListener("click", () => {
+
+    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+    tab.classList.add("active");
+
+    const role = tab.dataset.role;
+
+    if (role === "all") {
+      renderTable(allData);
+    } else {
+      const filtered = allData.filter(item =>
+        item.roles.includes(role)
+      );
+      renderTable(filtered);
+    }
+  });
+});
 </script>
 
 </body>
