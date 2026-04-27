@@ -18,7 +18,7 @@ body {
   margin: auto;
 }
 
-/* 🔥 CAJA UNIFICADA (TABS + TABLA) */
+/* 🔥 CAJA PRINCIPAL */
 .main-box {
   background: #31313c;
   border: 1px solid #3a3a46;
@@ -26,19 +26,26 @@ body {
   overflow: hidden;
 }
 
-/* TABS */
-.tabs {
-  display: flex;
+/* 🔥 CONTENEDOR DE TABS (CON ESPACIO REAL) */
+.tabs-container {
+  padding: 10px;
   background: #31313c;
-  border-bottom: 1px solid #444452; /* 🔥 unión con tabla */
+}
+
+/* 🔥 TABS NO FULL WIDTH */
+.tabs {
+  display: inline-flex;
+  border: 1px solid #444452;
+  border-radius: 4px;
+  overflow: hidden;
 }
 
 .tab {
-  flex: 1;
-  text-align: center;
-  padding: 10px;
+  padding: 8px 14px;
   cursor: pointer;
   border-right: 1px solid #444452;
+  background: #31313c;
+  font-size: 13px;
 }
 
 .tab:last-child {
@@ -58,6 +65,7 @@ table {
   table-layout: fixed;
 }
 
+/* HEADER */
 thead {
   background: #282830;
 }
@@ -67,10 +75,10 @@ th {
   font-size: 13px;
   color: #7b7a8e;
   font-weight: normal;
-  border-bottom: 1px solid #282830;
+  border-top: 2px solid #1c1c1f;
+  border-bottom: 2px solid #1c1c1f;
 }
 
-/* CENTRAR HEADER HEROE */
 th.col-hero {
   text-align: center;
 }
@@ -81,7 +89,8 @@ tbody tr {
 }
 
 tbody tr td {
-  border-bottom: 1px solid #282830;
+  border-top: 2px solid #1c1c1f;
+  border-bottom: 2px solid #1c1c1f;
 }
 
 tbody tr:hover {
@@ -111,7 +120,6 @@ td {
   width: 36px;
   height: 36px;
   border-radius: 6px;
-  flex-shrink: 0;
 }
 
 .champion span {
@@ -139,7 +147,6 @@ td {
 .role-cell {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
   font-size: 10px;
   height: 32px;
@@ -151,16 +158,18 @@ td {
 
 <div class="container">
 
-  <!-- 🔥 TODO DENTRO DE UNA SOLA CAJA -->
   <div class="main-box">
 
-    <div class="tabs">
-      <div class="tab active" data-role="all">Todo</div>
-      <div class="tab" data-role="Choque">Choque</div>
-      <div class="tab" data-role="Cazador">Cazador</div>
-      <div class="tab" data-role="Medio">Medio</div>
-      <div class="tab" data-role="Merodeo">Merodeo</div>
-      <div class="tab" data-role="Farmeo">Farmeo</div>
+    <!-- 🔥 ESTRUCTURA CORRECTA -->
+    <div class="tabs-container">
+      <div class="tabs">
+        <div class="tab active" data-role="all">Todo</div>
+        <div class="tab" data-role="Choque">Choque</div>
+        <div class="tab" data-role="Cazador">Cazador</div>
+        <div class="tab" data-role="Medio">Medio</div>
+        <div class="tab" data-role="Merodeo">Merodeo</div>
+        <div class="tab" data-role="Farmeo">Farmeo</div>
+      </div>
     </div>
 
     <table>
@@ -185,7 +194,6 @@ td {
 const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTO4rMY_drrjKMx3KTdjAaSrH6GenxyZ7YzLPT7oiZ_pNYm6EKG-yJPfmbRcZgYGGi2gERA1Gciw-Fy/pub?gid=538223640&single=true&output=csv";
 
 let allData = [];
-let currentSort = { key: null, asc: false };
 
 function parseCSV(text) {
   const rows = [];
@@ -212,11 +220,10 @@ fetch(CSV_URL)
     const data = parseCSV(csv).slice(1);
 
     data.forEach(cols => {
-      const nombre = cols[1];
-      if (!nombre) return;
+      if (!cols[1]) return;
 
       allData.push({
-        nombre,
+        nombre: cols[1],
         imagen: cols[3],
         roles: [cols[5], cols[6], cols[7]].filter(r => r),
         win: parseFloat(cols[8]),
@@ -240,7 +247,7 @@ function renderTable(data) {
     tr.innerHTML = `
       <td class="col-hero">
         <div class="champion">
-          <img src="${item.imagen}" onerror="this.style.display='none'">
+          <img src="${item.imagen}">
           <span>${item.nombre}</span>
         </div>
       </td>
@@ -255,17 +262,7 @@ function renderTable(data) {
   });
 }
 
-function sortTable(key) {
-  const asc = currentSort.key === key ? !currentSort.asc : false;
-  currentSort = { key, asc };
-
-  const sorted = [...allData].sort((a, b) =>
-    asc ? a[key] - b[key] : b[key] - a[key]
-  );
-
-  renderTable(sorted);
-}
-
+/* FILTROS */
 document.querySelectorAll(".tab").forEach(tab => {
   tab.addEventListener("click", () => {
 
@@ -277,10 +274,7 @@ document.querySelectorAll(".tab").forEach(tab => {
     if (role === "all") {
       renderTable(allData);
     } else {
-      const filtered = allData.filter(item =>
-        item.roles.includes(role)
-      );
-      renderTable(filtered);
+      renderTable(allData.filter(i => i.roles.includes(role)));
     }
   });
 });
