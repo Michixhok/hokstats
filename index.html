@@ -18,7 +18,7 @@ body {
   margin: auto;
 }
 
-/* CONTENEDOR */
+/* CONTENEDOR TABS */
 .tabs-wrapper {
   background: #31313c;
   padding: 8px;
@@ -27,11 +27,10 @@ body {
   margin-bottom: 10px;
 }
 
-/* 🔥 TABS MEJORADOS */
 .tabs {
   display: flex;
-  background: #31313c; /* igual que filas */
-  border: 1px solid #444452; /* línea clara suave */
+  background: #31313c;
+  border: 1px solid #444452;
   border-radius: 4px;
   overflow: hidden;
 }
@@ -55,23 +54,22 @@ body {
   font-weight: bold;
 }
 
-/* TABLA */
+/* 🔥 TABLA FIJA (CLAVE) */
 table {
   width: 100%;
   border-collapse: collapse;
+  table-layout: fixed;
 }
 
 thead {
   background: #282830;
 }
 
-/* 🔥 HEADERS CORRECTOS */
 th {
   padding: 8px 10px;
   font-size: 13px;
   text-align: left;
   color: #7b7a8e;
-  cursor: pointer;
   font-weight: normal;
 }
 
@@ -89,30 +87,37 @@ td {
   padding: 6px 10px;
 }
 
-.rank {
-  width: 40px;
-  text-align: center;
-}
+/* 🔥 ANCHOS FIJOS */
+.col-hero { width: 30%; }
+.col-tier { width: 10%; text-align:center; }
+.col-rol  { width: 15%; text-align:center; }
+.col-stat { width: 15%; text-align:center; }
 
+/* HEROE */
 .champion {
   display: flex;
   align-items: center;
   gap: 10px;
   color: white;
+  overflow: hidden;
 }
 
 .champion img {
   width: 36px;
   height: 36px;
   border-radius: 6px;
-  object-fit: cover;
+  flex-shrink: 0;
 }
 
 .champion span {
   font-size: 13px;
   font-weight: bold;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
+/* TIER */
 .tier-badge {
   background: #2f80ed;
   color: white;
@@ -121,14 +126,14 @@ td {
   border-radius: 6px;
   width: 22px;
   margin: auto;
-  text-align: center;
 }
 
+/* STATS */
 .stat {
-  text-align: center;
   font-size: 12px;
 }
 
+/* ROLES */
 .role-cell {
   display: flex;
   flex-direction: column;
@@ -158,13 +163,12 @@ td {
   <table>
     <thead>
       <tr>
-        <th>#</th>
-        <th>Héroe</th>
-        <th>Tier</th>
-        <th>Rol</th>
-        <th onclick="sortTable('win')">Win rate</th>
-        <th onclick="sortTable('pick')">Pick rate</th>
-        <th onclick="sortTable('ban')">Ban rate</th>
+        <th class="col-hero">Héroe</th>
+        <th class="col-tier">Tier</th>
+        <th class="col-rol">Rol</th>
+        <th class="col-stat" onclick="sortTable('win')">Win rate</th>
+        <th class="col-stat" onclick="sortTable('pick')">Pick rate</th>
+        <th class="col-stat" onclick="sortTable('ban')">Ban rate</th>
       </tr>
     </thead>
     <tbody></tbody>
@@ -223,24 +227,28 @@ function renderTable(data) {
   const tbody = document.querySelector("tbody");
   tbody.innerHTML = "";
 
-  data.forEach((item, index) => {
+  data.forEach(item => {
     const rolesHTML = item.roles.map(r => `<div>${r}</div>`).join("");
 
     const tr = document.createElement("tr");
 
     tr.innerHTML = `
-      <td class="rank">${index + 1}</td>
-      <td>
+      <td class="col-hero">
         <div class="champion">
           <img src="${item.imagen}" onerror="this.style.display='none'">
           <span>${item.nombre}</span>
         </div>
       </td>
-      <td class="stat"><div class="tier-badge">1</div></td>
-      <td class="stat"><div class="role-cell">${rolesHTML}</div></td>
-      <td class="stat">${item.win}%</td>
-      <td class="stat">${item.pick}%</td>
-      <td class="stat">${item.ban}%</td>
+
+      <td class="col-tier"><div class="tier-badge">1</div></td>
+
+      <td class="col-rol">
+        <div class="role-cell">${rolesHTML}</div>
+      </td>
+
+      <td class="col-stat stat">${item.win}%</td>
+      <td class="col-stat stat">${item.pick}%</td>
+      <td class="col-stat stat">${item.ban}%</td>
     `;
 
     tbody.appendChild(tr);
