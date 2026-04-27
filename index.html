@@ -20,17 +20,24 @@ body {
   overflow: hidden;
 }
 
-/* TABS */
+/* 🔥 TABS ESTILO NUEVO */
 .tabs {
   display: flex;
-  background: #31313c;
+  border: 1px solid #3a3a46;
+  background: #282830;
 }
 
 .tab {
   flex: 1;
   text-align: center;
-  padding: 12px;
+  padding: 10px;
   cursor: pointer;
+  border-right: 1px solid #3a3a46;
+  background: #31313c;
+}
+
+.tab:last-child {
+  border-right: none;
 }
 
 .tab.active {
@@ -54,9 +61,9 @@ th {
   font-size: 13px;
   text-align: left;
   color: #7b7a8e;
+  cursor: pointer;
 }
 
-/* FILAS MÁS COMPACTAS */
 tbody tr {
   background: #31313c;
   border-top: 1px solid #282830;
@@ -77,7 +84,6 @@ td {
   text-align: center;
 }
 
-/* HEROE */
 .champion {
   display: flex;
   align-items: center;
@@ -92,7 +98,6 @@ td {
   object-fit: cover;
 }
 
-/* NOMBRE MÁS PEQUEÑO Y EN NEGRITA */
 .champion span {
   font-size: 13px;
   font-weight: bold;
@@ -110,21 +115,19 @@ td {
   margin: auto;
 }
 
-/* STATS */
+/* 🔽 NUMEROS MÁS PEQUEÑOS */
 .stat {
   text-align: center;
-  font-size: 13px;
+  font-size: 12px;
 }
 
-/* ROLES COMPACTOS */
+/* ROLES */
 .role-cell {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 0px;
   font-size: 10px;
-  line-height: 1;
   height: 32px;
 }
 </style>
@@ -144,17 +147,16 @@ td {
     <div class="tab" data-role="Farmeo">Farmeo</div>
   </div>
 
-  <!-- TABLA -->
   <table>
     <thead>
       <tr>
-        <th class="rank">#</th>
+        <th>#</th>
         <th>Héroe</th>
-        <th class="stat">Tier</th>
-        <th class="stat">Rol</th>
-        <th class="stat">Win Rate</th>
-        <th class="stat">Pick Rate</th>
-        <th class="stat">Ban Rate</th>
+        <th>Tier</th>
+        <th>Rol</th>
+        <th onclick="sortTable('win')">Win Rate</th>
+        <th onclick="sortTable('pick')">Pick Rate</th>
+        <th onclick="sortTable('ban')">Ban Rate</th>
       </tr>
     </thead>
     <tbody></tbody>
@@ -166,46 +168,34 @@ td {
 const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTO4rMY_drrjKMx3KTdjAaSrH6GenxyZ7YzLPT7oiZ_pNYm6EKG-yJPfmbRcZgYGGi2gERA1Gciw-Fy/pub?gid=538223640&single=true&output=csv";
 
 let allData = [];
+let currentSort = { key: null, asc: false };
 
 /* PARSER CSV */
 function parseCSV(text) {
   const rows = [];
-  let row = [];
-  let current = '';
-  let insideQuotes = false;
+  let row = [], current = '', insideQuotes = false;
 
-  for (let i = 0; i < text.length; i++) {
-    const char = text[i];
-
-    if (char === '"') {
-      insideQuotes = !insideQuotes;
-    } else if (char === ',' && !insideQuotes) {
-      row.push(current);
-      current = '';
+  for (let char of text) {
+    if (char === '"') insideQuotes = !insideQuotes;
+    else if (char === ',' && !insideQuotes) {
+      row.push(current); current = '';
     } else if (char === '\n' && !insideQuotes) {
-      row.push(current);
-      rows.push(row);
-      row = [];
-      current = '';
-    } else {
-      current += char;
-    }
+      row.push(current); rows.push(row);
+      row = []; current = '';
+    } else current += char;
   }
 
   row.push(current);
   rows.push(row);
-
   return rows;
 }
 
 fetch(CSV_URL)
   .then(res => res.text())
   .then(csv => {
-
     const data = parseCSV(csv).slice(1);
 
     data.forEach(cols => {
-
       const nombre = cols[1];
       if (!nombre) return;
 
@@ -213,9 +203,9 @@ fetch(CSV_URL)
         nombre,
         imagen: cols[3],
         roles: [cols[5], cols[6], cols[7]].filter(r => r),
-        win: cols[8],
-        pick: cols[9],
-        ban: cols[10]
+        win: parseFloat(cols[8]),
+        pick: parseFloat(cols[9]),
+        ban: parseFloat(cols[10])
       });
     });
 
@@ -227,7 +217,6 @@ function renderTable(data) {
   tbody.innerHTML = "";
 
   data.forEach((item, index) => {
-
     const rolesHTML = item.roles.map(r => `<div>${r}</div>`).join("");
 
     const tr = document.createElement("tr");
@@ -242,13 +231,25 @@ function renderTable(data) {
       </td>
       <td class="stat"><div class="tier-badge">1</div></td>
       <td class="stat"><div class="role-cell">${rolesHTML}</div></td>
-      <td class="stat">${item.win}</td>
-      <td class="stat">${item.pick}</td>
-      <td class="stat">${item.ban}</td>
+      <td class="stat">${item.win}%</td>
+      <td class="stat">${item.pick}%</td>
+      <td class="stat">${item.ban}%</td>
     `;
 
     tbody.appendChild(tr);
   });
+}
+
+/* 🔽 SORT */
+function sortTable(key) {
+  const asc = currentSort.key === key ? !currentSort.asc : false;
+  currentSort = { key, asc };
+
+  const sorted = [...allData].sort((a, b) => {
+    return asc ? a[key] - b[key] : b[key] - a[key];
+  });
+
+  renderTable(sorted);
 }
 
 /* FILTROS */
