@@ -399,6 +399,7 @@ td {
 </div>
 
 <script>
+  let chartInstance = null;
 const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTO4rMY_drrjKMx3KTdjAaSrH6GenxyZ7YzLPT7oiZ_pNYm6EKG-yJPfmbRcZgYGGi2gERA1Gciw-Fy/pub?gid=538223640&single=true&output=csv";
 
 let allData = [];
@@ -541,9 +542,10 @@ function sortTable(key) {
   );
 
   applyFilters();
-  createChart();
 }
-  document.querySelectorAll(".view-tab").forEach(tab => {
+  let chartCreated = false;
+
+document.querySelectorAll(".view-tab").forEach(tab => {
   tab.addEventListener("click", () => {
 
     document.querySelectorAll(".view-tab").forEach(t => t.classList.remove("active"));
@@ -553,6 +555,12 @@ function sortTable(key) {
 
     document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
     document.getElementById(view).classList.add("active");
+
+    // 👉 crear gráfico SOLO cuando entras a "Graficas"
+    if (view === "charts" && !chartCreated) {
+      createChart();
+      chartCreated = true;
+    }
 
   });
 });
@@ -568,7 +576,11 @@ function sortTable(key) {
     name: hero.nombre
   }));
 
-  new Chart(ctx, {
+  if (chartInstance) {
+  chartInstance.destroy();
+}
+
+chartInstance = new Chart(ctx, {
     type: 'scatter',
     data: {
       datasets: [{
