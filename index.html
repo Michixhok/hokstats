@@ -142,74 +142,87 @@
         }
 
         /* Reemplazo para .table-wrapper y table */
-.table-wrapper { 
-    width: 1080px; 
-    max-width: 98vw; 
-    overflow: hidden; /* Limpia los bordes */
-    margin: 0 auto;
+
+        /* --- ESTRUCTURA PROFESIONAL ESTILO OP.GG --- */
+
+/* 1. El contenedor: Gris oscuro, sin espacios raros */
+.table-wrapper {
+    width: 1080px;
+    max-width: 98vw;
+    margin: 20px auto;
+    background-color: #171719;
+    border: 1px solid #2d2d31;
+    border-radius: 4px;
+    overflow: hidden;
 }
 
-table { 
-    width: 100%; 
-    border-collapse: collapse; /* CLAVE: Une las celdas para que no haya espacios */
-    background-color: var(--card); 
+table {
+    width: 100%;
+    border-collapse: collapse; /* Une las filas para que sea una sola tabla sólida */
 }
 
-/* Reemplazo para th (Cabeceras) */
-th { 
-    background-color: #1c1c1f; /* Un gris un poco más claro que el fondo */
-    color: var(--sec); 
-    font-size: 11px; 
-    padding: 12px 15px; 
-    text-align: left; /* Alineado a la izquierda como OP.GG */
-    font-weight: 600; 
-    border-bottom: 1px solid var(--brd);
-    cursor: pointer;
+/* 2. Cabeceras: Texto gris pequeño */
+th {
+    background-color: #1c1c1f;
+    color: #9e9eb1;
+    font-size: 11px;
+    padding: 12px 15px;
+    text-align: center;
+    border-bottom: 1px solid #2d2d31;
 }
 
-/* Reemplazo para las celdas (td) */
-tr.hero-row td { 
-    height: 52px; 
-    padding: 0 15px; 
-    font-size: 12px; 
-    border-bottom: 1px solid var(--brd); /* Solo línea abajo, no arriba ni a los lados */
-    color: var(--txt-sec); 
+/* Alineamos la columna del héroe a la izquierda */
+th:first-child, td:first-child {
+    text-align: left !important;
+}
+
+/* 3. Las Filas: Altura bloqueada para que nada las estire */
+tr.hero-row td {
+    height: 52px;
+    padding: 0 10px;
+    border-bottom: 1px solid #2d2d31;
+    color: #9e9eb1;
+    font-size: 12px;
     vertical-align: middle;
+    text-align: center;
 }
 
-/* Efecto al pasar el mouse */
-tr.hero-row:hover {
-    background-color: #1c1c21; 
-}
+/* 4. CONTROL DE IMÁGENES (Aquí se arregla tu captura) */
 
-/* Quita los bordes redondeados viejos que tenías en first y last child */
-tr.hero-row td:first-child, 
-tr.hero-row td:last-child { 
-    border-left: none; 
-    border-right: none; 
-    border-radius: 0; 
-}
-        
-       .hero-info { 
-    display: flex; 
-    align-items: center; 
-    gap: 12px; 
-}
-
+/* La imagen principal del héroe */
 .img-main { 
-    width: 32px; 
-    height: 32px; 
-    border-radius: 4px; /* Cuadradito estilo OP.GG */
+    width: 32px !important; 
+    height: 32px !important; 
+    border-radius: 4px; 
     object-fit: cover;
 }
 
-.name-txt { 
-    font-weight: 700; 
-    font-size: 12px; 
-    color: var(--txt-main); /* El nombre es blanco */
-    display: block;
+/* TODAS las demás imágenes (counters, sinergias) se fuerzan a ser pequeñas */
+.hero-row td img:not(.img-main) {
+    width: 22px !important; 
+    height: 22px !important;
+    border-radius: 50%; /* Circulares como en OP.GG */
+    object-fit: cover;
+    border: 1px solid #2d2d31;
+    margin: 0 1px;
 }
 
+/* Contenedor para que los iconos no se amontonen */
+.icon-group {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+}
+
+/* Resaltado de nombre */
+.name-txt {
+    color: #ffffff;
+    font-weight: 700;
+}
+
+        /** */
+        
         .tier-txt { font-size: 20px; font-weight: 900; color: #ffffff; }
         .name-txt { font-weight: 700; font-size: 14px; color: #ffffff; display: block; }
         
