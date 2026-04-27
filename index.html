@@ -1,110 +1,127 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <style>
-        /* RESET TOTAL PARA QUE NO HAYA "INVENTOS" DEL NAVEGADOR */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+  <meta charset="UTF-8">
+  <title>Tier List</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #1f2937;
+      color: #e5e7eb;
+      margin: 0;
+      padding: 20px;
+    }
 
-        body {
-            background-color: #0e0e10; /* Fondo de la página según tu HTML */
-            padding: 50px;
-            font-family: sans-serif;
-        }
+    .table-container {
+      max-width: 1200px;
+      margin: auto;
+      background: #111827;
+      border-radius: 10px;
+      overflow: hidden;
+    }
 
-        /* EL ESQUELETO (CONTENEDOR) */
-        .table-wrapper {
-            width: 1016px; /* Ancho real de la tabla en OP.GG */
-            margin: 0 auto;
-            background-color: #171719; /* Color de fondo de la tabla */
-            border: 1px solid #2d2d31; /* Color de borde exacto */
-            border-radius: 4px;
-            overflow: hidden;
-        }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
 
-        table {
-            width: 100%;
-            border-collapse: collapse; /* Crucial: elimina cualquier espacio entre celdas */
-            border-spacing: 0;
-        }
+    thead {
+      background: #374151;
+      text-align: left;
+    }
 
-        /* CABECERA (EL ESQUELETO SUPERIOR) */
-        thead {
-            background-color: #1c1c1f; /* Fondo del header en el archivo */
-        }
+    th, td {
+      padding: 12px 10px;
+      font-size: 14px;
+    }
 
-        th {
-            height: 40px; /* Altura exacta */
-            padding: 0 16px;
-            color: #9e9eb1; /* Color del texto del header */
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-            border-bottom: 1px solid #2d2d31;
-            text-align: center;
-        }
+    th {
+      color: #9ca3af;
+      font-weight: 500;
+    }
 
-        /* ALINEACIÓN DE LA COLUMNA DE NOMBRE */
-        th:first-child, td:first-child {
-            text-align: left;
-            width: 200px;
-        }
+    tbody tr {
+      border-bottom: 1px solid #374151;
+    }
 
-        /* CUERPO (LAS FILAS) */
-        tr.hero-row td {
-            height: 52px; /* Altura de fila exacta */
-            padding: 0 16px;
-            background-color: #171719; /* Mismo que la tabla */
-            border-bottom: 1px solid #2d2d31; /* Línea divisoria sutil */
-            color: #9e9eb1;
-            font-size: 12px;
-        }
+    tbody tr:hover {
+      background: #1f2937;
+    }
 
-        /* HOVER: EL CAMBIO DE COLOR AL PASAR EL MOUSE */
-        tr.hero-row:hover td {
-            background-color: #1c1c21; /* Color de hover real */
-        }
+    .rank {
+      width: 60px;
+      text-align: center;
+      font-weight: bold;
+    }
 
-        /* ÚLTIMA FILA: QUITA EL BORDE PARA QUE NO SE DUPLIQUE CON EL CONTENEDOR */
-        tr:last-child td {
-            border-bottom: none;
-        }
-    </style>
+    .champion {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .champion img {
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+    }
+
+    .tier {
+      font-weight: bold;
+      color: #fbbf24;
+    }
+
+    .stat {
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
 
-    <div class="table-wrapper">
-        <table>
-            <thead>
-                <tr>
-                    <th>Campeón</th>
-                    <th>Win Rate</th>
-                    <th>Pick Rate</th>
-                    <th>Ban Rate</th>
-                    <th>Sinergias</th>
-                    <th>Counters</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr class="hero-row">
-                    <td>Dato Héroe</td>
-                    <td>52.5%</td>
-                    <td>10.2%</td>
-                    <td>5.0%</td>
-                    <td>Iconos</td>
-                    <td>Iconos</td>
-                </tr>
-                <tr class="hero-row">
-                    <td>Dato Héroe</td>
-                    <td>51.2%</td>
-                    <td>8.4%</td>
-                    <td>2.1%</td>
-                    <td>Iconos</td>
-                    <td>Iconos</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+<div class="table-container">
+  <table>
+    <thead>
+      <tr>
+        <th class="rank">#</th>
+        <th>Campeón</th>
+        <th class="stat">Tier</th>
+        <th class="stat">Win Rate</th>
+        <th class="stat">Pick Rate</th>
+        <th class="stat">Ban Rate</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr>
+        <td class="rank">1</td>
+        <td>
+          <div class="champion">
+            <img src="https://via.placeholder.com/32" alt="">
+            <span>Ahri</span>
+          </div>
+        </td>
+        <td class="stat tier">S+</td>
+        <td class="stat">52.3%</td>
+        <td class="stat">18.1%</td>
+        <td class="stat">12.4%</td>
+      </tr>
+
+      <tr>
+        <td class="rank">2</td>
+        <td>
+          <div class="champion">
+            <img src="https://via.placeholder.com/32" alt="">
+            <span>Lee Sin</span>
+          </div>
+        </td>
+        <td class="stat tier">S</td>
+        <td class="stat">50.8%</td>
+        <td class="stat">22.5%</td>
+        <td class="stat">18.2%</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 
 </body>
 </html>
