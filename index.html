@@ -45,7 +45,6 @@ table {
   border-collapse: collapse;
 }
 
-/* HEADER */
 thead {
   background: #282830;
 }
@@ -57,11 +56,10 @@ th {
   color: #7b7a8e;
 }
 
-/* FILAS */
 tbody tr {
   background: #31313c;
   border-top: 1px solid #282830;
-  height: 60px; /* altura fija */
+  height: 60px;
 }
 
 tbody tr:hover {
@@ -72,7 +70,6 @@ td {
   padding: 10px;
 }
 
-/* COLUMNAS */
 .rank {
   width: 40px;
   text-align: center;
@@ -92,7 +89,6 @@ td {
   object-fit: cover;
 }
 
-/* TIER */
 .tier-badge {
   background: #2f80ed;
   color: white;
@@ -104,12 +100,10 @@ td {
   margin: auto;
 }
 
-/* STATS */
 .stat {
   text-align: center;
 }
 
-/* ROLES */
 .role-cell {
   display: flex;
   flex-direction: column;
@@ -117,9 +111,7 @@ td {
   align-items: center;
   gap: 1px;
   font-size: 11px;
-  line-height: 1.1;
   height: 40px;
-  overflow: hidden;
 }
 </style>
 </head>
@@ -128,7 +120,6 @@ td {
 
 <div class="container">
 
-  <!-- TABS -->
   <div class="tabs">
     <div class="tab active" data-role="all">Todo</div>
     <div class="tab" data-role="Choque">Choque</div>
@@ -138,7 +129,6 @@ td {
     <div class="tab" data-role="Farmeo">Farmeo</div>
   </div>
 
-  <!-- TABLA -->
   <table>
     <thead>
       <tr>
@@ -151,7 +141,6 @@ td {
         <th class="stat">Ban Rate</th>
       </tr>
     </thead>
-
     <tbody></tbody>
   </table>
 
@@ -162,16 +151,44 @@ const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTO4rMY_drrjKMx
 
 let allData = [];
 
+/* PARSER CSV CORRECTO */
+function parseCSV(text) {
+  const rows = [];
+  let row = [];
+  let current = '';
+  let insideQuotes = false;
+
+  for (let i = 0; i < text.length; i++) {
+    const char = text[i];
+
+    if (char === '"') {
+      insideQuotes = !insideQuotes;
+    } else if (char === ',' && !insideQuotes) {
+      row.push(current);
+      current = '';
+    } else if (char === '\n' && !insideQuotes) {
+      row.push(current);
+      rows.push(row);
+      row = [];
+      current = '';
+    } else {
+      current += char;
+    }
+  }
+
+  row.push(current);
+  rows.push(row);
+
+  return rows;
+}
+
 fetch(CSV_URL)
   .then(res => res.text())
   .then(csv => {
 
-    const rows = csv.split("\n").slice(1);
+    const data = parseCSV(csv).slice(1);
 
-    rows.forEach(row => {
-      if (!row.trim()) return;
-
-      const cols = row.split(",");
+    data.forEach(cols => {
 
       const nombre = cols[1];
       if (!nombre) return;
@@ -179,7 +196,7 @@ fetch(CSV_URL)
       allData.push({
         nombre,
         imagen: cols[3],
-        roles: [cols[5], cols[6], cols[7]].filter(r => r && r.trim() !== ""),
+        roles: [cols[5], cols[6], cols[7]].filter(r => r),
         win: cols[8],
         pick: cols[9],
         ban: cols[10]
@@ -201,22 +218,14 @@ function renderTable(data) {
 
     tr.innerHTML = `
       <td class="rank">${index + 1}</td>
-
       <td>
         <div class="champion">
           <img src="${item.imagen}" onerror="this.style.display='none'">
           <span>${item.nombre}</span>
         </div>
       </td>
-
       <td class="stat"><div class="tier-badge">1</div></td>
-
-      <td class="stat">
-        <div class="role-cell">
-          ${rolesHTML}
-        </div>
-      </td>
-
+      <td class="stat"><div class="role-cell">${rolesHTML}</div></td>
       <td class="stat">${item.win}</td>
       <td class="stat">${item.pick}</td>
       <td class="stat">${item.ban}</td>
