@@ -18,7 +18,7 @@ body {
   margin: auto;
 }
 
-/* CONTENEDOR TABS */
+/* CONTENEDOR */
 .tabs-wrapper {
   background: #31313c;
   padding: 8px;
@@ -27,9 +27,11 @@ body {
   margin-bottom: 10px;
 }
 
+/* 🔥 TABS MEJORADOS */
 .tabs {
   display: flex;
-  background: #282830;
+  background: #31313c; /* igual que filas */
+  border: 1px solid #444452; /* línea clara suave */
   border-radius: 4px;
   overflow: hidden;
 }
@@ -39,7 +41,8 @@ body {
   text-align: center;
   padding: 10px;
   cursor: pointer;
-  border-right: 1px solid #3a3a46;
+  border-right: 1px solid #444452;
+  background: #31313c;
 }
 
 .tab:last-child {
@@ -62,15 +65,14 @@ thead {
   background: #282830;
 }
 
-/* 🔥 FIX HEADER */
+/* 🔥 HEADERS CORRECTOS */
 th {
   padding: 8px 10px;
   font-size: 13px;
   text-align: left;
   color: #7b7a8e;
   cursor: pointer;
-  font-weight: normal;          /* quitar negrita */
-  text-transform: capitalize;   /* solo primera mayúscula */
+  font-weight: normal;
 }
 
 tbody tr {
@@ -157,12 +159,12 @@ td {
     <thead>
       <tr>
         <th>#</th>
-        <th>héroe</th>
-        <th>tier</th>
-        <th>rol</th>
-        <th onclick="sortTable('win')">win rate</th>
-        <th onclick="sortTable('pick')">pick rate</th>
-        <th onclick="sortTable('ban')">ban rate</th>
+        <th>Héroe</th>
+        <th>Tier</th>
+        <th>Rol</th>
+        <th onclick="sortTable('win')">Win rate</th>
+        <th onclick="sortTable('pick')">Pick rate</th>
+        <th onclick="sortTable('ban')">Ban rate</th>
       </tr>
     </thead>
     <tbody></tbody>
