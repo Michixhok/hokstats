@@ -35,12 +35,14 @@ body {
 .tabs-wrapper {
   display: flex;
   gap: 10px;
+  width: 100%;
   align-items: center;
 }
 
 .tabs {
   display: flex;
-  flex: 1;
+  flex: 1 1 auto;
+  min-width: 0;
   border: 1px solid #444452;
   border-radius: 4px;
   overflow: hidden;
@@ -70,6 +72,7 @@ body {
 /* 🔍 buscador */
 .search-box {
   width: 180px;
+  flex: 0 0 180px;
 }
 
 .search-box input {
@@ -79,6 +82,7 @@ body {
   border: 1px solid #444452;
   background: #1c1c1f;
   color: #ccc;
+  box-sizing: border-box;
   font-size: 12px;
   outline: none;
 }
