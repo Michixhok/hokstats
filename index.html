@@ -187,6 +187,13 @@ const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTO4rMY_drrjKMx
 let allData = [];
 let currentSort = { key: null, asc: false };
 
+function safeSort(a, b) {
+  if (a.pos === b.pos) return 0;
+  if (a.pos === 9999) return 1;
+  if (b.pos === 9999) return -1;
+  return a.pos - b.pos;
+}
+
 function parseCSV(text) {
   const rows = [];
   let row = [], current = '', insideQuotes = false;
@@ -214,6 +221,8 @@ fetch(CSV_URL)
     data.forEach(cols => {
       if (!cols[1]) return;
 
+      const posValue = parseFloat(cols[30]);
+
       allData.push({
         nombre: cols[1],
         imagen: cols[3],
@@ -222,11 +231,11 @@ fetch(CSV_URL)
         pick: parseFloat(cols[9]),
         ban: parseFloat(cols[10]),
         tier: cols[29],
-        pos: parseFloat(cols[30])
+        pos: isNaN(posValue) ? 9999 : posValue
       });
     });
 
-    renderTable(allData.sort((a,b)=>a.pos-b.pos));
+    renderTable([...allData].sort(safeSort));
   });
 
 function renderTable(data) {
@@ -264,7 +273,6 @@ function renderTable(data) {
   });
 }
 
-/* SORT */
 function sortTable(key) {
   const asc = currentSort.key === key ? !currentSort.asc : false;
   currentSort = { key, asc };
@@ -276,7 +284,6 @@ function sortTable(key) {
   renderTable(sorted);
 }
 
-/* 🔥 FILTROS CORREGIDOS */
 document.querySelectorAll(".tab").forEach(tab => {
   tab.addEventListener("click", () => {
 
@@ -286,11 +293,11 @@ document.querySelectorAll(".tab").forEach(tab => {
     const role = tab.dataset.role;
 
     if (role === "all") {
-      renderTable([...allData].sort((a,b)=>a.pos-b.pos));
+      renderTable([...allData].sort(safeSort));
     } else {
       const filtered = allData
         .filter(i => i.roles.includes(role))
-        .sort((a,b)=>a.pos-b.pos);
+        .sort(safeSort);
 
       renderTable(filtered);
     }
