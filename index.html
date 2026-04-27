@@ -106,6 +106,25 @@ td {
 .stat {
   text-align: center;
 }
+
+/* ROLES */
+.role-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  font-size: 12px;
+  line-height: 1.2;
+  min-height: 40px;
+}
+
+.role-item {
+  background: #282830;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 11px;
+}
 </style>
 </head>
 
@@ -137,7 +156,6 @@ td {
       </tr>
     </thead>
 
-    <!-- IMPORTANTE: vacío -->
     <tbody></tbody>
   </table>
 
@@ -161,6 +179,18 @@ fetch(CSV_URL)
 
       const nombre = cols[1];
       const imagen = cols[3];
+
+      // ROLES
+      const rol1 = cols[5];
+      const rol2 = cols[6];
+      const rol3 = cols[7];
+
+      const roles = [rol1, rol2, rol3].filter(r => r && r.trim() !== "");
+
+      const rolesHTML = roles.map(r => 
+        `<div class="role-item">${r}</div>`
+      ).join("");
+
       const win = cols[8];
       const pick = cols[9];
       const ban = cols[10];
@@ -181,7 +211,11 @@ fetch(CSV_URL)
 
         <td class="stat"><div class="tier-badge">1</div></td>
 
-        <td class="stat">-</td>
+        <td class="stat">
+          <div class="role-cell">
+            ${rolesHTML}
+          </div>
+        </td>
 
         <td class="stat">${win}</td>
         <td class="stat">${pick}</td>
