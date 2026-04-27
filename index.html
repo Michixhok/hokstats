@@ -136,11 +136,13 @@ td {
   font-size: 12px;
 }
 
+/* 🔥 FIX ROL */
 .role-cell {
   display: flex;
   flex-direction: column;
+  justify-content: center; /* centra vertical */
   align-items: center;
-  font-size: 10px;
+  font-size: 9px; /* un punto menos */
   height: 32px;
 }
 </style>
@@ -185,7 +187,6 @@ td {
 const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTO4rMY_drrjKMx3KTdjAaSrH6GenxyZ7YzLPT7oiZ_pNYm6EKG-yJPfmbRcZgYGGi2gERA1Gciw-Fy/pub?gid=538223640&single=true&output=csv";
 
 let allData = [];
-let currentSort = { key: null, asc: false };
 
 function safeSort(a, b) {
   if (a.pos === b.pos) return 0;
@@ -271,17 +272,6 @@ function renderTable(data) {
 
     tbody.appendChild(tr);
   });
-}
-
-function sortTable(key) {
-  const asc = currentSort.key === key ? !currentSort.asc : false;
-  currentSort = { key, asc };
-
-  const sorted = [...allData].sort((a, b) =>
-    asc ? a[key] - b[key] : b[key] - a[key]
-  );
-
-  renderTable(sorted);
 }
 
 document.querySelectorAll(".tab").forEach(tab => {
