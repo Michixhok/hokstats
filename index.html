@@ -6,16 +6,14 @@
     <title>HoKstats | v9.4</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        :root { 
-            --bg: #0b0d14;           /* Fondo oscuro premium */
-            --card: #161923;         /* Filas oscuras */
-            --brd: #2d313e;          /* Bordes sutiles */
-            --acc: #3182ce;          /* Azul brillante del diamante */ 
-            --txt: #f0f6fc; 
-            --sec: #8b949e; 
-            --btn-bg: #21262d; 
-            --green: #238636;
-        }
+        :root {
+    --bg: #0e0e10;           /* Fondo de la página */
+    --card: #171719;         /* Fondo de la tabla */
+    --brd: #2d2d31;          /* Color de las líneas separadoras */
+    --txt-main: #ffffff;     /* Blanco puro para nombres */
+    --txt-sec: #9e9eb1;      /* Gris para datos menos importantes */
+    --op-blue: #5383e8;      /* Azul OP.GG para WinRate */
+}
 
         body { 
             background-color: var(--bg); 
@@ -143,37 +141,74 @@
             outline: none; 
         }
 
-        .table-wrapper { width: 1080px; max-width: 98vw; overflow: visible; }
-        table { width: 100%; border-collapse: separate; border-spacing: 0 4px; table-layout: auto; }
+        /* Reemplazo para .table-wrapper y table */
+.table-wrapper { 
+    width: 1080px; 
+    max-width: 98vw; 
+    overflow: hidden; /* Limpia los bordes */
+    margin: 0 auto;
+}
+
+table { 
+    width: 100%; 
+    border-collapse: collapse; /* CLAVE: Une las celdas para que no haya espacios */
+    background-color: var(--card); 
+}
+
+/* Reemplazo para th (Cabeceras) */
+th { 
+    background-color: #1c1c1f; /* Un gris un poco más claro que el fondo */
+    color: var(--sec); 
+    font-size: 11px; 
+    padding: 12px 15px; 
+    text-align: left; /* Alineado a la izquierda como OP.GG */
+    font-weight: 600; 
+    border-bottom: 1px solid var(--brd);
+    cursor: pointer;
+}
+
+/* Reemplazo para las celdas (td) */
+tr.hero-row td { 
+    height: 52px; 
+    padding: 0 15px; 
+    font-size: 12px; 
+    border-bottom: 1px solid var(--brd); /* Solo línea abajo, no arriba ni a los lados */
+    color: var(--txt-sec); 
+    vertical-align: middle;
+}
+
+/* Efecto al pasar el mouse */
+tr.hero-row:hover {
+    background-color: #1c1c21; 
+}
+
+/* Quita los bordes redondeados viejos que tenías en first y last child */
+tr.hero-row td:first-child, 
+tr.hero-row td:last-child { 
+    border-left: none; 
+    border-right: none; 
+    border-radius: 0; 
+}
         
-        th { color: var(--sec); font-size: 11px; text-transform: uppercase; padding: 12px 8px; text-align: center; cursor: pointer; font-weight: 700; white-space: nowrap; }
-        th.w-hero { text-align: left; width: 180px; } 
+       .hero-info { 
+    display: flex; 
+    align-items: center; 
+    gap: 12px; 
+}
 
-        tr.hero-row td { 
-            background-color: var(--card); 
-            padding: 4px; 
-            border-top: 1px solid var(--brd); 
-            border-bottom: 1px solid var(--brd); 
-            text-align: center; 
-            vertical-align: middle;
-            height: 52px; 
-            overflow: hidden;
-        }
+.img-main { 
+    width: 32px; 
+    height: 32px; 
+    border-radius: 4px; /* Cuadradito estilo OP.GG */
+    object-fit: cover;
+}
 
-        tr.hero-row td:first-child { border-left: 1px solid var(--brd); border-radius: 10px 0 0 10px; text-align: left; }
-        tr.hero-row td:last-child { border-right: 1px solid var(--brd); border-radius: 0 10px 10px 0; }
-
-        .hero-info { display: flex; align-items: center; gap: 12px; }
-        .img-main { width: 44px; height: 44px; border-radius: 10px; object-fit: cover; }
-        
-        .img-mini { 
-            width: 32px; 
-            height: 32px; 
-            border-radius: 50%; 
-            object-fit: cover; 
-            border: none !important; 
-            display: block;
-        }
+.name-txt { 
+    font-weight: 700; 
+    font-size: 12px; 
+    color: var(--txt-main); /* El nombre es blanco */
+    display: block;
+}
 
         .tier-txt { font-size: 20px; font-weight: 900; color: #ffffff; }
         .name-txt { font-weight: 700; font-size: 14px; color: #ffffff; display: block; }
