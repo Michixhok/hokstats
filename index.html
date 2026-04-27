@@ -18,21 +18,19 @@ body {
   margin: auto;
 }
 
-/* CONTENEDOR TABS */
-.tabs-wrapper {
+/* 🔥 CAJA UNIFICADA (TABS + TABLA) */
+.main-box {
   background: #31313c;
-  padding: 8px;
   border: 1px solid #3a3a46;
   border-radius: 6px;
-  margin-bottom: 10px;
+  overflow: hidden;
 }
 
+/* TABS */
 .tabs {
   display: flex;
   background: #31313c;
-  border: 1px solid #444452;
-  border-radius: 4px;
-  overflow: hidden;
+  border-bottom: 1px solid #444452; /* 🔥 unión con tabla */
 }
 
 .tab {
@@ -41,7 +39,6 @@ body {
   padding: 10px;
   cursor: pointer;
   border-right: 1px solid #444452;
-  background: #31313c;
 }
 
 .tab:last-child {
@@ -61,7 +58,6 @@ table {
   table-layout: fixed;
 }
 
-/* HEADER */
 thead {
   background: #282830;
 }
@@ -71,10 +67,10 @@ th {
   font-size: 13px;
   color: #7b7a8e;
   font-weight: normal;
-  border-bottom: 1px solid #282830; /* pega con filas */
+  border-bottom: 1px solid #282830;
 }
 
-/* 🔥 CENTRAR HEADER HEROE */
+/* CENTRAR HEADER HEROE */
 th.col-hero {
   text-align: center;
 }
@@ -84,12 +80,10 @@ tbody tr {
   background: #31313c;
 }
 
-/* 🔥 LINEA ENTRE TODAS LAS FILAS */
 tbody tr td {
   border-bottom: 1px solid #282830;
 }
 
-/* HOVER */
 tbody tr:hover {
   background: #3a3a46;
 }
@@ -108,9 +102,9 @@ td {
 .champion {
   display: flex;
   align-items: center;
-  gap: 12px; /* más aire */
+  gap: 12px;
   color: white;
-  padding-left: 8px; /* 🔥 separación del borde */
+  padding-left: 8px;
 }
 
 .champion img {
@@ -157,7 +151,9 @@ td {
 
 <div class="container">
 
-  <div class="tabs-wrapper">
+  <!-- 🔥 TODO DENTRO DE UNA SOLA CAJA -->
+  <div class="main-box">
+
     <div class="tabs">
       <div class="tab active" data-role="all">Todo</div>
       <div class="tab" data-role="Choque">Choque</div>
@@ -166,21 +162,22 @@ td {
       <div class="tab" data-role="Merodeo">Merodeo</div>
       <div class="tab" data-role="Farmeo">Farmeo</div>
     </div>
-  </div>
 
-  <table>
-    <thead>
-      <tr>
-        <th class="col-hero">Héroe</th>
-        <th class="col-tier">Tier</th>
-        <th class="col-rol">Rol</th>
-        <th class="col-stat" onclick="sortTable('win')">Win rate</th>
-        <th class="col-stat" onclick="sortTable('pick')">Pick rate</th>
-        <th class="col-stat" onclick="sortTable('ban')">Ban rate</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
+    <table>
+      <thead>
+        <tr>
+          <th class="col-hero">Héroe</th>
+          <th class="col-tier">Tier</th>
+          <th class="col-rol">Rol</th>
+          <th class="col-stat" onclick="sortTable('win')">Win rate</th>
+          <th class="col-stat" onclick="sortTable('pick')">Pick rate</th>
+          <th class="col-stat" onclick="sortTable('ban')">Ban rate</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+  </div>
 
 </div>
 
@@ -247,13 +244,8 @@ function renderTable(data) {
           <span>${item.nombre}</span>
         </div>
       </td>
-
       <td class="col-tier"><div class="tier-badge">1</div></td>
-
-      <td class="col-rol">
-        <div class="role-cell">${rolesHTML}</div>
-      </td>
-
+      <td class="col-rol"><div class="role-cell">${rolesHTML}</div></td>
       <td class="col-stat stat">${item.win}%</td>
       <td class="col-stat stat">${item.pick}%</td>
       <td class="col-stat stat">${item.ban}%</td>
