@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Tier List</title>
+<title>Tier List HoK</title>
 
 <style>
 body {
@@ -30,7 +30,6 @@ body {
   flex: 1;
   text-align: center;
   padding: 12px;
-  cursor: pointer;
 }
 
 .tab.active {
@@ -81,13 +80,14 @@ td {
   display: flex;
   align-items: center;
   gap: 10px;
-  color: white; /* nombre en blanco */
+  color: white;
 }
 
 .champion img {
   width: 36px;
   height: 36px;
   border-radius: 6px;
+  object-fit: cover;
 }
 
 /* TIER */
@@ -105,18 +105,6 @@ td {
 /* STATS */
 .stat {
   text-align: center;
-}
-
-/* ICONOS */
-.icons {
-  display: flex;
-  gap: 5px;
-}
-
-.icons img {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
 }
 </style>
 </head>
@@ -140,134 +128,74 @@ td {
     <thead>
       <tr>
         <th class="rank">#</th>
-        <th>Rango Campeón</th>
+        <th>Héroe</th>
         <th class="stat">Tier</th>
         <th class="stat">Rol</th>
-        <th class="stat">Tasa de victoria</th>
-        <th class="stat">Tasa de selección</th>
-        <th class="stat">Tasa de baneo</th>
-        <th>Débil contra</th>
+        <th class="stat">Win Rate</th>
+        <th class="stat">Pick Rate</th>
+        <th class="stat">Ban Rate</th>
       </tr>
     </thead>
 
-    <tbody>
-
-      <!-- FILAS -->
-      <tr>
-        <td class="rank">1</td>
-        <td>
-          <div class="champion">
-            <img src="https://via.placeholder.com/36">
-            <span>Taliyah</span>
-          </div>
-        </td>
-        <td class="stat"><div class="tier-badge">1</div></td>
-        <td class="stat">🌿</td>
-        <td class="stat">57.42%</td>
-        <td class="stat">0.62%</td>
-        <td class="stat">0.19%</td>
-        <td class="icons">
-          <img src="https://via.placeholder.com/28">
-          <img src="https://via.placeholder.com/28">
-        </td>
-      </tr>
-
-      <tr>
-        <td class="rank">2</td>
-        <td>
-          <div class="champion">
-            <img src="https://via.placeholder.com/36">
-            <span>Nasus</span>
-          </div>
-        </td>
-        <td class="stat"><div class="tier-badge">1</div></td>
-        <td class="stat">🛡️</td>
-        <td class="stat">55.81%</td>
-        <td class="stat">1.11%</td>
-        <td class="stat">6.40%</td>
-        <td class="icons">
-          <img src="https://via.placeholder.com/28">
-        </td>
-      </tr>
-
-      <tr>
-        <td class="rank">3</td>
-        <td>
-          <div class="champion">
-            <img src="https://via.placeholder.com/36">
-            <span>Rek'Sai</span>
-          </div>
-        </td>
-        <td class="stat"><div class="tier-badge">1</div></td>
-        <td class="stat">⚔️</td>
-        <td class="stat">55.03%</td>
-        <td class="stat">2.02%</td>
-        <td class="stat">0.76%</td>
-        <td class="icons">
-          <img src="https://via.placeholder.com/28">
-          <img src="https://via.placeholder.com/28">
-        </td>
-      </tr>
-
-      <tr>
-        <td class="rank">4</td>
-        <td>
-          <div class="champion">
-            <img src="https://via.placeholder.com/36">
-            <span>Kayle</span>
-          </div>
-        </td>
-        <td class="stat"><div class="tier-badge">1</div></td>
-        <td class="stat">✨</td>
-        <td class="stat">54.48%</td>
-        <td class="stat">3.41%</td>
-        <td class="stat">2.96%</td>
-        <td class="icons">
-          <img src="https://via.placeholder.com/28">
-        </td>
-      </tr>
-
-      <tr>
-        <td class="rank">5</td>
-        <td>
-          <div class="champion">
-            <img src="https://via.placeholder.com/36">
-            <span>Janna</span>
-          </div>
-        </td>
-        <td class="stat"><div class="tier-badge">1</div></td>
-        <td class="stat">💨</td>
-        <td class="stat">54.19%</td>
-        <td class="stat">4.09%</td>
-        <td class="stat">0.51%</td>
-        <td class="icons">
-          <img src="https://via.placeholder.com/28">
-          <img src="https://via.placeholder.com/28">
-        </td>
-      </tr>
-
-      <tr>
-        <td class="rank">6</td>
-        <td>
-          <div class="champion">
-            <img src="https://via.placeholder.com/36">
-            <span>Warwick</span>
-          </div>
-        </td>
-        <td class="stat"><div class="tier-badge">1</div></td>
-        <td class="stat">🐺</td>
-        <td class="stat">54.05%</td>
-        <td class="stat">2.65%</td>
-        <td class="stat">1.70%</td>
-        <td class="icons">
-          <img src="https://via.placeholder.com/28">
-        </td>
-      </tr>
-
-    </tbody>
+    <!-- IMPORTANTE: vacío -->
+    <tbody></tbody>
   </table>
 
 </div>
+
+<script>
+const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTO4rMY_drrjKMx3KTdjAaSrH6GenxyZ7YzLPT7oiZ_pNYm6EKG-yJPfmbRcZgYGGi2gERA1Gciw-Fy/pub?gid=538223640&single=true&output=csv";
+
+fetch(CSV_URL)
+  .then(res => res.text())
+  .then(csv => {
+
+    const rows = csv.split("\n").slice(1);
+    const tbody = document.querySelector("tbody");
+
+    rows.forEach((row, index) => {
+
+      if (!row.trim()) return;
+
+      const cols = row.split(",");
+
+      const nombre = cols[1];
+      const imagen = cols[3];
+      const win = cols[8];
+      const pick = cols[9];
+      const ban = cols[10];
+
+      if (!nombre) return;
+
+      const tr = document.createElement("tr");
+
+      tr.innerHTML = `
+        <td class="rank">${index + 1}</td>
+
+        <td>
+          <div class="champion">
+            <img src="${imagen}" onerror="this.style.display='none'">
+            <span>${nombre}</span>
+          </div>
+        </td>
+
+        <td class="stat"><div class="tier-badge">1</div></td>
+
+        <td class="stat">-</td>
+
+        <td class="stat">${win}</td>
+        <td class="stat">${pick}</td>
+        <td class="stat">${ban}</td>
+      `;
+
+      tbody.appendChild(tr);
+    });
+
+  })
+  .catch(err => {
+    console.error("Error cargando CSV:", err);
+  });
+</script>
 
 </body>
 </html>
