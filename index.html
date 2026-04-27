@@ -16,15 +16,23 @@ body {
 .container {
   max-width: 1100px;
   margin: auto;
-  border-radius: 8px;
-  overflow: hidden;
 }
 
-/* 🔥 TABS ESTILO NUEVO */
+/* 🔥 NUEVA CAJA CONTENEDORA (CLAVE) */
+.tabs-wrapper {
+  background: #31313c;
+  padding: 8px;
+  border: 1px solid #3a3a46;
+  border-radius: 6px;
+  margin-bottom: 10px;
+}
+
+/* TABS */
 .tabs {
   display: flex;
-  border: 1px solid #3a3a46;
   background: #282830;
+  border-radius: 4px;
+  overflow: hidden;
 }
 
 .tab {
@@ -33,7 +41,6 @@ body {
   padding: 10px;
   cursor: pointer;
   border-right: 1px solid #3a3a46;
-  background: #31313c;
 }
 
 .tab:last-child {
@@ -78,7 +85,6 @@ td {
   padding: 6px 10px;
 }
 
-/* COLUMNAS */
 .rank {
   width: 40px;
   text-align: center;
@@ -103,25 +109,22 @@ td {
   font-weight: bold;
 }
 
-/* TIER */
 .tier-badge {
   background: #2f80ed;
   color: white;
   font-weight: bold;
   padding: 3px 6px;
   border-radius: 6px;
-  text-align: center;
   width: 22px;
   margin: auto;
+  text-align: center;
 }
 
-/* 🔽 NUMEROS MÁS PEQUEÑOS */
 .stat {
   text-align: center;
   font-size: 12px;
 }
 
-/* ROLES */
 .role-cell {
   display: flex;
   flex-direction: column;
@@ -137,14 +140,16 @@ td {
 
 <div class="container">
 
-  <!-- TABS -->
-  <div class="tabs">
-    <div class="tab active" data-role="all">Todo</div>
-    <div class="tab" data-role="Choque">Choque</div>
-    <div class="tab" data-role="Cazador">Cazador</div>
-    <div class="tab" data-role="Medio">Medio</div>
-    <div class="tab" data-role="Merodeo">Merodeo</div>
-    <div class="tab" data-role="Farmeo">Farmeo</div>
+  <!-- 🔥 CONTENEDOR CORRECTO -->
+  <div class="tabs-wrapper">
+    <div class="tabs">
+      <div class="tab active" data-role="all">Todo</div>
+      <div class="tab" data-role="Choque">Choque</div>
+      <div class="tab" data-role="Cazador">Cazador</div>
+      <div class="tab" data-role="Medio">Medio</div>
+      <div class="tab" data-role="Merodeo">Merodeo</div>
+      <div class="tab" data-role="Farmeo">Farmeo</div>
+    </div>
   </div>
 
   <table>
@@ -170,7 +175,6 @@ const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTO4rMY_drrjKMx
 let allData = [];
 let currentSort = { key: null, asc: false };
 
-/* PARSER CSV */
 function parseCSV(text) {
   const rows = [];
   let row = [], current = '', insideQuotes = false;
@@ -217,6 +221,7 @@ function renderTable(data) {
   tbody.innerHTML = "";
 
   data.forEach((item, index) => {
+
     const rolesHTML = item.roles.map(r => `<div>${r}</div>`).join("");
 
     const tr = document.createElement("tr");
@@ -240,19 +245,17 @@ function renderTable(data) {
   });
 }
 
-/* 🔽 SORT */
 function sortTable(key) {
   const asc = currentSort.key === key ? !currentSort.asc : false;
   currentSort = { key, asc };
 
-  const sorted = [...allData].sort((a, b) => {
-    return asc ? a[key] - b[key] : b[key] - a[key];
-  });
+  const sorted = [...allData].sort((a, b) =>
+    asc ? a[key] - b[key] : b[key] - a[key]
+  );
 
   renderTable(sorted);
 }
 
-/* FILTROS */
 document.querySelectorAll(".tab").forEach(tab => {
   tab.addEventListener("click", () => {
 
