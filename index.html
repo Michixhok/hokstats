@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <title>Tier List HoK</title>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <style>
 body {
   background: #1c1c1f;
@@ -389,8 +391,8 @@ td {
 
 <div class="view" id="charts">
   <div class="chart-box">
-    Aquí irá tu gráfica 📊
-  </div>
+  <canvas id="scatterChart"></canvas>
+</div>
 </div>
       
   </div>
@@ -539,6 +541,7 @@ function sortTable(key) {
   );
 
   applyFilters();
+  createChart();
 }
   document.querySelectorAll(".view-tab").forEach(tab => {
   tab.addEventListener("click", () => {
@@ -553,6 +556,61 @@ function sortTable(key) {
 
   });
 });
+
+  function createChart() {
+
+  const ctx = document.getElementById("scatterChart");
+
+  const data = allData.map(hero => ({
+    x: hero.pick + hero.ban,
+    y: hero.win,
+    img: hero.imagen,
+    name: hero.nombre
+  }));
+
+  new Chart(ctx, {
+    type: 'scatter',
+    data: {
+      datasets: [{
+        label: 'Heroes',
+        data: data,
+        pointRadius: 12,
+        pointHoverRadius: 14,
+        pointStyle: data.map(d => {
+          const img = new Image();
+          img.src = d.img;
+          return img;
+        })
+      }]
+    },
+    options: {
+      plugins: {
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              const d = data[context.dataIndex];
+              return `${d.name} | Win: ${d.y}% | Presence: ${d.x}%`;
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          title: {
+            display: true,
+            text: 'Presence rate (%)'
+          }
+        },
+        y: {
+          title: {
+            display: true,
+            text: 'Win rate (%)'
+          }
+        }
+      }
+    }
+  });
+}
 
   
 </script>
