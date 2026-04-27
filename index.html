@@ -18,7 +18,7 @@ body {
   margin: auto;
 }
 
-/* 🔥 NUEVA CAJA CONTENEDORA (CLAVE) */
+/* CONTENEDOR TABS */
 .tabs-wrapper {
   background: #31313c;
   padding: 8px;
@@ -27,7 +27,6 @@ body {
   margin-bottom: 10px;
 }
 
-/* TABS */
 .tabs {
   display: flex;
   background: #282830;
@@ -63,12 +62,15 @@ thead {
   background: #282830;
 }
 
+/* 🔥 FIX HEADER */
 th {
   padding: 8px 10px;
   font-size: 13px;
   text-align: left;
   color: #7b7a8e;
   cursor: pointer;
+  font-weight: normal;          /* quitar negrita */
+  text-transform: capitalize;   /* solo primera mayúscula */
 }
 
 tbody tr {
@@ -140,7 +142,6 @@ td {
 
 <div class="container">
 
-  <!-- 🔥 CONTENEDOR CORRECTO -->
   <div class="tabs-wrapper">
     <div class="tabs">
       <div class="tab active" data-role="all">Todo</div>
@@ -156,12 +157,12 @@ td {
     <thead>
       <tr>
         <th>#</th>
-        <th>Héroe</th>
-        <th>Tier</th>
-        <th>Rol</th>
-        <th onclick="sortTable('win')">Win Rate</th>
-        <th onclick="sortTable('pick')">Pick Rate</th>
-        <th onclick="sortTable('ban')">Ban Rate</th>
+        <th>héroe</th>
+        <th>tier</th>
+        <th>rol</th>
+        <th onclick="sortTable('win')">win rate</th>
+        <th onclick="sortTable('pick')">pick rate</th>
+        <th onclick="sortTable('ban')">ban rate</th>
       </tr>
     </thead>
     <tbody></tbody>
@@ -221,7 +222,6 @@ function renderTable(data) {
   tbody.innerHTML = "";
 
   data.forEach((item, index) => {
-
     const rolesHTML = item.roles.map(r => `<div>${r}</div>`).join("");
 
     const tr = document.createElement("tr");
