@@ -50,16 +50,17 @@ thead {
 }
 
 th {
-  padding: 10px;
+  padding: 8px 10px;
   font-size: 13px;
   text-align: left;
   color: #7b7a8e;
 }
 
+/* FILAS MÁS COMPACTAS */
 tbody tr {
   background: #31313c;
   border-top: 1px solid #282830;
-  height: 60px;
+  height: 52px;
 }
 
 tbody tr:hover {
@@ -67,14 +68,16 @@ tbody tr:hover {
 }
 
 td {
-  padding: 10px;
+  padding: 6px 10px;
 }
 
+/* COLUMNAS */
 .rank {
   width: 40px;
   text-align: center;
 }
 
+/* HEROE */
 .champion {
   display: flex;
   align-items: center;
@@ -89,29 +92,40 @@ td {
   object-fit: cover;
 }
 
+/* NOMBRE MÁS PEQUEÑO Y EN NEGRITA */
+.champion span {
+  font-size: 13px;
+  font-weight: bold;
+}
+
+/* TIER */
 .tier-badge {
   background: #2f80ed;
   color: white;
   font-weight: bold;
-  padding: 4px 8px;
+  padding: 3px 6px;
   border-radius: 6px;
   text-align: center;
-  width: 24px;
+  width: 22px;
   margin: auto;
 }
 
+/* STATS */
 .stat {
   text-align: center;
+  font-size: 13px;
 }
 
+/* ROLES COMPACTOS */
 .role-cell {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 1px;
-  font-size: 11px;
-  height: 40px;
+  gap: 0px;
+  font-size: 10px;
+  line-height: 1;
+  height: 32px;
 }
 </style>
 </head>
@@ -120,6 +134,7 @@ td {
 
 <div class="container">
 
+  <!-- TABS -->
   <div class="tabs">
     <div class="tab active" data-role="all">Todo</div>
     <div class="tab" data-role="Choque">Choque</div>
@@ -129,6 +144,7 @@ td {
     <div class="tab" data-role="Farmeo">Farmeo</div>
   </div>
 
+  <!-- TABLA -->
   <table>
     <thead>
       <tr>
@@ -151,7 +167,7 @@ const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTO4rMY_drrjKMx
 
 let allData = [];
 
-/* PARSER CSV CORRECTO */
+/* PARSER CSV */
 function parseCSV(text) {
   const rows = [];
   let row = [];
