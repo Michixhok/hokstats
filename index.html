@@ -7,12 +7,12 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
-    --bg: #0e0e10;           /* Fondo de la página */
-    --card: #171719;         /* Fondo de la tabla */
-    --brd: #2d2d31;          /* Color de las líneas separadoras */
-    --txt-main: #ffffff;     /* Blanco puro para nombres */
-    --txt-sec: #9e9eb1;      /* Gris para datos menos importantes */
-    --op-blue: #5383e8;      /* Azul OP.GG para WinRate */
+    --bg-main: #0e0e10;       /* Fondo de la página */
+    --bg-table: #171719;      /* Fondo de la tabla */
+    --bg-header: #1c1c1f;     /* Fondo del thead */
+    --brd-color: #2d2d31;     /* Color de los bordes/líneas */
+    --txt-main: #ffffff;      /* Texto blanco */
+    --txt-muted: #9e9eb1;     /* Texto gris de cabeceras */
 }
 
         body { 
@@ -146,64 +146,56 @@
         /* --- ESTRUCTURA PROFESIONAL ESTILO OP.GG --- */
 
 /* 1. El contenedor: Gris oscuro, sin espacios raros */
-.table-wrapper {
-    width: 1080px;
-    max-width: 98vw;
-    margin: 20px auto;
-    background-color: #171719;
-    border: 1px solid #2d2d31;
+
+        .table-wrapper {
+    background-color: var(--bg-table);
+    border: 1px solid var(--brd-color);
     border-radius: 4px;
     overflow: hidden;
 }
 
 table {
     width: 100%;
-    border-collapse: collapse; /* Une las filas para que sea una sola tabla sólida */
+    border-collapse: collapse; /* Crucial para que no haya huecos entre filas */
 }
 
-/* 2. Cabeceras: Texto gris pequeño */
 th {
-    background-color: #1c1c1f;
-    color: #9e9eb1;
+    background-color: var(--bg-header);
+    color: var(--txt-muted);
     font-size: 11px;
-    padding: 12px 15px;
-    text-align: center;
-    border-bottom: 1px solid #2d2d31;
+    font-weight: 400;
+    padding: 10px 15px;
+    border-bottom: 1px solid var(--brd-color);
+    text-transform: uppercase;
 }
 
-/* Alineamos la columna del héroe a la izquierda */
-th:first-child, td:first-child {
-    text-align: left !important;
-}
-
-/* 3. Las Filas: Altura bloqueada para que nada las estire */
 tr.hero-row td {
-    height: 52px;
-    padding: 0 10px;
-    border-bottom: 1px solid #2d2d31;
-    color: #9e9eb1;
+    height: 52px; /* Altura estándar de OP.GG */
+    padding: 0 12px;
+    border-bottom: 1px solid var(--brd-color);
+    color: var(--txt-muted);
     font-size: 12px;
-    vertical-align: middle;
-    text-align: center;
 }
 
 /* 4. CONTROL DE IMÁGENES (Aquí se arregla tu captura) */
 
 /* La imagen principal del héroe */
-.img-main { 
-    width: 32px !important; 
-    height: 32px !important; 
-    border-radius: 4px; 
-    object-fit: cover;
+
+        /* Imagen del héroe (Cuadrada con bordes suaves) */
+.img-main {
+    width: 32px !important;
+    height: 32px !important;
+    border-radius: 4px;
+    vertical-align: middle;
 }
 
-/* TODAS las demás imágenes (counters, sinergias) se fuerzan a ser pequeñas */
-.hero-row td img:not(.img-main) {
-    width: 22px !important; 
-    height: 22px !important;
-    border-radius: 50%; /* Circulares como en OP.GG */
-    object-fit: cover;
-    border: 1px solid #2d2d31;
+/* Imágenes de Sinergias/Counters (Pequeñas y Circulares) */
+/* Aplicado a cualquier img que esté dentro de una celda pero no sea la principal */
+td img:not(.img-main) {
+    width: 24px !important;
+    height: 24px !important;
+    border-radius: 50%;
+    border: 1px solid var(--brd-color);
     margin: 0 1px;
 }
 
