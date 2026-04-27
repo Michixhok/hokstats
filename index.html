@@ -39,25 +39,27 @@ body {
   overflow: hidden;
 }
 
+/* 🔥 FIX REAL */
 .tab {
-  flex: 1;
+  flex: 1 1 0;
+  min-width: 0;
   text-align: center;
   padding: 8px 14px;
   cursor: pointer;
   border-right: 1px solid #444452;
   background: #31313c;
   font-size: 13px;
+  font-weight: 500; /* todos iguales */
 }
 
 .tab:last-child {
   border-right: none;
 }
 
-/* ✅ FIX definitivo sin cambiar tamaño */
 .tab.active {
   color: white;
-  font-weight: bold;
-  background: #4f6edb; /* mismo estilo original */
+  background: #4f6edb;
+  font-weight: 500; /* mismo peso → no rompe flex */
 }
 
 table {
