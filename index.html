@@ -3,641 +3,186 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HoKstats | v9.4</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>HOK Stats - Pro Table</title>
     <style>
+        /* COLORES REALES DE OP.GG DARK MODE */
         :root {
-    --bg-main: #0e0e10;       /* Fondo de la página */
-    --bg-table: #171719;      /* Fondo de la tabla */
-    --bg-header: #1c1c1f;     /* Fondo del thead */
-    --brd-color: #2d2d31;     /* Color de los bordes/líneas */
-    --txt-main: #ffffff;      /* Texto blanco */
-    --txt-muted: #9e9eb1;     /* Texto gris de cabeceras */
-}
-
-        body { 
-            background-color: var(--bg); 
-            color: var(--txt); 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; 
-            padding: 20px 10px; 
-            margin: 0; 
-            display: flex;
-            justify-content: center;
-        }
-        
-        .container { display: flex; flex-direction: column; align-items: center; width: 100%; }
-        
-        .header { 
-            width: 1080px; 
-            max-width: 98vw; 
-            margin-bottom: 25px; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
+            --bg-page: #0e0e10;       /* Fondo oscuro profundo */
+            --bg-table: #171719;      /* Cuerpo de la tabla */
+            --bg-header: #1c1c1f;     /* Cabecera de la tabla */
+            --brd-color: #2d2d31;     /* Líneas divisorias */
+            --txt-main: #ffffff;      /* Nombres y títulos */
+            --txt-muted: #9e9eb1;     /* Datos secundarios y headers */
+            --op-blue: #5383e8;       /* Azul de Win Rate alto */
         }
 
-        .header-left { 
-            display: flex; 
-            align-items: baseline; 
-            gap: 10px; 
-            border-left: 4px solid var(--acc); 
-            padding-left: 15px; 
+        body {
+            background-color: var(--bg-page);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            color: var(--txt-main);
         }
-
-        .header-left h1 { margin: 0; font-size: 24px; font-weight: 600; }
-        .v-badge { background-color: var(--green); color: white; font-size: 11px; padding: 3px 8px; border-radius: 12px; font-weight: bold; }
-
-        .main-tabs { display: flex; gap: 8px; }
-
-        .tab-btn { 
-            background: transparent; 
-            border: 1px solid transparent; 
-            color: var(--sec); 
-            font-size: 14px; 
-            font-weight: 600; 
-            cursor: pointer; 
-            padding: 8px 16px; 
-            border-radius: 6px; 
-            transition: all 0.3s ease; 
-        }
-
-        .tab-btn.active { 
-            color: var(--acc); 
-            background-color: rgba(88, 166, 255, 0.1); 
-            border-color: rgba(88, 166, 255, 0.2);
-        }
-
-        .info-box { 
-            width: 1080px; 
-            max-width: 98vw; 
-            background-color: var(--card); 
-            border: 1px solid var(--brd); 
-            border-radius: 12px; 
-            padding: 24px; 
-            margin-bottom: 30px; 
-            box-sizing: border-box;
-            display: flex;
-            gap: 20px;
-        }
-
-        .info-icon { font-size: 26px; color: var(--acc); }
-        .info-text { font-size: 14px; color: var(--sec); line-height: 1.7; margin: 0 0 16px 0; }
-        .contact-area { display: flex; gap: 25px; }
-        .contact-link { display: flex; align-items: center; gap: 8px; color: var(--acc); text-decoration: none; font-size: 13px; }
-
-        .content-section { display: none; width: 100%; flex-direction: column; align-items: center; }
-        .content-section.active { display: flex; }
-
-        .toolbar { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            width: 1080px; 
-            max-width: 98vw; 
-            margin-bottom: 25px; 
-            gap: 20px; 
-        }
-
-        .filter-bar { 
-            display: flex; 
-            background-color: var(--card); 
-            border: 1px solid var(--brd); 
-            border-radius: 10px; 
-            padding: 5px; 
-            gap: 5px; 
-        }
-
-        .filter-btn { 
-            background: transparent; 
-            border: none; 
-            color: var(--sec); 
-            padding: 8px 18px; 
-            font-size: 13px; 
-            font-weight: 600; 
-            cursor: pointer; 
-            border-radius: 7px; 
-        }
-
-        .filter-btn.active { background-color: var(--acc); color: #ffffff; }
-
-        .search-box { 
-            display: flex; 
-            align-items: center; 
-            background-color: var(--card); 
-            border: 1px solid var(--brd); 
-            border-radius: 10px; 
-            padding: 0 15px;
-            flex-grow: 1;
-            max-width: 320px;
-        }
-
-        .search-box input { 
-            background: transparent; 
-            border: none; 
-            color: var(--txt); 
-            padding: 12px 0; 
-            font-size: 14px; 
-            width: 100%; 
-            outline: none; 
-        }
-
-        /* Reemplazo para .table-wrapper y table */
-
-        /* --- ESTRUCTURA PROFESIONAL ESTILO OP.GG --- */
-
-/* 1. El contenedor: Gris oscuro, sin espacios raros */
 
         .table-wrapper {
-    background-color: var(--bg-table);
-    border: 1px solid var(--brd-color);
-    border-radius: 4px;
-    overflow: hidden;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse; /* Crucial para que no haya huecos entre filas */
-}
-
-th {
-    background-color: var(--bg-header);
-    color: var(--txt-muted);
-    font-size: 11px;
-    font-weight: 400;
-    padding: 10px 15px;
-    border-bottom: 1px solid var(--brd-color);
-    text-transform: uppercase;
-}
-
-tr.hero-row td {
-    height: 52px; /* Altura estándar de OP.GG */
-    padding: 0 12px;
-    border-bottom: 1px solid var(--brd-color);
-    color: var(--txt-muted);
-    font-size: 12px;
-}
-
-/* 4. CONTROL DE IMÁGENES (Aquí se arregla tu captura) */
-
-/* La imagen principal del héroe */
-
-        /* Imagen del héroe (Cuadrada con bordes suaves) */
-.img-main {
-    width: 32px !important;
-    height: 32px !important;
-    border-radius: 4px;
-    vertical-align: middle;
-}
-
-/* Imágenes de Sinergias/Counters (Pequeñas y Circulares) */
-/* Aplicado a cualquier img que esté dentro de una celda pero no sea la principal */
-td img:not(.img-main) {
-    width: 24px !important;
-    height: 24px !important;
-    border-radius: 50%;
-    border: 1px solid var(--brd-color);
-    margin: 0 1px;
-}
-
-/* Contenedor para que los iconos no se amontonen */
-.icon-group {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 4px;
-}
-
-/* Resaltado de nombre */
-.name-txt {
-    color: #ffffff;
-    font-weight: 700;
-}
-
-        /** */
-        
-        .tier-txt { font-size: 20px; font-weight: 900; color: #ffffff; }
-        .name-txt { font-weight: 700; font-size: 14px; color: #ffffff; display: block; }
-        
-        .type-txt { 
-            color: var(--sec); 
-            font-size: 10px; 
-            display: block;
-            white-space: nowrap;
+            width: 1000px;
+            max-width: 98vw;
+            margin: 0 auto;
+            background-color: var(--bg-table);
+            border: 1px solid var(--brd-color);
+            border-radius: 4px;
             overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 120px;
         }
 
-        .stat-txt { 
-            color: var(--sec); 
-            font-size: 11px; 
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+
+        /* CABECERAS */
+        th {
+            background-color: var(--bg-header);
+            color: var(--txt-muted);
+            font-size: 11px;
             font-weight: 600;
-            line-height: 1.2;
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--brd-color);
+            text-align: center;
         }
 
-        .rel-flex { display: flex; gap: 6px; justify-content: center; min-width: 70px; }
+        th:first-child { text-align: left; width: 220px; }
 
-        .chart-area { 
-            width: 1080px; 
-            max-width: 98vw; 
-            background-color: var(--card); 
-            border: 1px solid var(--brd); 
-            border-radius: 14px; 
-            padding: 35px; 
-            box-sizing: border-box; 
-            height: 680px; 
+        /* FILAS */
+        tr.hero-row td {
+            height: 52px;
+            padding: 0 10px;
+            border-bottom: 1px solid var(--brd-color);
+            color: var(--txt-muted);
+            font-size: 12px;
+            vertical-align: middle;
+            text-align: center;
         }
 
-        @media (max-width: 1100px) { 
-            .header, .info-box, .toolbar, .chart-area, .table-wrapper { width: 98vw; }
-            .name-txt { font-size: 13px; }
-            .img-main { width: 38px; height: 38px; }
-            .img-mini { width: 28px; height: 28px; }
+        tr.hero-row:hover {
+            background-color: #1c1c21;
         }
 
-        .tier-box {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background-color: var(--acc);
-    color: white;
-    width: 22px;
-    height: 22px;
-    font-weight: 800;
-    font-size: 11px;
-    clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); /* Esto hace el diamante */
-}
+        /* DISEÑO DE LA COLUMNA HÉROE */
+        .hero-cell {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
 
-        /* --- NUEVA SECCIÓN DE ANÁLISIS --- */
-.analysis-list {
-    width: 1080px;
-    max-width: 98vw;
-    margin: 30px auto;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
+        .img-main {
+            width: 32px !important;
+            height: 32px !important;
+            border-radius: 4px;
+            object-fit: cover;
+        }
 
-.analysis-card {
-    background-color: var(--card);
-    border: 1px solid var(--brd);
-    border-radius: 12px;
-    padding: 20px;
-    display: flex;
-    gap: 20px;
-    align-items: flex-start;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-}
+        .name-txt {
+            color: var(--txt-main);
+            font-weight: 700;
+            font-size: 12px;
+        }
 
-.analysis-icon {
-    font-size: 24px;
-    min-width: 45px;
-    height: 45px;
-    background: rgba(255,255,255,0.03);
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
+        /* GRUPO DE ICONOS (Counters y Sinergias) */
+        .icon-group {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 4px;
+        }
 
-.analysis-card-content h3 {
-    margin: 0 0 8px 0;
-    font-size: 16px;
-    font-weight: 700;
-}
+        .icon-group img {
+            width: 24px !important;
+            height: 24px !important;
+            border-radius: 50%;
+            border: 1px solid var(--brd-color);
+            object-fit: cover;
+        }
 
-.analysis-card-content p {
-    margin: 0 0 10px 0;
-    font-size: 13px;
-    line-height: 1.6;
-    color: var(--sec);
-}
-
-.analysis-card-content strong {
-    color: var(--txt);
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-}
+        .win-rate-high {
+            color: var(--op-blue);
+            font-weight: 700;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <div class="header-left">
-                <h1>HoKstats</h1>
-                <span class="v-badge">v9.4</span>
-            </div>
-            <div class="main-tabs">
-                <button class="tab-btn active" onclick="switchTab('stats', this)">Estadísticas</button>
-                <button class="tab-btn" onclick="switchTab('analytics', this)">Análisis gráfico</button>
-            </div>
-        </div>
 
-        <div class="info-box">
-            <div class="info-icon">💡</div>
-            <div class="info-content">
-                <p class="info-text">
-                Este es un proyecto personal desarrollado originalmente para mejorar mi rendimiento en <strong>Honor of Kings</strong>. 
-                Al notar su utilidad, decidí compartirlo con la comunidad. Esta herramienta es independiente, sin fines de lucro y no tiene relación oficial con Honor of Kings, 
-                los datos presentados se obtienen de las fuentes oficiales públicas destinadas a los jugadores. Se recomienda visualizar la pagina con el smartphone en horizontal 
-                para una mejor experiencia. Si tienes alguna observación te dejo mi correo y mi canal de youtube.                
-                </p>
-                <div class="contact-area">
-                    <a href="mailto:michixhok@gmail.com" class="contact-link">📧 michixhok@gmail.com</a>
-                    <a href="https://www.youtube.com/@michixhok" target="_blank" class="contact-link">📺 YouTube</a>
-                </div>
-            </div>
-        </div>
-
-        <div id="section-stats" class="content-section active">
-            <div class="toolbar">
-                <div class="filter-bar">
-                    <button class="filter-btn active" onclick="setFilter('Todo', this)">Todo</button>
-                    <button class="filter-btn" onclick="setFilter('Choque', this)">Choque</button>
-                    <button class="filter-btn" onclick="setFilter('Cazador', this)">Cazador</button>
-                    <button class="filter-btn" onclick="setFilter('Medio', this)">Medio</button>
-                    <button class="filter-btn" onclick="setFilter('Merodeo', this)">Merodeo</button>
-                    <button class="filter-btn" onclick="setFilter('Farmeo', this)">Farmeo</button>
-                </div>
-                <div class="search-box">
-                    <input type="text" id="heroSearch" placeholder="Buscar héroe..." onkeyup="applyFilters()">
-                </div>
-            </div>
-            
-            <div class="table-wrapper">
-                <table id="heroTable">
-                    <thead>
-                        <tr>
-                            <th class="w-hero" onclick="sortRows(0, 'str')">Héroe</th>
-                            <th style="width:60px" onclick="sortRows(1, 'num')">Tier</th>
-                            <th style="width:90px">Roles</th>
-                            <th onclick="sortRows(3, 'num')">Win Rate</th>
-                            <th onclick="sortRows(4, 'num')">Pick Rate</th>
-                            <th onclick="sortRows(5, 'num')">Ban Rate</th>
-                            <th>Sinergia con</th>
-                            <th>Fuerte contra</th>
-                            <th>Débil contra</th>
-                        </tr>
-                    </thead>
-                    <tbody id="table-body"></tbody>
-                </table>
-            </div>
-        </div>
-
-        <div id="section-analytics" class="content-section">
-            <div class="toolbar">
-                <div class="filter-bar">
-                    <button class="filter-btn active" onclick="setFilterChart('Todo', this)">Todo</button>
-                    <button class="filter-btn" onclick="setFilterChart('Choque', this)">Choque</button>
-                    <button class="filter-btn" onclick="setFilterChart('Cazador', this)">Cazador</button>
-                    <button class="filter-btn" onclick="setFilterChart('Medio', this)">Medio</button>
-                    <button class="filter-btn" onclick="setFilterChart('Merodeo', this)">Merodeo</button>
-                    <button class="filter-btn" onclick="setFilterChart('Farmeo', this)">Farmeo</button>
-                </div>
-            </div>
-            <div class="chart-area">
-                <canvas id="scatterChart"></canvas>
-            </div>
-
-            <div class="analysis-list">
-    <div class="analysis-card">
-        <div class="analysis-icon">🟢</div>
-        <div class="analysis-card-content">
-            <h3 style="color: #00ff00;">Pilares del meta</h3>
-            <p><strong>Análisis:</strong> Representan las selecciones dominantes. Su combinación de alto win rate y presencia sostenida sugiere consistencia en distintos contextos.</p>
-            <p><strong>Estrategia:</strong> Prioridad alta en fase de bans o first pick.</p>
-        </div>
-    </div>
-
-    <div class="analysis-card">
-        <div class="analysis-icon">🔵</div>
-        <div class="analysis-card-content">
-            <h3 style="color: #00ffff;">Especialistas e infravaloradas</h3>
-            <p><strong>Análisis:</strong> Picks de nicho con rendimiento sólido en manos expertas. Suelen explotar lagunas en el entendimiento del rival.</p>
-            <p><strong>Estrategia:</strong> Invertir en su dominio genera ventajas competitivas reales.</p>
-        </div>
-    </div>
-
-    <div class="analysis-card">
-        <div class="analysis-icon">🟡</div>
-        <div class="analysis-card-content">
-            <h3 style="color: #ffff00;">Populares en transición</h3>
-            <p><strong>Análisis:</strong> Héroes con alta adopción pero rendimiento inconsistente, influenciados por tendencias o facilidad de uso.</p>
-            <p><strong>Estrategia:</strong> Uso condicionado al contexto y evaluación crítica.</p>
-        </div>
-    </div>
-
-    <div class="analysis-card">
-        <div class="analysis-icon">🔴</div>
-        <div class="analysis-card-content">
-            <h3 style="color: #ff4444;">Bajo rendimiento</h3>
-            <p><strong>Análisis:</strong> Métricas desfavorables. Los héroes cercanos al 48-50% de Win Rate deben interpretarse con cautela.</p>
-            <p><strong>Estrategia:</strong> Evitar en entornos competitivos si no hay un dominio total del héroe.</p>
-        </div>
-    </div>
+<div class="table-wrapper">
+    <table id="statsTable">
+        <thead>
+            <tr>
+                <th>Héroe</th>
+                <th>Win Rate</th>
+                <th>Pick Rate</th>
+                <th>Ban Rate</th>
+                <th>Sinergias</th>
+                <th>Counters</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody">
+            </tbody>
+    </table>
 </div>
 
+<script>
+    const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTO4rMY_drrjKMx3KTdjAaSrH6GenxyZ7YzLPT7oiZ_pNYm6EKG-yJPfmbRcZgYGGi2gERA1Gciw-Fy/pub?gid=538223640&single=true&output=csv';
+
+    async function loadStats() {
+        try {
+            const response = await fetch(CSV_URL);
+            const csvData = await response.text();
             
-            <div style="width: 1080px; max-width: 98vw; margin: 20px auto; padding: 15px 0; border-top: 1px solid var(--brd); display: flex; justify-content: center; align-items: center; gap: 8px;">
-    <span style="color: var(--acc); font-size: 12px;">🕒</span>
-    <p style="color: var(--sec); font-size: 10px; margin: 0; font-family: sans-serif; letter-spacing: 0.5px; text-transform: uppercase;">
-        Última actualización de parámetros y métricas: <strong>26 de Abril, 2026</strong>
-    </p>
-</div>
-    
-    </div>
+            // Procesar filas (evitando problemas con comillas del CSV)
+            const rows = csvData.split('\n').slice(1); 
+            const tableBody = document.getElementById('tableBody');
+            tableBody.innerHTML = '';
 
-    
-    <script>
-        const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTO4rMY_drrjKMx3KTdjAaSrH6GenxyZ7YzLPT7oiZ_pNYm6EKG-yJPfmbRcZgYGGi2gERA1Gciw-Fy/pub?gid=538223640&single=true&output=csv&cache=' + Date.now();
-        let currentSort = { col: 1, asc: true }; 
-        let activeRole = 'Todo';
-        let chartFilter = 'Todo';
-        let allHeroes = [];
-        let myChart = null;
+            rows.forEach(row => {
+                // Limpieza básica de columnas
+                const cols = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(c => c.replace(/^"|"$/g, '').trim());
+                
+                if (cols.length < 5) return;
 
-        function switchTab(tabId, btn) {
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
-            btn.classList.add('active');
-            document.getElementById('section-' + tabId).classList.add('active');
-            if(tabId === 'analytics') setTimeout(renderChart, 100);
-        }
+                // Mapeo según el orden de tu CSV
+                const [nombre, imagen, winRate, pickRate, banRate, sinergias, counters] = cols;
 
-        function setFilter(role, btn) {
-            document.querySelectorAll('#section-stats .filter-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            activeRole = role;
-            applyFilters();
-        }
+                const tr = document.createElement('tr');
+                tr.className = 'hero-row';
+                
+                // Procesar múltiples imágenes separadas por comas o espacios
+                const renderIcons = (data) => {
+                    if (!data) return '';
+                    return data.split(/[\s,]+/).map(img => `<img src="${img.trim()}">`).join('');
+                };
 
-        function setFilterChart(role, btn) {
-            document.querySelectorAll('#section-analytics .filter-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            chartFilter = role;
-            renderChart();
-        }
-
-        function applyFilters() {
-            const query = document.getElementById('heroSearch').value.toLowerCase();
-            document.querySelectorAll('.hero-row').forEach(row => {
-                const name = row.querySelector('.name-txt').innerText.toLowerCase();
-                const roles = row.getAttribute('data-roles').toLowerCase();
-                row.style.display = ((activeRole === 'Todo' || roles.includes(activeRole.toLowerCase())) && name.includes(query)) ? '' : 'none';
+                tr.innerHTML = `
+                    <td>
+                        <div class="hero-cell">
+                            <img src="${imagen}" class="img-main">
+                            <span class="name-txt">${nombre}</span>
+                        </div>
+                    </td>
+                    <td class="${parseFloat(winRate) >= 51 ? 'win-rate-high' : ''}">${winRate}</td>
+                    <td>${pickRate}</td>
+                    <td>${banRate}</td>
+                    <td><div class="icon-group">${renderIcons(sinergias)}</div></td>
+                    <td><div class="icon-group">${renderIcons(counters)}</div></td>
+                `;
+                tableBody.appendChild(tr);
             });
+        } catch (error) {
+            console.error("Error cargando la tabla:", error);
+            document.getElementById('tableBody').innerHTML = '<tr><td colspan="6">Error al cargar datos.</td></tr>';
         }
+    }
 
-        function sortRows(col, type) {
-            const tbody = document.getElementById('table-body');
-            const rows = Array.from(tbody.querySelectorAll('.hero-row'));
-            if (currentSort.col === col) currentSort.asc = !currentSort.asc;
-            else { currentSort.col = col; currentSort.asc = true; }
-            rows.sort((a, b) => {
-                let vA, vB;
-                if (col === 1) { vA = parseInt(a.getAttribute('data-pos')) || 999; vB = parseInt(b.getAttribute('data-pos')) || 999; }
-                else if (type === 'str') { vA = a.cells[col].innerText.toLowerCase(); vB = b.cells[col].innerText.toLowerCase(); }
-                else { vA = parseFloat(a.cells[col].innerText.replace('%','')) || 0; vB = parseFloat(b.cells[col].innerText.replace('%','')) || 0; }
-                return currentSort.asc ? vA - vB : vB - vA;
-            });
-            rows.forEach(r => tbody.appendChild(r));
-        }
+    loadStats();
+</script>
 
-        function renderChart() {
-            if(myChart) myChart.destroy();
-            const ctx = document.getElementById('scatterChart').getContext('2d');
-            
-            const filteredHeroes = allHeroes.filter(h => {
-                const roles = [h.r1, h.r2, h.r3].map(r => r ? r.toLowerCase() : "");
-                return chartFilter === 'Todo' || roles.some(r => r.includes(chartFilter.toLowerCase()));
-            });
-
-            const heroPoints = filteredHeroes.map(h => {
-                const img = new Image();
-                img.src = h.img;
-                return { img, x: (h.p_raw + h.b_raw), y: h.w_raw, name: h.n };
-            });
-
-            myChart = new Chart(ctx, {
-                type: 'scatter',
-                data: { datasets: [{ data: heroPoints, pointRadius: 8, pointHoverRadius: 22 }] },
-                options: {
-                    responsive: true, maintainAspectRatio: false,
-                    scales: {
-                        x: { 
-                            title: { display: true, text: 'Tasa de presencia %', color: '#8b949e' }, 
-                            min: 0, max: 7,
-                            grid: {
-                                color: (context) => context.tick.value === 1 ? 'rgba(88, 166, 255, 0.4)' : 'rgba(48, 54, 61, 0.5)',
-                                lineWidth: (context) => context.tick.value === 1 ? 2 : 1
-                            }
-                        },
-                        y: { 
-                            title: { display: true, text: 'Tasa de victoria %', color: '#8b949e' }, 
-                            min: 40, max: 60,
-                            grid: {
-                                color: (context) => context.tick.value === 50 ? 'rgba(88, 166, 255, 0.4)' : 'rgba(48, 54, 61, 0.5)',
-                                lineWidth: (context) => context.tick.value === 50 ? 2 : 1
-                            }
-                        }
-                    },
-                    plugins: { 
-                        legend: { display: false },
-                        tooltip: { callbacks: { label: (c) => ` ${c.raw.name}: Win ${c.raw.y}% | Presencia ${c.raw.x.toFixed(2)}%` } }
-                    }
-                },
-                plugins: [{
-                    id: 'quadrantBackgrounds',
-                    beforeDraw(chart) {
-                        const {ctx, chartArea: {top, bottom, left, right}, scales: {x, y}} = chart;
-                        const midX = x.getPixelForValue(1);  
-                        const midY = y.getPixelForValue(50); 
-
-                        ctx.save();
-                        // Cuadrante Superior Izquierdo (Cyan)
-                        ctx.fillStyle = 'rgba(0, 255, 255, 0.05)'; 
-                        ctx.fillRect(left, top, midX - left, midY - top);
-                        // Cuadrante Superior Derecho (Verde)
-                        ctx.fillStyle = 'rgba(0, 255, 0, 0.05)';
-                        ctx.fillRect(midX, top, right - midX, midY - top);
-                        // Cuadrante Inferior Izquierdo (Rojo)
-                        ctx.fillStyle = 'rgba(255, 0, 0, 0.05)';
-                        ctx.fillRect(left, midY, midX - left, bottom - midY);
-                        // Cuadrante Inferior Derecho (Amarillo)
-                        ctx.fillStyle = 'rgba(255, 255, 0, 0.05)';
-                        ctx.fillRect(midX, midY, right - midX, bottom - midY);
-                        ctx.restore();
-                    }
-                }, {
-                    id: 'heroIcons',
-                    afterDatasetDraw(chart) {
-                        const {ctx} = chart;
-                        chart.getDatasetMeta(0).data.forEach((point, index) => {
-                            const {x, y} = point;
-                            const hero = heroPoints[index];
-                            const size = 26;
-                            if (hero.img.complete) {
-                                ctx.save();
-                                ctx.beginPath();
-                                ctx.arc(x, y, size / 2, 0, Math.PI * 2);
-                                ctx.clip();
-                                ctx.drawImage(hero.img, x - size / 2, y - size / 2, size, size);
-                                ctx.restore();
-                            }
-                        });
-                    }
-                }]
-            });
-        }
-
-        async function loadData() {
-            try {
-                const res = await fetch(CSV_URL);
-                const text = await res.text();
-                const rows = text.split('\n').map(l => {
-                    const p = []; let c = '', q = false;
-                    for (let x of l) { if (x === '"') q = !q; else if (x === ',' && !q) { p.push(c); c = ''; } else c += x; }
-                    p.push(c); return p;
-                });
-                const tbody = document.getElementById('table-body');
-                allHeroes = rows.slice(1).map(r => {
-                    if (!r[1]) return null;
-                    return {
-                        n: r[1], img: r[3], type: r[4], r1: r[5], r2: r[6], r3: r[7],
-                        w: r[8], p: r[9], b: r[10],
-                        s1i: r[13], s2i: r[16], f1i: r[19], f2i: r[22], d1i: r[25], d2i: r[28],
-                        tier: r[29], pos: r[30],
-                        w_raw: parseFloat(r[8]) || 0, p_raw: parseFloat(r[9]) || 0, b_raw: parseFloat(r[10]) || 0
-                    };
-                }).filter(h => h !== null);
-
-                allHeroes.sort((a, b) => (parseInt(a.pos) || 999) - (parseInt(b.pos) || 999));
-
-                allHeroes.forEach(d => {
-                    const clean = (v) => (v && !v.includes('http') && v !== "-" && v !== "0") ? v.trim() : "";
-                    const getImg = (v) => (v && v.includes('http')) ? v.trim() : "";
-                    const rel = (url) => url ? `<img src="${url}" class="img-mini" onerror="this.style.display='none'">` : "";
-                    const roles = [clean(d.r1), clean(d.r2), clean(d.r3)].filter(x=>x);
-                    const tr = document.createElement('tr');
-                    tr.className = 'hero-row';
-                    tr.setAttribute('data-roles', roles.join(','));
-                    tr.setAttribute('data-pos', d.pos);
-                    tr.innerHTML = `
-                        <td><div class="hero-info"><img src="${getImg(d.img)}" class="img-main"><div><span class="name-txt">${d.n}</span><span class="type-txt">${clean(d.type)}</span></div></div></td>
-                        <td><div class="tier-box">${clean(d.tier).replace('T', '')}</div></td>
-                        <td><div class="stat-txt">${roles.join('<br>')}</div></td>
-                        <td><span class="stat-txt">${d.w}</span></td>
-                        <td><span class="stat-txt">${d.p}</span></td>
-                        <td><span class="stat-txt">${d.b}</span></td>
-                        <td><div class="rel-flex">${rel(getImg(d.s1i))}${rel(getImg(d.s2i))}</div></td>
-                        <td><div class="rel-flex">${rel(getImg(d.f1i))}${rel(getImg(d.f2i))}</div></td>
-                        <td><div class="rel-flex">${rel(getImg(d.d1i))}${rel(getImg(d.d2i))}</div></td>
-                    `;
-                    tbody.appendChild(tr);
-                });
-            } catch (e) { console.error(e); }
-        }
-        window.onload = loadData;
-    </script>
 </body>
 </html>
