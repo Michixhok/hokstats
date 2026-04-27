@@ -2,194 +2,182 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HOK Stats - Pro Table</title>
+    <title>HOK Stats - Exact Clone</title>
     <style>
-        /* COLORES EXTRAÍDOS DIRECTAMENTE DEL HTML DE OP.GG (MODO OSCURO) */
+        /* COLORES COMPUTADOS DEL ARCHIVO HTML ORIGINAL */
         :root {
-            --bg-page: #0e0e10;       /* Fondo del body */
-            --bg-table: #171719;      /* Fondo de la tabla */
-            --bg-header: #1c1c1f;     /* Fondo de las cabeceras */
-            --brd-color: #2d2d31;     /* Color de bordes y líneas */
-            --txt-main: #f5f5f5;      /* Blanco para nombres importantes */
-            --txt-muted: #9e9eb1;     /* Gris para datos secundarios y headers */
-            --op-blue: #5383e8;       /* Azul acento */
+            --bg-body: #0e0e10;
+            --bg-table-body: #171719;
+            --bg-table-header: #1c1c1f;
+            --border-gray: #2d2d31;
+            --text-white: #f5f5f5;
+            --text-gray: #9e9eb1;
+            --blue-win: #5383e8;
         }
 
         body {
-            background-color: var(--bg-page);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-white);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
             margin: 0;
-            padding: 20px;
-            color: var(--txt-main);
+            padding: 40px;
         }
 
-        /* CONTENEDOR MAESTRO */
-        .table-wrapper {
-            width: 1000px;
-            max-width: 98vw;
+        /* ESTRUCTURA DEL CONTENEDOR (Exacta a la clase .dark de OP.GG) */
+        .table-container {
+            width: 1016px; /* Ancho real del bloque central */
             margin: 0 auto;
-            background-color: var(--bg-table);
-            border: 1px solid var(--brd-color);
+            border: 1px solid var(--border-gray);
             border-radius: 4px;
+            background-color: var(--bg-table-body);
             overflow: hidden;
         }
 
         table {
             width: 100%;
-            border-collapse: collapse; /* Elimina espacios entre filas */
+            border-collapse: collapse;
             border-spacing: 0;
-            table-layout: fixed;
         }
 
-        /* CABECERAS */
+        /* CABECERA (Extraído de la etiqueta thead de OP.GG) */
+        thead {
+            background-color: var(--bg-table-header);
+        }
+
         th {
-            background-color: var(--bg-header);
-            color: var(--txt-muted);
+            height: 40px; /* Altura exacta del header */
+            padding: 0 16px;
+            color: var(--text-gray);
             font-size: 11px;
             font-weight: 600;
-            height: 40px;
-            padding: 0 16px;
-            text-align: center;
-            border-bottom: 1px solid var(--brd-color);
             text-transform: uppercase;
+            border-bottom: 1px solid var(--border-gray);
+            text-align: center;
         }
 
-        /* Alineación columna Héroe */
-        th:first-child, td:first-child { 
-            text-align: left !important; 
-            width: 220px;
+        /* Cuerpo de la tabla */
+        tbody tr {
+            background-color: var(--bg-table-body);
+            transition: background-color 0.15s ease;
         }
 
-        /* FILAS Y CELDAS */
-        tr.hero-row td {
-            height: 52px;
+        tbody tr:hover {
+            background-color: #1c1c21; /* Hover exacto de la web */
+        }
+
+        td {
+            height: 52px; /* Altura exacta de fila en OP.GG */
             padding: 0 16px;
-            border-bottom: 1px solid var(--brd-color);
-            color: var(--txt-muted); /* Por defecto datos en gris */
+            border-bottom: 1px solid var(--border-gray);
             font-size: 12px;
+            color: var(--text-gray);
             vertical-align: middle;
             text-align: center;
         }
 
-        tr.hero-row:hover {
-            background-color: #1c1c21;
+        /* Alineaciones específicas */
+        th:first-child, td:first-child {
+            text-align: left;
+            width: 200px;
         }
 
-        /* DISEÑO INTERNO CELDA HÉROE */
-        .hero-cell {
+        /* Componentes internos */
+        .hero-box {
             display: flex;
             align-items: center;
             gap: 12px;
         }
 
-        .img-main {
-            width: 32px !important;
-            height: 32px !important;
+        .img-hero {
+            width: 32px;
+            height: 32px;
             border-radius: 4px;
-            object-fit: cover;
+            background-color: #2d2d31; /* Placeholder */
         }
 
-        .name-txt {
-            color: var(--txt-main); /* Nombre en blanco */
+        .hero-name {
+            color: var(--text-white);
             font-weight: 700;
         }
 
-        /* GRUPO DE ICONOS (Counters y Sinergias) */
+        .win-rate {
+            color: var(--blue-win);
+            font-weight: 700;
+        }
+
+        /* Grupo de Iconos (Sinergias/Counters) */
         .icon-group {
             display: flex;
             justify-content: center;
-            align-items: center;
             gap: 4px;
         }
 
         .icon-group img {
-            width: 24px !important;
-            height: 24px !important;
+            width: 24px;
+            height: 24px;
             border-radius: 50%;
-            border: 1px solid var(--brd-color);
-            object-fit: cover;
-        }
-
-        /* COLOR PARA WIN RATE ALTO */
-        .win-rate-high {
-            color: var(--op-blue);
-            font-weight: 700;
+            border: 1px solid var(--border-gray);
         }
     </style>
 </head>
 <body>
 
-<div class="table-wrapper">
-    <table id="statsTable">
-        <thead>
-            <tr>
-                <th>Héroe</th>
-                <th>Win Rate</th>
-                <th>Pick Rate</th>
-                <th>Ban Rate</th>
-                <th>Sinergias</th>
-                <th>Counters</th>
-            </tr>
-        </thead>
-        <tbody id="tableBody">
-            </tbody>
-    </table>
-</div>
+    <div class="table-container">
+        <table id="statsTable">
+            <thead>
+                <tr>
+                    <th>Campeón</th>
+                    <th>Win Rate</th>
+                    <th>Pick Rate</th>
+                    <th>Ban Rate</th>
+                    <th>Sinergias</th>
+                    <th>Counters</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                </tbody>
+        </table>
+    </div>
 
-<script>
-    const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTO4rMY_drrjKMx3KTdjAaSrH6GenxyZ7YzLPT7oiZ_pNYm6EKG-yJPfmbRcZgYGGi2gERA1Gciw-Fy/pub?gid=538223640&single=true&output=csv';
+    <script>
+        const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTO4rMY_drrjKMx3KTdjAaSrH6GenxyZ7YzLPT7oiZ_pNYm6EKG-yJPfmbRcZgYGGi2gERA1Gciw-Fy/pub?gid=538223640&single=true&output=csv';
 
-    async function loadStats() {
-        try {
-            const response = await fetch(CSV_URL);
-            const csvText = await response.text();
-            
-            // Procesar filas (evitando que las comas internas en las listas de imágenes rompan todo)
-            const rows = csvText.split('\n').slice(1); 
-            const tableBody = document.getElementById('tableBody');
-            tableBody.innerHTML = '';
+        async function init() {
+            try {
+                const response = await fetch(CSV_URL);
+                const text = await response.text();
+                const lines = text.split('\n').slice(1);
+                const tbody = document.getElementById('tableBody');
 
-            rows.forEach(row => {
-                // Regex para separar por comas respetando lo que está entre comillas
-                const cols = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(c => c.replace(/^"|"$/g, '').trim());
-                
-                if (cols.length < 5) return;
+                lines.forEach(line => {
+                    const cols = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(v => v.replace(/^"|"$/g, '').trim());
+                    if (cols.length < 5) return;
 
-                const [nombre, imagen, winRate, pickRate, banRate, sinergias, counters] = cols;
+                    const [nombre, img, win, pick, ban, sin, count] = cols;
 
-                const tr = document.createElement('tr');
-                tr.className = 'hero-row';
-                
-                // Función para limpiar y renderizar múltiples iconos
-                const renderIcons = (str) => {
-                    if (!str) return '';
-                    // Divide por espacio o coma
-                    return str.split(/[\s,]+/).map(url => `<img src="${url.trim()}">`).join('');
-                };
+                    const row = document.createElement('tr');
+                    
+                    // Render de iconos pequeños
+                    const getIcons = (str) => str ? str.split(/[\s,]+/).map(i => `<img src="${i}">`).join('') : '';
 
-                tr.innerHTML = `
-                    <td>
-                        <div class="hero-cell">
-                            <img src="${imagen}" class="img-main">
-                            <span class="name-txt">${nombre}</span>
-                        </div>
-                    </td>
-                    <td class="${parseFloat(winRate) >= 51 ? 'win-rate-high' : ''}">${winRate}</td>
-                    <td>${pickRate}</td>
-                    <td>${banRate}</td>
-                    <td><div class="icon-group">${renderIcons(sinergias)}</div></td>
-                    <td><div class="icon-group">${renderIcons(counters)}</div></td>
-                `;
-                tableBody.appendChild(tr);
-            });
-        } catch (error) {
-            console.error("Error al cargar los datos:", error);
+                    row.innerHTML = `
+                        <td>
+                            <div class="hero-box">
+                                <img src="${img}" class="img-hero">
+                                <span class="hero-name">${nombre}</span>
+                            </div>
+                        </td>
+                        <td class="win-rate">${win}</td>
+                        <td>${pick}</td>
+                        <td>${ban}</td>
+                        <td><div class="icon-group">${getIcons(sin)}</div></td>
+                        <td><div class="icon-group">${getIcons(count)}</div></td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            } catch (e) { console.error(e); }
         }
-    }
-
-    loadStats();
-</script>
-
+        init();
+    </script>
 </body>
 </html>
