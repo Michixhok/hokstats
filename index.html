@@ -53,10 +53,11 @@ body {
   border-right: none;
 }
 
+/* 🔥 FIX tamaño consistente */
 .tab.active {
-  background: #4f6edb;
   color: white;
   font-weight: bold;
+  box-shadow: inset 0 0 0 1px #aaaaaa;
 }
 
 table {
@@ -80,8 +81,6 @@ th {
   font-weight: normal;
   cursor: pointer;
 }
-
-th.col-hero { text-align: center; }
 
 tbody tr {
   background: #31313c;
@@ -123,7 +122,6 @@ td {
   font-weight: bold;
 }
 
-/* ROMBO */
 .tier-badge {
   width: 20px;
   height: 20px;
@@ -163,7 +161,7 @@ td {
   color: #a0a0b5;
 }
 
-/* ICONOS */
+/* 🔥 ICONOS AGRANDADOS */
 .synergy-cell {
   display: flex;
   justify-content: center;
@@ -172,8 +170,8 @@ td {
 }
 
 .synergy-cell img {
-  width: 26px;
-  height: 26px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   object-fit: cover;
 }
@@ -221,77 +219,64 @@ const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTO4rMY_drrjKMx
 let allData = [];
 let currentSort = { key: null, asc: false };
 
+function cleanNumber(val){
+  const num = parseFloat(val);
+  return isNaN(num) ? 0 : num;
+}
+
 function safeSort(a, b) {
-  if (a.pos === b.pos) return 0;
-  if (a.pos === 9999) return 1;
-  if (b.pos === 9999) return -1;
   return a.pos - b.pos;
 }
 
 function parseCSV(text) {
-  const rows = [];
-  let row = [], current = '', insideQuotes = false;
-
-  for (let char of text) {
-    if (char === '"') insideQuotes = !insideQuotes;
-    else if (char === ',' && !insideQuotes) {
-      row.push(current); current = '';
-    } else if (char === '\n' && !insideQuotes) {
-      row.push(current); rows.push(row);
-      row = []; current = '';
-    } else current += char;
-  }
-
-  row.push(current);
-  rows.push(row);
-  return rows;
+  return text.split("\n").map(r => r.split(","));
 }
 
 fetch(CSV_URL)
-  .then(res => res.text())
-  .then(csv => {
-    const data = parseCSV(csv).slice(1);
+.then(r => r.text())
+.then(csv => {
+  const data = parseCSV(csv).slice(1);
 
-    data.forEach(cols => {
-      if (!cols[1]) return;
+  data.forEach(cols => {
+    if (!cols[1]) return;
 
-      const posValue = parseFloat(cols[30]);
+    allData.push({
+      nombre: cols[1],
+      imagen: cols[3],
+      roles: [cols[5], cols[6], cols[7]].filter(Boolean),
+      win: cleanNumber(cols[8]),
+      pick: cleanNumber(cols[9]),
+      ban: cleanNumber(cols[10]),
+      tier: cols[29],
+      pos: cleanNumber(cols[30]),
 
-      allData.push({
-        nombre: cols[1],
-        imagen: cols[3],
-        roles: [cols[5], cols[6], cols[7]].filter(r => r),
-        win: parseFloat(cols[8]),
-        pick: parseFloat(cols[9]),
-        ban: parseFloat(cols[10]),
-        tier: cols[29],
-        pos: isNaN(posValue) ? 9999 : posValue,
+      syn: [
+        {img: cols[13], name: cols[11]},
+        {img: cols[16], name: cols[14]}
+      ],
 
-        syn1: cols[13],
-        syn2: cols[16],
-
-        weak1: cols[19],
-        weak2: cols[22]
-      });
+      weak: [
+        {img: cols[19], name: cols[17]},
+        {img: cols[22], name: cols[20]}
+      ]
     });
-
-    renderTable([...allData].sort(safeSort));
   });
+
+  renderTable([...allData].sort(safeSort));
+});
+
+function renderIcons(arr){
+  return arr
+    .filter(x => x.img && x.img !== "#N/A")
+    .map(x => `<img src="${x.img}" title="${x.name}">`)
+    .join("");
+}
 
 function renderTable(data) {
   const tbody = document.querySelector("tbody");
   tbody.innerHTML = "";
 
   data.forEach(item => {
-
-    const rolesHTML = item.roles.map(r => `<div>${r}</div>`).join("");
-    const tierClass = `tier-${item.tier}`;
-
-    const syn = [item.syn1, item.syn2].filter(x => x && x !== "#N/A");
-    const weak = [item.weak1, item.weak2].filter(x => x && x !== "#N/A");
-
-    const synHTML = syn.map(x => `<img src="${x}">`).join("");
-    const weakHTML = weak.map(x => `<img src="${x}">`).join("");
 
     const tr = document.createElement("tr");
 
@@ -304,31 +289,42 @@ function renderTable(data) {
       </td>
 
       <td class="col-tier">
-        <div class="tier-badge ${tierClass}">
+        <div class="tier-badge tier-${item.tier}">
           <span>${item.tier}</span>
         </div>
       </td>
 
       <td class="col-rol">
-        <div class="role-cell">${rolesHTML}</div>
+        <div class="role-cell">${item.roles.map(r=>`<div>${r}</div>`).join("")}</div>
       </td>
 
       <td class="col-stat stat">${item.win}%</td>
       <td class="col-stat stat">${item.pick}%</td>
       <td class="col-stat stat">${item.ban}%</td>
 
-      <td class="col-syn">
-        <div class="synergy-cell">${synHTML}</div>
-      </td>
-
-      <td class="col-weak">
-        <div class="synergy-cell">${weakHTML}</div>
-      </td>
+      <td class="col-syn"><div class="synergy-cell">${renderIcons(item.syn)}</div></td>
+      <td class="col-weak"><div class="synergy-cell">${renderIcons(item.weak)}</div></td>
     `;
 
     tbody.appendChild(tr);
   });
 }
+
+/* 🔥 FIX filtros botones */
+document.querySelectorAll(".tab").forEach(tab => {
+  tab.addEventListener("click", () => {
+    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+    tab.classList.add("active");
+
+    const role = tab.dataset.role;
+
+    const filtered = role === "all"
+      ? allData
+      : allData.filter(i => i.roles.includes(role));
+
+    renderTable(filtered);
+  });
+});
 
 function sortTable(key) {
   const asc = currentSort.key === key ? !currentSort.asc : false;
