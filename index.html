@@ -5,15 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HOK Stats - Pro Table</title>
     <style>
-        /* COLORES REALES DE OP.GG DARK MODE */
+        /* COLORES EXTRAÍDOS DIRECTAMENTE DEL HTML DE OP.GG (MODO OSCURO) */
         :root {
-            --bg-page: #0e0e10;       /* Fondo oscuro profundo */
-            --bg-table: #171719;      /* Cuerpo de la tabla */
-            --bg-header: #1c1c1f;     /* Cabecera de la tabla */
-            --brd-color: #2d2d31;     /* Líneas divisorias */
-            --txt-main: #ffffff;      /* Nombres y títulos */
-            --txt-muted: #9e9eb1;     /* Datos secundarios y headers */
-            --op-blue: #5383e8;       /* Azul de Win Rate alto */
+            --bg-page: #0e0e10;       /* Fondo del body */
+            --bg-table: #171719;      /* Fondo de la tabla */
+            --bg-header: #1c1c1f;     /* Fondo de las cabeceras */
+            --brd-color: #2d2d31;     /* Color de bordes y líneas */
+            --txt-main: #f5f5f5;      /* Blanco para nombres importantes */
+            --txt-muted: #9e9eb1;     /* Gris para datos secundarios y headers */
+            --op-blue: #5383e8;       /* Azul acento */
         }
 
         body {
@@ -24,6 +24,7 @@
             color: var(--txt-main);
         }
 
+        /* CONTENEDOR MAESTRO */
         .table-wrapper {
             width: 1000px;
             max-width: 98vw;
@@ -36,7 +37,8 @@
 
         table {
             width: 100%;
-            border-collapse: collapse;
+            border-collapse: collapse; /* Elimina espacios entre filas */
+            border-spacing: 0;
             table-layout: fixed;
         }
 
@@ -46,19 +48,25 @@
             color: var(--txt-muted);
             font-size: 11px;
             font-weight: 600;
-            padding: 12px 15px;
-            border-bottom: 1px solid var(--brd-color);
+            height: 40px;
+            padding: 0 16px;
             text-align: center;
+            border-bottom: 1px solid var(--brd-color);
+            text-transform: uppercase;
         }
 
-        th:first-child { text-align: left; width: 220px; }
+        /* Alineación columna Héroe */
+        th:first-child, td:first-child { 
+            text-align: left !important; 
+            width: 220px;
+        }
 
-        /* FILAS */
+        /* FILAS Y CELDAS */
         tr.hero-row td {
             height: 52px;
-            padding: 0 10px;
+            padding: 0 16px;
             border-bottom: 1px solid var(--brd-color);
-            color: var(--txt-muted);
+            color: var(--txt-muted); /* Por defecto datos en gris */
             font-size: 12px;
             vertical-align: middle;
             text-align: center;
@@ -68,7 +76,7 @@
             background-color: #1c1c21;
         }
 
-        /* DISEÑO DE LA COLUMNA HÉROE */
+        /* DISEÑO INTERNO CELDA HÉROE */
         .hero-cell {
             display: flex;
             align-items: center;
@@ -83,9 +91,8 @@
         }
 
         .name-txt {
-            color: var(--txt-main);
+            color: var(--txt-main); /* Nombre en blanco */
             font-weight: 700;
-            font-size: 12px;
         }
 
         /* GRUPO DE ICONOS (Counters y Sinergias) */
@@ -104,6 +111,7 @@
             object-fit: cover;
         }
 
+        /* COLOR PARA WIN RATE ALTO */
         .win-rate-high {
             color: var(--op-blue);
             font-weight: 700;
@@ -135,29 +143,29 @@
     async function loadStats() {
         try {
             const response = await fetch(CSV_URL);
-            const csvData = await response.text();
+            const csvText = await response.text();
             
-            // Procesar filas (evitando problemas con comillas del CSV)
-            const rows = csvData.split('\n').slice(1); 
+            // Procesar filas (evitando que las comas internas en las listas de imágenes rompan todo)
+            const rows = csvText.split('\n').slice(1); 
             const tableBody = document.getElementById('tableBody');
             tableBody.innerHTML = '';
 
             rows.forEach(row => {
-                // Limpieza básica de columnas
+                // Regex para separar por comas respetando lo que está entre comillas
                 const cols = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(c => c.replace(/^"|"$/g, '').trim());
                 
                 if (cols.length < 5) return;
 
-                // Mapeo según el orden de tu CSV
                 const [nombre, imagen, winRate, pickRate, banRate, sinergias, counters] = cols;
 
                 const tr = document.createElement('tr');
                 tr.className = 'hero-row';
                 
-                // Procesar múltiples imágenes separadas por comas o espacios
-                const renderIcons = (data) => {
-                    if (!data) return '';
-                    return data.split(/[\s,]+/).map(img => `<img src="${img.trim()}">`).join('');
+                // Función para limpiar y renderizar múltiples iconos
+                const renderIcons = (str) => {
+                    if (!str) return '';
+                    // Divide por espacio o coma
+                    return str.split(/[\s,]+/).map(url => `<img src="${url.trim()}">`).join('');
                 };
 
                 tr.innerHTML = `
@@ -176,8 +184,7 @@
                 tableBody.appendChild(tr);
             });
         } catch (error) {
-            console.error("Error cargando la tabla:", error);
-            document.getElementById('tableBody').innerHTML = '<tr><td colspan="6">Error al cargar datos.</td></tr>';
+            console.error("Error al cargar los datos:", error);
         }
     }
 
