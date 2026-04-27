@@ -32,7 +32,8 @@ body {
 }
 
 .tabs {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr); /* 🔥 6 botones exactos */
   width: 100%;
   border: 1px solid #444452;
   border-radius: 4px;
@@ -41,15 +42,13 @@ body {
 
 /* 🔥 FIX REAL */
 .tab {
-  flex: 1 1 0;
-  min-width: 0;
   text-align: center;
   padding: 8px 14px;
   cursor: pointer;
   border-right: 1px solid #444452;
   background: #31313c;
   font-size: 13px;
-  font-weight: 500; /* todos iguales */
+  font-weight: 500;
 }
 
 .tab:last-child {
