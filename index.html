@@ -120,19 +120,17 @@ td {
   font-weight: bold;
 }
 
-/* 🔥 TIER BASE */
 .tier-badge {
   font-weight: bold;
   text-align: center;
 }
 
-/* 🔥 COLORES POR TIER */
-.tier-S { color: #ff4d4d; }   /* rojo */
-.tier-A { color: #ff9f43; }   /* naranja */
-.tier-B { color: #ffd93d; }   /* amarillo */
-.tier-C { color: #6bcf63; }   /* verde */
-.tier-D { color: #4dabf7; }   /* azul */
-.tier-E { color: #9aa0a6; }   /* gris */
+.tier-S { color: #ff4d4d; }
+.tier-A { color: #ff9f43; }
+.tier-B { color: #ffd93d; }
+.tier-C { color: #6bcf63; }
+.tier-D { color: #4dabf7; }
+.tier-E { color: #9aa0a6; }
 
 .stat {
   font-size: 12px;
@@ -237,10 +235,9 @@ function renderTable(data) {
 
   data.forEach(item => {
     const rolesHTML = item.roles.map(r => `<div>${r}</div>`).join("");
+    const tierClass = `tier-${item.tier}`;
 
     const tr = document.createElement("tr");
-
-    const tierClass = `tier-${item.tier}`;
 
     tr.innerHTML = `
       <td class="col-hero">
@@ -279,7 +276,7 @@ function sortTable(key) {
   renderTable(sorted);
 }
 
-/* FILTROS */
+/* 🔥 FILTROS CORREGIDOS */
 document.querySelectorAll(".tab").forEach(tab => {
   tab.addEventListener("click", () => {
 
@@ -289,9 +286,13 @@ document.querySelectorAll(".tab").forEach(tab => {
     const role = tab.dataset.role;
 
     if (role === "all") {
-      renderTable(allData);
+      renderTable([...allData].sort((a,b)=>a.pos-b.pos));
     } else {
-      renderTable(allData.filter(i => i.roles.includes(role)));
+      const filtered = allData
+        .filter(i => i.roles.includes(role))
+        .sort((a,b)=>a.pos-b.pos);
+
+      renderTable(filtered);
     }
   });
 });
