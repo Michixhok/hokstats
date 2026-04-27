@@ -54,40 +54,51 @@ body {
   font-weight: bold;
 }
 
-/* 🔥 TABLA FIJA (CLAVE) */
+/* TABLA */
 table {
   width: 100%;
   border-collapse: collapse;
   table-layout: fixed;
 }
 
+/* HEADER */
 thead {
   background: #282830;
 }
 
 th {
-  padding: 8px 10px;
+  padding: 8px 12px;
   font-size: 13px;
-  text-align: left;
   color: #7b7a8e;
   font-weight: normal;
+  border-bottom: 1px solid #282830; /* pega con filas */
 }
 
+/* 🔥 CENTRAR HEADER HEROE */
+th.col-hero {
+  text-align: center;
+}
+
+/* FILAS */
 tbody tr {
   background: #31313c;
-  border-top: 1px solid #282830;
-  height: 52px;
 }
 
+/* 🔥 LINEA ENTRE TODAS LAS FILAS */
+tbody tr td {
+  border-bottom: 1px solid #282830;
+}
+
+/* HOVER */
 tbody tr:hover {
   background: #3a3a46;
 }
 
 td {
-  padding: 6px 10px;
+  padding: 6px 12px;
 }
 
-/* 🔥 ANCHOS FIJOS */
+/* ANCHOS */
 .col-hero { width: 30%; }
 .col-tier { width: 10%; text-align:center; }
 .col-rol  { width: 15%; text-align:center; }
@@ -97,9 +108,9 @@ td {
 .champion {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px; /* más aire */
   color: white;
-  overflow: hidden;
+  padding-left: 8px; /* 🔥 separación del borde */
 }
 
 .champion img {
@@ -112,9 +123,6 @@ td {
 .champion span {
   font-size: 13px;
   font-weight: bold;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 /* TIER */
