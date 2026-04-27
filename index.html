@@ -2,128 +2,79 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>HOK Stats - Exact Clone</title>
     <style>
-        /* COLORES COMPUTADOS DEL ARCHIVO HTML ORIGINAL */
-        :root {
-            --bg-body: #0e0e10;
-            --bg-table-body: #171719;
-            --bg-table-header: #1c1c1f;
-            --border-gray: #2d2d31;
-            --text-white: #f5f5f5;
-            --text-gray: #9e9eb1;
-            --blue-win: #5383e8;
-        }
+        /* RESET TOTAL PARA QUE NO HAYA "INVENTOS" DEL NAVEGADOR */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            background-color: var(--bg-body);
-            color: var(--text-white);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-            margin: 0;
-            padding: 40px;
+            background-color: #0e0e10; /* Fondo de la página según tu HTML */
+            padding: 50px;
+            font-family: sans-serif;
         }
 
-        /* ESTRUCTURA DEL CONTENEDOR (Exacta a la clase .dark de OP.GG) */
-        .table-container {
-            width: 1016px; /* Ancho real del bloque central */
+        /* EL ESQUELETO (CONTENEDOR) */
+        .table-wrapper {
+            width: 1016px; /* Ancho real de la tabla en OP.GG */
             margin: 0 auto;
-            border: 1px solid var(--border-gray);
+            background-color: #171719; /* Color de fondo de la tabla */
+            border: 1px solid #2d2d31; /* Color de borde exacto */
             border-radius: 4px;
-            background-color: var(--bg-table-body);
             overflow: hidden;
         }
 
         table {
             width: 100%;
-            border-collapse: collapse;
+            border-collapse: collapse; /* Crucial: elimina cualquier espacio entre celdas */
             border-spacing: 0;
         }
 
-        /* CABECERA (Extraído de la etiqueta thead de OP.GG) */
+        /* CABECERA (EL ESQUELETO SUPERIOR) */
         thead {
-            background-color: var(--bg-table-header);
+            background-color: #1c1c1f; /* Fondo del header en el archivo */
         }
 
         th {
-            height: 40px; /* Altura exacta del header */
+            height: 40px; /* Altura exacta */
             padding: 0 16px;
-            color: var(--text-gray);
+            color: #9e9eb1; /* Color del texto del header */
             font-size: 11px;
             font-weight: 600;
             text-transform: uppercase;
-            border-bottom: 1px solid var(--border-gray);
+            border-bottom: 1px solid #2d2d31;
             text-align: center;
         }
 
-        /* Cuerpo de la tabla */
-        tbody tr {
-            background-color: var(--bg-table-body);
-            transition: background-color 0.15s ease;
-        }
-
-        tbody tr:hover {
-            background-color: #1c1c21; /* Hover exacto de la web */
-        }
-
-        td {
-            height: 52px; /* Altura exacta de fila en OP.GG */
-            padding: 0 16px;
-            border-bottom: 1px solid var(--border-gray);
-            font-size: 12px;
-            color: var(--text-gray);
-            vertical-align: middle;
-            text-align: center;
-        }
-
-        /* Alineaciones específicas */
+        /* ALINEACIÓN DE LA COLUMNA DE NOMBRE */
         th:first-child, td:first-child {
             text-align: left;
             width: 200px;
         }
 
-        /* Componentes internos */
-        .hero-box {
-            display: flex;
-            align-items: center;
-            gap: 12px;
+        /* CUERPO (LAS FILAS) */
+        tr.hero-row td {
+            height: 52px; /* Altura de fila exacta */
+            padding: 0 16px;
+            background-color: #171719; /* Mismo que la tabla */
+            border-bottom: 1px solid #2d2d31; /* Línea divisoria sutil */
+            color: #9e9eb1;
+            font-size: 12px;
         }
 
-        .img-hero {
-            width: 32px;
-            height: 32px;
-            border-radius: 4px;
-            background-color: #2d2d31; /* Placeholder */
+        /* HOVER: EL CAMBIO DE COLOR AL PASAR EL MOUSE */
+        tr.hero-row:hover td {
+            background-color: #1c1c21; /* Color de hover real */
         }
 
-        .hero-name {
-            color: var(--text-white);
-            font-weight: 700;
-        }
-
-        .win-rate {
-            color: var(--blue-win);
-            font-weight: 700;
-        }
-
-        /* Grupo de Iconos (Sinergias/Counters) */
-        .icon-group {
-            display: flex;
-            justify-content: center;
-            gap: 4px;
-        }
-
-        .icon-group img {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            border: 1px solid var(--border-gray);
+        /* ÚLTIMA FILA: QUITA EL BORDE PARA QUE NO SE DUPLIQUE CON EL CONTENEDOR */
+        tr:last-child td {
+            border-bottom: none;
         }
     </style>
 </head>
 <body>
 
-    <div class="table-container">
-        <table id="statsTable">
+    <div class="table-wrapper">
+        <table>
             <thead>
                 <tr>
                     <th>Campeón</th>
@@ -134,50 +85,26 @@
                     <th>Counters</th>
                 </tr>
             </thead>
-            <tbody id="tableBody">
-                </tbody>
+            <tbody>
+                <tr class="hero-row">
+                    <td>Dato Héroe</td>
+                    <td>52.5%</td>
+                    <td>10.2%</td>
+                    <td>5.0%</td>
+                    <td>Iconos</td>
+                    <td>Iconos</td>
+                </tr>
+                <tr class="hero-row">
+                    <td>Dato Héroe</td>
+                    <td>51.2%</td>
+                    <td>8.4%</td>
+                    <td>2.1%</td>
+                    <td>Iconos</td>
+                    <td>Iconos</td>
+                </tr>
+            </tbody>
         </table>
     </div>
 
-    <script>
-        const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTO4rMY_drrjKMx3KTdjAaSrH6GenxyZ7YzLPT7oiZ_pNYm6EKG-yJPfmbRcZgYGGi2gERA1Gciw-Fy/pub?gid=538223640&single=true&output=csv';
-
-        async function init() {
-            try {
-                const response = await fetch(CSV_URL);
-                const text = await response.text();
-                const lines = text.split('\n').slice(1);
-                const tbody = document.getElementById('tableBody');
-
-                lines.forEach(line => {
-                    const cols = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(v => v.replace(/^"|"$/g, '').trim());
-                    if (cols.length < 5) return;
-
-                    const [nombre, img, win, pick, ban, sin, count] = cols;
-
-                    const row = document.createElement('tr');
-                    
-                    // Render de iconos pequeños
-                    const getIcons = (str) => str ? str.split(/[\s,]+/).map(i => `<img src="${i}">`).join('') : '';
-
-                    row.innerHTML = `
-                        <td>
-                            <div class="hero-box">
-                                <img src="${img}" class="img-hero">
-                                <span class="hero-name">${nombre}</span>
-                            </div>
-                        </td>
-                        <td class="win-rate">${win}</td>
-                        <td>${pick}</td>
-                        <td>${ban}</td>
-                        <td><div class="icon-group">${getIcons(sin)}</div></td>
-                        <td><div class="icon-group">${getIcons(count)}</div></td>
-                    `;
-                    tbody.appendChild(row);
-                });
-            } catch (e) { console.error(e); }
-        }
-        init();
-    </script>
 </body>
 </html>
