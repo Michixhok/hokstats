@@ -97,11 +97,12 @@ td {
   padding: 6px 12px;
 }
 
-.col-hero { width: 25%; }
+.col-hero { width: 22%; }
 .col-tier { width: 8%; text-align:center; }
-.col-rol  { width: 13%; text-align:center; }
-.col-stat { width: 13%; text-align:center; }
-.col-syn  { width: 14%; text-align:center; }
+.col-rol  { width: 12%; text-align:center; }
+.col-stat { width: 12%; text-align:center; }
+.col-syn  { width: 12%; text-align:center; }
+.col-weak { width: 14%; text-align:center; }
 
 .champion {
   display: flex;
@@ -162,7 +163,7 @@ td {
   color: #a0a0b5;
 }
 
-/* 🔥 SINERGIAS */
+/* ICONOS */
 .synergy-cell {
   display: flex;
   justify-content: center;
@@ -205,6 +206,7 @@ td {
           <th class="col-stat" onclick="sortTable('pick')">Pick rate</th>
           <th class="col-stat" onclick="sortTable('ban')">Ban rate</th>
           <th class="col-syn">Sinergia con</th>
+          <th class="col-weak">Fuerte contra</th>
         </tr>
       </thead>
       <tbody></tbody>
@@ -264,8 +266,12 @@ fetch(CSV_URL)
         ban: parseFloat(cols[10]),
         tier: cols[29],
         pos: isNaN(posValue) ? 9999 : posValue,
+
         syn1: cols[13],
-        syn2: cols[16]
+        syn2: cols[16],
+
+        weak1: cols[19],
+        weak2: cols[22]
       });
     });
 
@@ -277,15 +283,15 @@ function renderTable(data) {
   tbody.innerHTML = "";
 
   data.forEach(item => {
+
     const rolesHTML = item.roles.map(r => `<div>${r}</div>`).join("");
     const tierClass = `tier-${item.tier}`;
 
-    const synImages = [
-      item.syn1,
-      item.syn2
-    ].filter(src => src && src !== "#N/A");
+    const syn = [item.syn1, item.syn2].filter(x => x && x !== "#N/A");
+    const weak = [item.weak1, item.weak2].filter(x => x && x !== "#N/A");
 
-    const synHTML = synImages.map(src => `<img src="${src}">`).join("");
+    const synHTML = syn.map(x => `<img src="${x}">`).join("");
+    const weakHTML = weak.map(x => `<img src="${x}">`).join("");
 
     const tr = document.createElement("tr");
 
@@ -312,9 +318,11 @@ function renderTable(data) {
       <td class="col-stat stat">${item.ban}%</td>
 
       <td class="col-syn">
-        <div class="synergy-cell">
-          ${synHTML}
-        </div>
+        <div class="synergy-cell">${synHTML}</div>
+      </td>
+
+      <td class="col-weak">
+        <div class="synergy-cell">${weakHTML}</div>
       </td>
     `;
 
@@ -332,26 +340,6 @@ function sortTable(key) {
 
   renderTable(sorted);
 }
-
-document.querySelectorAll(".tab").forEach(tab => {
-  tab.addEventListener("click", () => {
-
-    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
-    tab.classList.add("active");
-
-    const role = tab.dataset.role;
-
-    if (role === "all") {
-      renderTable([...allData].sort(safeSort));
-    } else {
-      const filtered = allData
-        .filter(i => i.roles.includes(role))
-        .sort(safeSort);
-
-      renderTable(filtered);
-    }
-  });
-});
 </script>
 
 </body>
