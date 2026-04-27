@@ -313,8 +313,6 @@ td {
 <body>
 
  
-</div>
-
 <div class="container">
 
   <div class="top-bar">
@@ -407,8 +405,6 @@ let currentSort = { key: null, asc: false };
 let currentRole = "all";
 let currentSearch = "";
 
-  let chartInstance = null;
-
 const imagePointsPlugin = {
   id: 'imagePoints',
   afterDatasetsDraw(chart) {
@@ -490,6 +486,11 @@ fetch(CSV_URL)
   });
 
   applyFilters();
+
+if (!chartCreated) {
+  createChart();
+  chartCreated = true;
+}
 });
 
 function renderIcons(arr){
@@ -595,10 +596,10 @@ document.querySelectorAll(".view-tab").forEach(tab => {
     document.getElementById(view).classList.add("active");
 
     // 👉 crear gráfico SOLO cuando entras a "Graficas"
-    if (view === "charts" && !chartCreated) {
-      createChart();
-      chartCreated = true;
-    }
+    if (view === "charts" && !chartCreated && allData.length > 0) {
+  createChart();
+  chartCreated = true;
+}
 
   });
 });
