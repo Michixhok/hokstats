@@ -18,20 +18,17 @@ body {
   margin: auto;
 }
 
-/* 🔥 FIX: eliminar borde que generaba línea clara */
 .main-box {
   background: #31313c;
   border-radius: 6px;
   overflow: hidden;
 }
 
-/* CONTENEDOR TABS */
 .tabs-container {
   padding: 10px;
   background: #31313c;
 }
 
-/* TABS */
 .tabs {
   display: flex;
   width: 100%;
@@ -60,7 +57,6 @@ body {
   font-weight: bold;
 }
 
-/* TABLA */
 table {
   width: 100%;
   border-collapse: collapse;
@@ -71,7 +67,6 @@ thead {
   background: #282830;
 }
 
-/* HEADER */
 thead tr {
   border: 1px solid #1c1c1f;
 }
@@ -81,13 +76,13 @@ th {
   font-size: 13px;
   color: #7b7a8e;
   font-weight: normal;
+  cursor: pointer;
 }
 
 th.col-hero {
   text-align: center;
 }
 
-/* FILAS */
 tbody tr {
   background: #31313c;
   border: 1px solid #1c1c1f;
@@ -101,13 +96,11 @@ td {
   padding: 6px 12px;
 }
 
-/* ANCHOS */
 .col-hero { width: 30%; }
 .col-tier { width: 10%; text-align:center; }
 .col-rol  { width: 15%; text-align:center; }
 .col-stat { width: 15%; text-align:center; }
 
-/* HEROE */
 .champion {
   display: flex;
   align-items: center;
@@ -127,23 +120,24 @@ td {
   font-weight: bold;
 }
 
-/* TIER */
+/* 🔥 TIER BASE */
 .tier-badge {
-  background: #2f80ed;
-  color: white;
   font-weight: bold;
-  padding: 3px 6px;
-  border-radius: 6px;
-  width: 22px;
-  margin: auto;
+  text-align: center;
 }
 
-/* STATS */
+/* 🔥 COLORES POR TIER */
+.tier-S { color: #ff4d4d; }   /* rojo */
+.tier-A { color: #ff9f43; }   /* naranja */
+.tier-B { color: #ffd93d; }   /* amarillo */
+.tier-C { color: #6bcf63; }   /* verde */
+.tier-D { color: #4dabf7; }   /* azul */
+.tier-E { color: #9aa0a6; }   /* gris */
+
 .stat {
   font-size: 12px;
 }
 
-/* ROLES */
 .role-cell {
   display: flex;
   flex-direction: column;
@@ -175,7 +169,7 @@ td {
       <thead>
         <tr>
           <th class="col-hero">Héroe</th>
-          <th class="col-tier">Tier</th>
+          <th class="col-tier" onclick="sortTable('pos')">Tier</th>
           <th class="col-rol">Rol</th>
           <th class="col-stat" onclick="sortTable('win')">Win rate</th>
           <th class="col-stat" onclick="sortTable('pick')">Pick rate</th>
@@ -193,6 +187,7 @@ td {
 const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTO4rMY_drrjKMx3KTdjAaSrH6GenxyZ7YzLPT7oiZ_pNYm6EKG-yJPfmbRcZgYGGi2gERA1Gciw-Fy/pub?gid=538223640&single=true&output=csv";
 
 let allData = [];
+let currentSort = { key: null, asc: false };
 
 function parseCSV(text) {
   const rows = [];
@@ -227,11 +222,13 @@ fetch(CSV_URL)
         roles: [cols[5], cols[6], cols[7]].filter(r => r),
         win: parseFloat(cols[8]),
         pick: parseFloat(cols[9]),
-        ban: parseFloat(cols[10])
+        ban: parseFloat(cols[10]),
+        tier: cols[29],
+        pos: parseFloat(cols[30])
       });
     });
 
-    renderTable(allData);
+    renderTable(allData.sort((a,b)=>a.pos-b.pos));
   });
 
 function renderTable(data) {
@@ -243,6 +240,8 @@ function renderTable(data) {
 
     const tr = document.createElement("tr");
 
+    const tierClass = `tier-${item.tier}`;
+
     tr.innerHTML = `
       <td class="col-hero">
         <div class="champion">
@@ -250,8 +249,15 @@ function renderTable(data) {
           <span>${item.nombre}</span>
         </div>
       </td>
-      <td class="col-tier"><div class="tier-badge">1</div></td>
-      <td class="col-rol"><div class="role-cell">${rolesHTML}</div></td>
+
+      <td class="col-tier">
+        <div class="tier-badge ${tierClass}">${item.tier}</div>
+      </td>
+
+      <td class="col-rol">
+        <div class="role-cell">${rolesHTML}</div>
+      </td>
+
       <td class="col-stat stat">${item.win}%</td>
       <td class="col-stat stat">${item.pick}%</td>
       <td class="col-stat stat">${item.ban}%</td>
@@ -259,6 +265,18 @@ function renderTable(data) {
 
     tbody.appendChild(tr);
   });
+}
+
+/* SORT */
+function sortTable(key) {
+  const asc = currentSort.key === key ? !currentSort.asc : false;
+  currentSort = { key, asc };
+
+  const sorted = [...allData].sort((a, b) =>
+    asc ? a[key] - b[key] : b[key] - a[key]
+  );
+
+  renderTable(sorted);
 }
 
 /* FILTROS */
