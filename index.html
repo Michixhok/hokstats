@@ -32,16 +32,16 @@ body {
 }
 
 .tabs {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr); /* 🔥 6 botones exactos */
+  display: flex;
   width: 100%;
   border: 1px solid #444452;
   border-radius: 4px;
   overflow: hidden;
 }
 
-/* 🔥 FIX REAL */
 .tab {
+  flex: 1 1 0;
+  min-width: 0;
   text-align: center;
   padding: 8px 14px;
   cursor: pointer;
@@ -58,7 +58,6 @@ body {
 .tab.active {
   color: white;
   background: #4f6edb;
-  font-weight: 500; /* mismo peso → no rompe flex */
 }
 
 table {
@@ -97,12 +96,13 @@ td {
   padding: 6px 12px;
 }
 
-.col-hero { width: 22%; }
-.col-tier { width: 8%; text-align:center; }
-.col-rol  { width: 12%; text-align:center; }
-.col-stat { width: 12%; text-align:center; }
-.col-syn  { width: 12%; text-align:center; }
-.col-weak { width: 14%; text-align:center; }
+.col-hero { width: 18%; }
+.col-tier { width: 6%; text-align:center; }
+.col-rol  { width: 10%; text-align:center; }
+.col-stat { width: 9%; text-align:center; }
+.col-syn  { width: 10%; text-align:center; }
+.col-weak { width: 10%; text-align:center; }
+.col-counter { width: 10%; text-align:center; }
 
 .champion {
   display: flex;
@@ -205,6 +205,7 @@ td {
           <th class="col-stat" onclick="sortTable('ban')">Ban rate</th>
           <th class="col-syn">Sinergia con</th>
           <th class="col-weak">Fuerte contra</th>
+          <th class="col-counter">Débil contra</th>
         </tr>
       </thead>
       <tbody></tbody>
@@ -258,6 +259,11 @@ fetch(CSV_URL)
       weak: [
         {img: cols[19], name: cols[17]},
         {img: cols[22], name: cols[20]}
+      ],
+
+      counter: [
+        {img: cols[25], name: cols[23]},
+        {img: cols[28], name: cols[26]}
       ]
     });
   });
@@ -277,7 +283,6 @@ function renderTable(data) {
   tbody.innerHTML = "";
 
   data.forEach(item => {
-
     const tr = document.createElement("tr");
 
     tr.innerHTML = `
@@ -304,12 +309,14 @@ function renderTable(data) {
 
       <td class="col-syn"><div class="synergy-cell">${renderIcons(item.syn)}</div></td>
       <td class="col-weak"><div class="synergy-cell">${renderIcons(item.weak)}</div></td>
+      <td class="col-counter"><div class="synergy-cell">${renderIcons(item.counter)}</div></td>
     `;
 
     tbody.appendChild(tr);
   });
 }
 
+/* filtros */
 document.querySelectorAll(".tab").forEach(tab => {
   tab.addEventListener("click", () => {
     document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
@@ -325,6 +332,7 @@ document.querySelectorAll(".tab").forEach(tab => {
   });
 });
 
+/* sorting */
 function sortTable(key) {
   const asc = currentSort.key === key ? !currentSort.asc : false;
   currentSort = { key, asc };
