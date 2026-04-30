@@ -186,13 +186,16 @@ td {
 
 .role-cell {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  font-size: 9px;
+  justify-content: center;   /* centra horizontal */
+  align-items: center;       /* centra vertical */
+  gap: 6px;
   height: 32px;
-  gap: 2px;
-  color: #a0a0b5;
+}
+
+.role-cell img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
 }
 
 .synergy-cell {
@@ -480,6 +483,7 @@ fetch(CSV_URL)
       nombre: cols[1],
       imagen: cols[3],
       roles: [cols[5], cols[6], cols[7]].filter(Boolean),
+      roleImgs: [cols[31], cols[32], cols[33]].filter(Boolean),
       win: cleanNumber(cols[8]),
       pick: cleanNumber(cols[9]),
       ban: cleanNumber(cols[10]),
@@ -556,8 +560,10 @@ function renderTable(data) {
       </td>
 
       <td class="col-rol">
-        <div class="role-cell">${item.roles.map(r=>`<div>${r}</div>`).join("")}</div>
-      </td>
+  <div class="role-cell">
+    ${item.roleImgs.map(img => `<img src="${img}">`).join("")}
+  </div>
+</td>
 
       <td class="col-stat stat">${item.win}%</td>
       <td class="col-stat stat">${item.pick}%</td>
