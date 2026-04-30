@@ -483,7 +483,9 @@ fetch(CSV_URL)
       nombre: cols[1],
       imagen: cols[3],
       roles: [cols[5], cols[6], cols[7]].filter(Boolean),
-      roleImgs: [cols[31], cols[32], cols[33]].filter(Boolean),
+      roleImgs: [cols[31], cols[32], cols[33]]
+      .map(x => x.trim())
+      .filter(x => x && x !== "#N/A"),
       win: cleanNumber(cols[8]),
       pick: cleanNumber(cols[9]),
       ban: cleanNumber(cols[10]),
