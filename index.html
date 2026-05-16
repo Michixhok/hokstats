@@ -401,6 +401,17 @@ td {
           <th class="col-stat" onclick="sortTable('win')">Win rate</th>
           <th class="col-stat" onclick="sortTable('pick')">Pick rate</th>
           <th class="col-stat" onclick="sortTable('ban')">Ban rate</th>
+
+          <th class="col-stat">Early</th>
+          <th class="col-stat">Mid</th>
+          <th class="col-stat">Late</th>
+          <th class="col-stat">Output</th>
+          <th class="col-stat">Kills</th>
+          <th class="col-stat">Gold/min</th>
+          <th class="col-stat">Suffer</th>
+          <th class="col-stat">Assist</th>
+          <th class="col-stat">Torres</th>
+          <th class="col-stat">Tower dmg</th>
           
         </tr>
       </thead>
@@ -491,6 +502,18 @@ fetch(CSV_URL)
       win: cleanNumber(cols[8]),
       pick: cleanNumber(cols[9]),
       ban: cleanNumber(cols[10]),
+      
+      early: cleanNumber(cols[67]),
+      mid: cleanNumber(cols[68]),
+      late: cleanNumber(cols[69]),
+      output: cleanNumber(cols[70]),
+      kills: cleanNumber(cols[71]),
+      gold: cleanNumber(cols[72]),
+      suffer: cleanNumber(cols[73]),
+      assist: cleanNumber(cols[74]),
+      towers: cleanNumber(cols[75]),
+      towerDmg: cleanNumber(cols[76]),
+      
       tier: cols[62],
       pos: cleanNumber(cols[63]),
 
@@ -573,7 +596,18 @@ function renderTable(data) {
 
       <td class="col-stat stat">${item.win}%</td>
       <td class="col-stat stat">${item.pick}%</td>
-      <td class="col-stat stat">${item.ban}%</td>     
+      <td class="col-stat stat">${item.ban}%</td>
+
+      <td class="col-stat stat">${item.early}</td>
+      <td class="col-stat stat">${item.mid}</td>
+      <td class="col-stat stat">${item.late}</td>
+      <td class="col-stat stat">${item.output}</td>
+      <td class="col-stat stat">${item.kills}</td>
+      <td class="col-stat stat">${item.gold}</td>
+      <td class="col-stat stat">${item.suffer}</td>
+      <td class="col-stat stat">${item.assist}</td>
+      <td class="col-stat stat">${item.towers}</td>
+      <td class="col-stat stat">${item.towerDmg}</td>
     `;
 
     tbody.appendChild(tr);
