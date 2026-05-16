@@ -483,33 +483,32 @@ fetch(CSV_URL)
     if (!cols[1]) return;
 
     allData.push({
-      nombre: cols[1],
-      imagen: cols[3],
-      roles: [cols[5], cols[6], cols[7]].filter(Boolean),
-      roleImgs: [cols[31], cols[32], cols[33]]
-      .map(x => x.trim())
-      .filter(x => x && x !== "#N/A"),
-      win: cleanNumber(cols[8]),
-      pick: cleanNumber(cols[9]),
-      ban: cleanNumber(cols[10]),
-      tier: cols[29],
-      pos: cleanNumber(cols[30]),
+  pos: cleanNumber(cols[63]),       // BL → posición
+  nombre: cols[1],                  // B
+  imagen: cols[3],                  // D
 
-      syn: [
-        {img: cols[13], name: cols[11]},
-        {img: cols[16], name: cols[14]}
-      ],
+  roleImgs: [cols[64], cols[65], cols[66]]  // BM, BN, BO
+    .map(x => x.trim())
+    .filter(x => x && x !== "#N/A"),
 
-      weak: [
-        {img: cols[19], name: cols[17]},
-        {img: cols[22], name: cols[20]}
-      ],
+  win: cleanNumber(cols[8]),        // I
+  pick: cleanNumber(cols[9]),       // J
+  ban: cleanNumber(cols[10]),       // K
 
-      counter: [
-        {img: cols[25], name: cols[23]},
-        {img: cols[28], name: cols[26]}
-      ]
-    });
+  tier: cols[62],                   // BK
+
+  // 🔥 NUEVOS STATS
+  beginPhase: cleanNumber(cols[67]),  // BP
+  midPhase: cleanNumber(cols[68]),    // BQ
+  endPhase: cleanNumber(cols[69]),    // BR
+  output: cleanNumber(cols[70]),      // BS
+  killNum: cleanNumber(cols[71]),     // BT
+  moneyPerMin: cleanNumber(cols[72]), // BU
+  suffer: cleanNumber(cols[73]),      // BV
+  assist: cleanNumber(cols[74]),      // BW
+  towerNum: cleanNumber(cols[75]),    // BX
+  towerDamage: cleanNumber(cols[76])  // BY
+});
   });
 
   applyFilters();
