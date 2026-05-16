@@ -492,18 +492,17 @@ fetch(CSV_URL)
     if (!cols[1]) return;
 
     allData.push({
-  posicion: cleanNumber(cols[63]),
-
   nombre: cols[1],
   imagen: cols[3],
-
-  rolesImg: [cols[64], cols[65], cols[66]].filter(Boolean),
 
   win: cleanNumber(cols[8]),
   pick: cleanNumber(cols[9]),
   ban: cleanNumber(cols[10]),
 
   tier: cols[62],
+  pos: cleanNumber(cols[63]),
+
+  rolesImg: [cols[64], cols[65], cols[66]].filter(Boolean),
 
   early: cleanNumber(cols[67]),
   mid: cleanNumber(cols[68]),
