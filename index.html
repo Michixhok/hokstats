@@ -400,9 +400,7 @@ td {
           <th class="col-stat" onclick="sortTable('win')">Win rate</th>
           <th class="col-stat" onclick="sortTable('pick')">Pick rate</th>
           <th class="col-stat" onclick="sortTable('ban')">Ban rate</th>
-          <th class="col-syn">Sinergia con</th>
-          <th class="col-weak">Fuerte contra</th>
-          <th class="col-counter">Débil contra</th>
+          
         </tr>
       </thead>
       <tbody></tbody>
@@ -572,11 +570,7 @@ function renderTable(data) {
 
       <td class="col-stat stat">${item.win}%</td>
       <td class="col-stat stat">${item.pick}%</td>
-      <td class="col-stat stat">${item.ban}%</td>
-
-      <td class="col-syn"><div class="synergy-cell">${renderIcons(item.syn)}</div></td>
-      <td class="col-weak"><div class="synergy-cell">${renderIcons(item.weak)}</div></td>
-      <td class="col-counter"><div class="synergy-cell">${renderIcons(item.counter)}</div></td>
+      <td class="col-stat stat">${item.ban}%</td>     
     `;
 
     tbody.appendChild(tr);
