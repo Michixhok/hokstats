@@ -492,32 +492,31 @@ fetch(CSV_URL)
     if (!cols[1]) return;
 
     allData.push({
-  pos: cleanNumber(cols[63]),       // BL → posición
-  nombre: cols[1],                  // B
-  imagen: cols[3],                  // D
+  posicion: cleanNumber(cols[63]),
 
-  roleImgs: [cols[64], cols[65], cols[66]]  // BM, BN, BO
-    .map(x => x.trim())
-    .filter(x => x && x !== "#N/A"),
+  nombre: cols[1],
+  imagen: cols[3],
 
-  win: cleanNumber(cols[8]),        // I
-  pick: cleanNumber(cols[9]),       // J
-  ban: cleanNumber(cols[10]),       // K
+  rolesImg: [cols[64], cols[65], cols[66]].filter(Boolean),
 
-  tier: cols[62],                   // BK
+  win: cleanNumber(cols[8]),
+  pick: cleanNumber(cols[9]),
+  ban: cleanNumber(cols[10]),
 
-  // 🔥 NUEVOS STATS
-  beginPhase: cleanNumber(cols[67]),  // BP
-  midPhase: cleanNumber(cols[68]),    // BQ
-  endPhase: cleanNumber(cols[69]),    // BR
-  output: cleanNumber(cols[70]),      // BS
-  killNum: cleanNumber(cols[71]),     // BT
-  moneyPerMin: cleanNumber(cols[72]), // BU
-  suffer: cleanNumber(cols[73]),      // BV
-  assist: cleanNumber(cols[74]),      // BW
-  towerNum: cleanNumber(cols[75]),    // BX
-  towerDamage: cleanNumber(cols[76])  // BY
-  });
+  tier: cols[62],
+
+  early: cleanNumber(cols[67]),
+  mid: cleanNumber(cols[68]),
+  late: cleanNumber(cols[69]),
+  output: cleanNumber(cols[70]),
+  kills: cleanNumber(cols[71]),
+  gold: cleanNumber(cols[72]),
+  suffer: cleanNumber(cols[73]),
+  assist: cleanNumber(cols[74]),
+  towers: cleanNumber(cols[75]),
+  towerDmg: cleanNumber(cols[76])
+});
+    
 });
   
   applyFilters();
