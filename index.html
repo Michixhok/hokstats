@@ -477,10 +477,16 @@ const imagePointsPlugin = {
 };
 
 function cleanNumber(val){
-  const num = parseFloat(val);
-  return isNaN(num) ? 0 : num;
-}
+  if (!val) return 0;
 
+  return parseFloat(
+    val.toString()
+       .replace(/,/g, '')  // quita comas de miles
+       .replace('%', '')
+       .trim()
+  ) || 0;
+}
+  
 function parseCSV(text) {
   return Papa.parse(text.trim(), {
     skipEmptyLines: true
