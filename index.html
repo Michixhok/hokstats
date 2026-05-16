@@ -394,15 +394,24 @@ td {
     <table>
       <thead>
         <tr>
-          <th class="col-hero">Héroe</th>
-          <th class="col-tier" onclick="sortTable('pos')">Tier</th>
-          <th class="col-rol">Rol</th>
-          <th class="col-stat" onclick="sortTable('win')">Win rate</th>
-          <th class="col-stat" onclick="sortTable('pick')">Pick rate</th>
-          <th class="col-stat" onclick="sortTable('ban')">Ban rate</th>
-          <th class="col-syn">Sinergia con</th>
-          <th class="col-weak">Fuerte contra</th>
-          <th class="col-counter">Débil contra</th>
+          <th class="col-stat" onclick="sortTable('pos')">Posición</th>
+<th class="col-hero">Héroe</th>
+<th class="col-rol">Rol</th>
+<th class="col-tier">Tier</th>
+<th class="col-stat" onclick="sortTable('win')">Win rate</th>
+<th class="col-stat" onclick="sortTable('pick')">Pick rate</th>
+<th class="col-stat" onclick="sortTable('ban')">Ban rate</th>
+
+<th class="col-stat">Early</th>
+<th class="col-stat">Mid</th>
+<th class="col-stat">Late</th>
+<th class="col-stat">Output</th>
+<th class="col-stat">Kills</th>
+<th class="col-stat">Gold/min</th>
+<th class="col-stat">Suffer</th>
+<th class="col-stat">Assist</th>
+<th class="col-stat">Torres</th>
+<th class="col-stat">Tower dmg</th>
         </tr>
       </thead>
       <tbody></tbody>
@@ -550,33 +559,42 @@ function renderTable(data) {
     const tr = document.createElement("tr");
 
     tr.innerHTML = `
-      <td class="col-hero">
-        <div class="champion">
-          <img src="${item.imagen}">
-          <span>${item.nombre}</span>
-        </div>
-      </td>
+  <td class="col-stat stat">${item.pos}</td>
 
-      <td class="col-tier">
-        <div class="tier-badge tier-${item.tier}">
-          <span>${item.tier}</span>
-        </div>
-      </td>
+  <td class="col-hero">
+    <div class="champion">
+      <img src="${item.imagen}">
+      <span>${item.nombre}</span>
+    </div>
+  </td>
 
-      <td class="col-rol">
-  <div class="role-cell">
-    ${item.roleImgs.map(img => `<img src="${img}">`).join("")}
-  </div>
-</td>
+  <td class="col-rol">
+    <div class="role-cell">
+      ${item.roleImgs.map(img => `<img src="${img}">`).join("")}
+    </div>
+  </td>
 
-      <td class="col-stat stat">${item.win}%</td>
-      <td class="col-stat stat">${item.pick}%</td>
-      <td class="col-stat stat">${item.ban}%</td>
+  <td class="col-tier">
+    <div class="tier-badge tier-${item.tier}">
+      <span>${item.tier}</span>
+    </div>
+  </td>
 
-      <td class="col-syn"><div class="synergy-cell">${renderIcons(item.syn)}</div></td>
-      <td class="col-weak"><div class="synergy-cell">${renderIcons(item.weak)}</div></td>
-      <td class="col-counter"><div class="synergy-cell">${renderIcons(item.counter)}</div></td>
-    `;
+  <td class="col-stat stat">${item.win}%</td>
+  <td class="col-stat stat">${item.pick}%</td>
+  <td class="col-stat stat">${item.ban}%</td>
+
+  <td class="col-stat stat">${item.beginPhase}</td>
+  <td class="col-stat stat">${item.midPhase}</td>
+  <td class="col-stat stat">${item.endPhase}</td>
+  <td class="col-stat stat">${item.output}</td>
+  <td class="col-stat stat">${item.killNum}</td>
+  <td class="col-stat stat">${item.moneyPerMin}</td>
+  <td class="col-stat stat">${item.suffer}</td>
+  <td class="col-stat stat">${item.assist}</td>
+  <td class="col-stat stat">${item.towerNum}</td>
+  <td class="col-stat stat">${item.towerDamage}</td>
+`;
 
     tbody.appendChild(tr);
   });
