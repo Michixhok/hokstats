@@ -5,6 +5,7 @@
 <title>Tier List HoK</title>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 
 <style>
 body {
@@ -466,18 +467,24 @@ const imagePointsPlugin = {
 };
 
 function cleanNumber(val){
-  const num = parseFloat(val);
-  return isNaN(num) ? 0 : num;
-}
+  if (!val) return 0;
 
-function parseCSV(text) {
-  return text.split("\n").map(r => r.split(","));
+  return parseFloat(
+    val.toString()
+       .replace(/,/g, '')   // quita comas de miles
+       .replace('%', '')    // quita %
+  ) || 0;
 }
 
 fetch(CSV_URL)
 .then(r => r.text())
 .then(csv => {
-  const data = parseCSV(csv).slice(1);
+
+  const parsed = Papa.parse(csv, {
+    skipEmptyLines: true
+  });
+
+  const data = parsed.data.slice(1); // saltar encabezado
 
   data.forEach(cols => {
     if (!cols[1]) return;
@@ -485,34 +492,35 @@ fetch(CSV_URL)
     allData.push({
       nombre: cols[1],
       imagen: cols[3],
-      roles: [cols[5], cols[6], cols[7]].filter(Boolean),
-      roleImgs: [cols[31], cols[32], cols[33]]
-      .map(x => x.trim())
-      .filter(x => x && x !== "#N/A"),
+
       win: cleanNumber(cols[8]),
       pick: cleanNumber(cols[9]),
       ban: cleanNumber(cols[10]),
-      tier: cols[29],
-      pos: cleanNumber(cols[30]),
 
-      syn: [
-        {img: cols[13], name: cols[11]},
-        {img: cols[16], name: cols[14]}
-      ],
+      tier: cols[62],   // BK
+      pos: cleanNumber(cols[63]), // BL
 
-      weak: [
-        {img: cols[19], name: cols[17]},
-        {img: cols[22], name: cols[20]}
-      ],
+      rolesImg: [
+        cols[64], // BM
+        cols[65], // BN
+        cols[66]  // BO
+      ].filter(Boolean),
 
-      counter: [
-        {img: cols[25], name: cols[23]},
-        {img: cols[28], name: cols[26]}
-      ]
+      early: cleanNumber(cols[67]),
+      mid: cleanNumber(cols[68]),
+      late: cleanNumber(cols[69]),
+      output: cleanNumber(cols[70]),
+      kills: cleanNumber(cols[71]),
+      gold: cleanNumber(cols[72]),
+      suffer: cleanNumber(cols[73]),
+      assist: cleanNumber(cols[74]),
+      towers: cleanNumber(cols[75]),
+      towerDmg: cleanNumber(cols[76])
     });
   });
 
   applyFilters();
+});
 
 if (!chartCreated) {
   createChart();
