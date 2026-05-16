@@ -482,7 +482,7 @@ fetch(CSV_URL)
     if (!cols[1]) return;
 
     allData.push({
-      pos: cleanNumber(cols[63]),
+      pos: cols[63],
       nombre: cols[1],
       imagen: cols[3],
       roles: [cols[5], cols[6], cols[7]].filter(Boolean),
