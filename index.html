@@ -5,6 +5,7 @@
 <title>Tier List HoK</title>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 
 <style>
 body {
@@ -481,7 +482,9 @@ function cleanNumber(val){
 }
 
 function parseCSV(text) {
-  return text.split("\n").map(r => r.split(","));
+  return Papa.parse(text.trim(), {
+    skipEmptyLines: true
+  }).data;
 }
 
 fetch(CSV_URL)
