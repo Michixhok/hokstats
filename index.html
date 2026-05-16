@@ -5,7 +5,6 @@
 <title>Tier List HoK</title>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 
 <style>
 body {
@@ -394,26 +393,18 @@ td {
 
     <table>
       <thead>
-  <tr>
-    <th>Posición</th>
-    <th>Héroe</th>
-    <th>Rol</th>
-    <th>Tier</th>
-    <th>Win rate</th>
-    <th>Pick rate</th>
-    <th>Ban rate</th>
-    <th>Early</th>
-    <th>Mid</th>
-    <th>Late</th>
-    <th>Output</th>
-    <th>Kills</th>
-    <th>Gold/min</th>
-    <th>Suffer</th>
-    <th>Assist</th>
-    <th>Torres</th>
-    <th>Tower dmg</th>
-  </tr>
-</thead>
+        <tr>
+          <th class="col-hero">Héroe</th>
+          <th class="col-tier" onclick="sortTable('pos')">Tier</th>
+          <th class="col-rol">Rol</th>
+          <th class="col-stat" onclick="sortTable('win')">Win rate</th>
+          <th class="col-stat" onclick="sortTable('pick')">Pick rate</th>
+          <th class="col-stat" onclick="sortTable('ban')">Ban rate</th>
+          <th class="col-syn">Sinergia con</th>
+          <th class="col-weak">Fuerte contra</th>
+          <th class="col-counter">Débil contra</th>
+        </tr>
+      </thead>
       <tbody></tbody>
     </table>
 
@@ -475,24 +466,18 @@ const imagePointsPlugin = {
 };
 
 function cleanNumber(val){
-  if (!val) return 0;
+  const num = parseFloat(val);
+  return isNaN(num) ? 0 : num;
+}
 
-  return parseFloat(
-    val.toString()
-       .replace(/,/g, '')   // quita comas de miles
-       .replace('%', '')    // quita %
-  ) || 0;
+function parseCSV(text) {
+  return text.split("\n").map(r => r.split(","));
 }
 
 fetch(CSV_URL)
 .then(r => r.text())
 .then(csv => {
-
-  const parsed = Papa.parse(csv, {
-    skipEmptyLines: true
-  });
-
-  const data = parsed.data.slice(1); // saltar encabezado
+  const data = parseCSV(csv).slice(1);
 
   data.forEach(cols => {
     if (!cols[1]) return;
@@ -500,35 +485,34 @@ fetch(CSV_URL)
     allData.push({
       nombre: cols[1],
       imagen: cols[3],
-
+      roles: [cols[5], cols[6], cols[7]].filter(Boolean),
+      roleImgs: [cols[31], cols[32], cols[33]]
+      .map(x => x.trim())
+      .filter(x => x && x !== "#N/A"),
       win: cleanNumber(cols[8]),
       pick: cleanNumber(cols[9]),
       ban: cleanNumber(cols[10]),
+      tier: cols[29],
+      pos: cleanNumber(cols[30]),
 
-      tier: cols[62],   // BK
-      pos: cleanNumber(cols[63]), // BL
+      syn: [
+        {img: cols[13], name: cols[11]},
+        {img: cols[16], name: cols[14]}
+      ],
 
-      rolesImg: [
-        cols[64], // BM
-        cols[65], // BN
-        cols[66]  // BO
-      ].filter(Boolean),
+      weak: [
+        {img: cols[19], name: cols[17]},
+        {img: cols[22], name: cols[20]}
+      ],
 
-      early: cleanNumber(cols[67]),
-      mid: cleanNumber(cols[68]),
-      late: cleanNumber(cols[69]),
-      output: cleanNumber(cols[70]),
-      kills: cleanNumber(cols[71]),
-      gold: cleanNumber(cols[72]),
-      suffer: cleanNumber(cols[73]),
-      assist: cleanNumber(cols[74]),
-      towers: cleanNumber(cols[75]),
-      towerDmg: cleanNumber(cols[76])
+      counter: [
+        {img: cols[25], name: cols[23]},
+        {img: cols[28], name: cols[26]}
+      ]
     });
   });
 
   applyFilters();
-});
 
 if (!chartCreated) {
   createChart();
@@ -566,41 +550,34 @@ function renderTable(data) {
   data.forEach(item => {
     const tr = document.createElement("tr");
 
-
     tr.innerHTML = `
-  <td>${item.pos}</td>
+      <td class="col-hero">
+        <div class="champion">
+          <img src="${item.imagen}">
+          <span>${item.nombre}</span>
+        </div>
+      </td>
 
-  <td>
-    <div class="champion">
-      <img src="${item.imagen}">
-      <span>${item.nombre}</span>
-    </div>
-  </td>
+      <td class="col-tier">
+        <div class="tier-badge tier-${item.tier}">
+          <span>${item.tier}</span>
+        </div>
+      </td>
 
-  <td>${item.rolesImg?.length || ""}</td>
+      <td class="col-rol">
+  <div class="role-cell">
+    ${item.roleImgs.map(img => `<img src="${img}">`).join("")}
+  </div>
+</td>
 
-  <td>${item.tier}</td>
+      <td class="col-stat stat">${item.win}%</td>
+      <td class="col-stat stat">${item.pick}%</td>
+      <td class="col-stat stat">${item.ban}%</td>
 
-  <td>${item.win}%</td>
-  <td>${item.pick}%</td>
-  <td>${item.ban}%</td>
-
-  <td>${item.early}</td>
-  <td>${item.mid}</td>
-  <td>${item.late}</td>
-  <td>${item.output}</td>
-  <td>${item.kills}</td>
-  <td>${item.gold}</td>
-  <td>${item.suffer}</td>
-  <td>${item.assist}</td>
-  <td>${item.towers}</td>
-  <td>${item.towerDmg}</td>
-`;
-
-
-
-
-    
+      <td class="col-syn"><div class="synergy-cell">${renderIcons(item.syn)}</div></td>
+      <td class="col-weak"><div class="synergy-cell">${renderIcons(item.weak)}</div></td>
+      <td class="col-counter"><div class="synergy-cell">${renderIcons(item.counter)}</div></td>
+    `;
 
     tbody.appendChild(tr);
   });
