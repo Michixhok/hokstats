@@ -394,18 +394,26 @@ td {
 
     <table>
       <thead>
-        <tr>
-          <th class="col-hero">Héroe</th>
-          <th class="col-tier" onclick="sortTable('pos')">Tier</th>
-          <th class="col-rol">Rol</th>
-          <th class="col-stat" onclick="sortTable('win')">Win rate</th>
-          <th class="col-stat" onclick="sortTable('pick')">Pick rate</th>
-          <th class="col-stat" onclick="sortTable('ban')">Ban rate</th>
-          <th class="col-syn">Sinergia con</th>
-          <th class="col-weak">Fuerte contra</th>
-          <th class="col-counter">Débil contra</th>
-        </tr>
-      </thead>
+  <tr>
+    <th>Posición</th>
+    <th>Héroe</th>
+    <th>Rol</th>
+    <th>Tier</th>
+    <th>Win rate</th>
+    <th>Pick rate</th>
+    <th>Ban rate</th>
+    <th>Early</th>
+    <th>Mid</th>
+    <th>Late</th>
+    <th>Output</th>
+    <th>Kills</th>
+    <th>Gold/min</th>
+    <th>Suffer</th>
+    <th>Assist</th>
+    <th>Torres</th>
+    <th>Tower dmg</th>
+  </tr>
+</thead>
       <tbody></tbody>
     </table>
 
@@ -558,34 +566,41 @@ function renderTable(data) {
   data.forEach(item => {
     const tr = document.createElement("tr");
 
+
     tr.innerHTML = `
-      <td class="col-hero">
-        <div class="champion">
-          <img src="${item.imagen}">
-          <span>${item.nombre}</span>
-        </div>
-      </td>
+  <td>${item.pos}</td>
 
-      <td class="col-tier">
-        <div class="tier-badge tier-${item.tier}">
-          <span>${item.tier}</span>
-        </div>
-      </td>
+  <td>
+    <div class="champion">
+      <img src="${item.imagen}">
+      <span>${item.nombre}</span>
+    </div>
+  </td>
 
-      <td class="col-rol">
-  <div class="role-cell">
-    ${item.roleImgs.map(img => `<img src="${img}">`).join("")}
-  </div>
-</td>
+  <td>${item.rolesImg?.length || ""}</td>
 
-      <td class="col-stat stat">${item.win}%</td>
-      <td class="col-stat stat">${item.pick}%</td>
-      <td class="col-stat stat">${item.ban}%</td>
+  <td>${item.tier}</td>
 
-      <td class="col-syn"><div class="synergy-cell">${renderIcons(item.syn)}</div></td>
-      <td class="col-weak"><div class="synergy-cell">${renderIcons(item.weak)}</div></td>
-      <td class="col-counter"><div class="synergy-cell">${renderIcons(item.counter)}</div></td>
-    `;
+  <td>${item.win}%</td>
+  <td>${item.pick}%</td>
+  <td>${item.ban}%</td>
+
+  <td>${item.early}</td>
+  <td>${item.mid}</td>
+  <td>${item.late}</td>
+  <td>${item.output}</td>
+  <td>${item.kills}</td>
+  <td>${item.gold}</td>
+  <td>${item.suffer}</td>
+  <td>${item.assist}</td>
+  <td>${item.towers}</td>
+  <td>${item.towerDmg}</td>
+`;
+
+
+
+
+    
 
     tbody.appendChild(tr);
   });
