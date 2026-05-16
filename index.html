@@ -553,7 +553,7 @@ function applyFilters() {
   let data = [...allData];
 
   if (currentRole !== "all") {
-    data = data.filter(i => i.roles.includes(currentRole));
+    data = data.filter(i => if (currentRole !== "all") return;);
   }
 
   if (currentSearch) {
