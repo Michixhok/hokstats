@@ -108,11 +108,11 @@ thead tr {
   border-bottom: 1px solid #1c1c1f;
 }
 
-/* 🔥 CORRECCIÓN AQUÍ: Forzamos la negrita apuntando exactamente a las celdas th de thead */
+/* 🔥 CORRECCIÓN ANTERIOR: Forzamos la negrita apuntando exactamente a las celdas th de thead */
 thead th {
   padding: 8px 4px;    
   font-size: 11px;    
-  color: #a7a7b5;
+  color: #7b7a8e;
   font-weight: bold !important;  
   cursor: pointer;
 }
@@ -146,7 +146,7 @@ td {
 /* 🔥 ESTILO EXCLUSIVO PARA LOS NÚMEROS DEL CUERPO DE LA TABLA (Win, Pick, Ban) */
 tbody .col-win-val, tbody .col-pick-val, tbody .col-ban-val {
   font-weight: bold !important;
-  color: #a7a7b5 !important;
+  color: #ffffff !important;
 }
 
 .champion {
@@ -405,22 +405,22 @@ tbody .col-win-val, tbody .col-pick-val, tbody .col-ban-val {
         <tr>
           <th class="col-pos" onclick="sortTable('pos')">Pos</th>
           <th class="col-hero">Héroe</th>
-          <th class="col-tier" onclick="sortTable('pos')">Tier</th>
+          <th class="col-tier" onclick="sortTable('tier')">Tier</th>
           <th class="col-rol">Rol</th>
           <th class="col-stat" onclick="sortTable('win')">Win</th>
           <th class="col-stat" onclick="sortTable('pick')">Pick</th>
           <th class="col-stat" onclick="sortTable('ban')">Ban</th>
 
-          <th class="col-stat">Rend. Early</th>
-          <th class="col-stat">Rend. Mid</th>
-          <th class="col-stat">Rend. Late</th>
-          <th class="col-stat">Daño/ partida</th>
-          <th class="col-stat">Kills/ partida</th>
-          <th class="col-stat">Oro caza</th>
-          <th class="col-stat">Daño/ muerte</th>
-          <th class="col-stat">Asist./ partida</th>
-          <th class="col-stat">Torres/ partida</th>
-          <th class="col-stat">Daño torres</th>
+          <th class="col-stat" onclick="sortTable('early')">Rend. Early</th>
+          <th class="col-stat" onclick="sortTable('mid')">Rend. Mid</th>
+          <th class="col-stat" onclick="sortTable('late')">Rend. Late</th>
+          <th class="col-stat" onclick="sortTable('output')">Daño/ partida</th>
+          <th class="col-stat" onclick="sortTable('kills')">Kills/ partida</th>
+          <th class="col-stat" onclick="sortTable('gold')">Oro caza</th>
+          <th class="col-stat" onclick="sortTable('suffer')">Daño/ muerte</th>
+          <th class="col-stat" onclick="sortTable('assist')">Asist./ partida</th>
+          <th class="col-stat" onclick="sortTable('towers')">Torres/ partida</th>
+          <th class="col-stat" onclick="sortTable('towerDmg')">Daño torres</th>
         </tr>
       </thead>
       <tbody></tbody>
@@ -549,6 +549,10 @@ fetch(CSV_URL)
     });
   });
 
+  // 🔥 REQUISITO 1: Orden inicial por la columna 'pos' de menor a mayor (1, 2, 3...) al cargar la web
+  currentSort = { key: 'pos', asc: true };
+  allData.sort((a, b) => a.pos - b.pos);
+
   applyFilters();
 
   if (!chartCreated) {
@@ -648,12 +652,31 @@ document.getElementById("searchInput").addEventListener("input", e => {
 
 /* sorting */
 function sortTable(key) {
-  const asc = currentSort.key === key ? !currentSort.asc : false;
+  // 🔥 REQUISITO 2: Cambiado comportamiento para estadísticas.
+  // Si es 'pos', por defecto inicia de menor a mayor (ascendente).
+  // Si es estadística, inicia de mayor a menor (descendente), luego alterna al reverso.
+  let asc = false;
+  
+  if (currentSort.key === key) {
+    asc = !currentSort.asc;
+  } else {
+    // Si cambiamos de columna, definimos el orden por defecto del primer clic:
+    asc = (key === 'pos' || key === 'tier'); 
+  }
+  
   currentSort = { key, asc };
 
-  allData.sort((a, b) =>
-    asc ? a[key] - b[key] : b[key] - a[key]
-  );
+  allData.sort((a, b) => {
+    let valA = a[key];
+    let valB = b[key];
+
+    // Tratamiento especial por si se ordena por la letra del Tier (S, A, B, C...)
+    if (key === 'tier') {
+      return asc ? valA.localeCompare(valB) : valB.localeCompare(valA);
+    }
+
+    return asc ? valA - valB : valB - valA;
+  });
 
   applyFilters();
 }
