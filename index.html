@@ -97,7 +97,7 @@ body {
 table {
   width: 100%;
   border-collapse: collapse;
-  table-layout: auto;
+  table-layout: fixed; /* Mantener modo fijo para controlar las primeras columnas */
 }
 
 thead {
@@ -109,16 +109,11 @@ thead tr {
 }
 
 th {
-  padding: 8px 12px;
-  font-size: 11px; /* 🔄 CAMBIO: Reducido de 13px a 11px para igualar las estadísticas */
+  padding: 8px 4px;    /* Reducimos el espacio lateral en las cabeceras */
+  font-size: 11px;    /* Ajustado a 11px para igualar las estadísticas */
   color: #7b7a8e;
   font-weight: normal;
   cursor: pointer;
-}
-
-th.col-stat {
-  padding: 8px 4px;
-  font-size: 11px;
 }
 
 tbody tr {
@@ -132,14 +127,16 @@ tbody tr:hover {
 }
 
 td {
-  padding: 6px 6px;
+  padding: 6px 4px;   /* Reducimos el padding lateral de las celdas a 4px para juntarlas más */
 }
 
+/* 📌 FIJAMOS EL TAMAÑO DE LAS PRIMERAS 4 COLUMNAS */
 .col-pos  { width: 4%; text-align: center; }
-.col-hero { width: 14%; }
-.col-tier { width: 5%; text-align: center; }
-.col-rol  { width: 7%; text-align: center; }
+.col-hero { width: 15%; }
+.col-tier { width: 6%; text-align: center; }
+.col-rol  { width: 9%; text-align: center; }
 
+/* 🔄 LAS ESTADÍSTICAS NO TIENEN ANCHO DEFINIDO: Se acomodarán automáticamente ocupando el resto */
 .col-stat { text-align: center; }
 .col-syn  { width: 10%; text-align: center; }
 .col-weak { width: 10%; text-align: center; }
@@ -160,7 +157,7 @@ td {
 }
 
 .champion span {
-  font-size: 11px; /* 🔄 CAMBIO: Reducido de 13px a 11px para igualar el tamaño numérico */
+  font-size: 11px; /* Ajustado a 11px para que combine con el resto de la tabla */
   font-weight: bold;
 }
 
@@ -179,7 +176,7 @@ td {
   transform: rotate(-45deg);
   color: white;
   font-weight: bold;
-  font-size: 11px; /* 🔄 CAMBIO: Reducido de 12px a 11px para unificar */
+  font-size: 11px; /* Ajustado a 11px */
 }
 
 .tier-S { background: #1c7ed6; }
@@ -188,9 +185,9 @@ td {
 .tier-C { background: #868e96; }
 
 .stat {
-  font-size: 11px;
+  font-size: 11px; /* Números en 11px */
   color: #a0a0b5;
-  white-space: nowrap;
+  white-space: nowrap; /* Evita saltos de línea extraños */
 }
 
 .role-cell {
