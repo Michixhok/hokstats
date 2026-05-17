@@ -94,7 +94,6 @@ body {
   color: #777;
 }
 
-/* 🔄 CAMBIO: De fixed a auto para que las columnas se junten según su contenido */
 table {
   width: 100%;
   border-collapse: collapse;
@@ -117,7 +116,6 @@ th {
   cursor: pointer;
 }
 
-/* 🔄 NUEVO: Reducción de espacio y letra más chica para cabeceras de estadísticas */
 th.col-stat {
   padding: 8px 4px;
   font-size: 11px;
@@ -133,20 +131,20 @@ tbody tr:hover {
   background: #3a3a46;
 }
 
-/* 🔄 CAMBIO: Reducido el padding horizontal de las celdas de 12px a 6px */
 td {
   padding: 6px 6px;
 }
 
-.col-hero { width: 18%; }
-.col-tier { width: 6%; text-align:center; }
-.col-rol  { width: 10%; text-align:center; }
+/* 🔄 CAMBIO: Ajuste de proporciones y centrado para equilibrar tamaños con las estadísticas */
+.col-pos  { width: 4%; text-align: center; }
+.col-hero { width: 14%; }
+.col-tier { width: 5%; text-align: center; }
+.col-rol  { width: 7%; text-align: center; }
 
-/* 🔄 NUEVO: Se eliminaron los anchos manuales de .col-stat para dejar que se junten al máximo */
-.col-stat { text-align:center; }
-.col-syn  { width: 10%; text-align:center; }
-.col-weak { width: 10%; text-align:center; }
-.col-counter { width: 10%; text-align:center; }
+.col-stat { text-align: center; }
+.col-syn  { width: 10%; text-align: center; }
+.col-weak { width: 10%; text-align: center; }
+.col-counter { width: 10%; text-align: center; }
 
 .champion {
   display: flex;
@@ -190,7 +188,6 @@ td {
 .tier-B { background: #ff922b; }
 .tier-C { background: #868e96; }
 
-/* 🔄 CAMBIO: Fuente reducida de 12px a 11px y evitamos saltos de línea con nowrap */
 .stat {
   font-size: 11px;
   color: #a0a0b5;
