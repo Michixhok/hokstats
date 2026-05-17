@@ -112,7 +112,7 @@ th {
   padding: 8px 4px;    /* Reducimos el espacio lateral en las cabeceras */
   font-size: 11px;    /* Ajustado a 11px para igualar las estadísticas */
   color: #7b7a8e;
-  font-weight: normal;
+  font-weight: bold;  /* 🔥 TODOS los nombres de las columnas ahora están en negrita */
   cursor: pointer;
 }
 
@@ -142,8 +142,8 @@ td {
 .col-weak { width: 10%; text-align: center; }
 .col-counter { width: 10%; text-align: center; }
 
-/* 🔥 ESTILOS ESPECÍFICOS PARA WIN, PICK Y BAN EN NEGRITA Y BLANCO */
-.col-win, .col-pick, .col-ban {
+/* 🔥 ESTILOS ESPECÍFICOS PARA LAS CELDAS DE DATOS DE WIN, PICK Y BAN (SOLO CUERPO) */
+tbody .col-win, tbody .col-pick, tbody .col-ban {
   font-weight: bold !important;
   color: #ffffff !important;
 }
@@ -227,7 +227,7 @@ td {
   object-fit: cover;
 }  
 
-  .logo-text {
+.logo-text {
   font-family: monospace;
   font-size: 22px;
   color: white;
@@ -236,7 +236,7 @@ td {
   letter-spacing: 1px;
 }
 
-  .info-box {
+.info-box {
   background: #31313c;
   border: 1px solid #1c1c1f;
   border-radius: 6px;
@@ -281,7 +281,7 @@ td {
   color: white;
 }
 
-  .top-bar {
+.top-bar {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -325,7 +325,7 @@ td {
   text-align: center;
 }
 
-  /* scrollbar modo oscuro */
+/* scrollbar modo oscuro */
 ::-webkit-scrollbar {
   width: 10px;
 }
@@ -348,7 +348,6 @@ td {
 
 <body>
 
- 
 <div class="container">
 
   <div class="top-bar">
@@ -361,8 +360,6 @@ td {
   </div>
 
   <div class="info-box">
-    
-    
     <div class="info-content">
       <p>
         Este es un proyecto personal desarrollado originalmente para mejorar mi rendimiento en 
@@ -378,7 +375,6 @@ td {
         <a href="https://www.youtube.com/@michixhok" target="_blank" class="contact-link">📺 YouTube</a>
       </div>
     </div>
-
   </div>
 
   <div class="view active" id="stats">
@@ -424,7 +420,6 @@ td {
           <th class="col-stat">Asist./ partida</th>
           <th class="col-stat">Torres/ partida</th>
           <th class="col-stat">Daño torres</th>
-          
         </tr>
       </thead>
       <tbody></tbody>
@@ -435,15 +430,14 @@ td {
 
 <div class="view" id="charts">
   <div class="chart-box">
-  <canvas id="scatterChart"></canvas>
-</div>
+    <canvas id="scatterChart"></canvas>
+  </div>
 </div>
       
-  </div>
 </div>
 
 <script>
-  let chartInstance = null;
+let chartInstance = null;
 const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTO4rMY_drrjKMx3KTdjAaSrH6GenxyZ7YzLPT7oiZ_pNYm6EKG-yJPfmbRcZgYGGi2gERA1Gciw-Fy/pub?gid=538223640&single=true&output=csv";
 
 let allData = [];
@@ -556,10 +550,10 @@ fetch(CSV_URL)
 
   applyFilters();
 
-if (!chartCreated) {
-  createChart();
-  chartCreated = true;
-}
+  if (!chartCreated) {
+    createChart();
+    chartCreated = true;
+  }
 });
 
 function renderIcons(arr){
@@ -609,10 +603,10 @@ function renderTable(data) {
       </td>
 
       <td class="col-rol">
-  <div class="role-cell">
-    ${item.roleImgs.map(img => `<img src="${img}">`).join("")}
-  </div>
-</td>
+        <div class="role-cell">
+          ${item.roleImgs.map(img => `<img src="${img}">`).join("")}
+        </div>
+      </td>
 
       <td class="col-stat col-win stat">${item.win}%</td>
       <td class="col-stat col-pick stat">${item.pick}%</td>
@@ -662,7 +656,7 @@ function sortTable(key) {
 
   applyFilters();
 }
-  let chartCreated = false;
+let chartCreated = false;
 
 document.querySelectorAll(".view-tab").forEach(tab => {
   tab.addEventListener("click", () => {
@@ -677,34 +671,34 @@ document.querySelectorAll(".view-tab").forEach(tab => {
 
     // 👉 crear gráfico SOLO cuando entras a "Graficas"
     if (view === "charts" && !chartCreated && allData.length > 0) {
-  createChart();
-  chartCreated = true;
-}
+      createChart();
+      chartCreated = true;
+    }
 
   });
 });
 
-  function createChart() {
+function createChart() {
 
   const ctx = document.getElementById("scatterChart");
 
   const data = allData.map(hero => {
-  const img = new Image();
-  img.src = hero.imagen;
+    const img = new Image();
+    img.src = hero.imagen;
 
-  return {
-    x: hero.pick + hero.ban,
-    y: hero.win,
-    imgInstance: img,
-    name: hero.nombre
-  };
-});
+    return {
+      x: hero.pick + hero.ban,
+      y: hero.win,
+      imgInstance: img,
+      name: hero.nombre
+    };
+  });
 
   if (chartInstance) {
-  chartInstance.destroy();
-}
+    chartInstance.destroy();
+  }
 
-chartInstance = new Chart(ctx, {
+  chartInstance = new Chart(ctx, {
     type: 'scatter',
     data: {datasets: [{
         label: 'Heroes',
@@ -712,7 +706,7 @@ chartInstance = new Chart(ctx, {
         pointRadius: 0
       }]
     },
-  plugins: [imagePointsPlugin],
+    plugins: [imagePointsPlugin],
     options: {
       plugins: {
         tooltip: {
@@ -725,26 +719,24 @@ chartInstance = new Chart(ctx, {
         }
       },
       scales: {
-  x: {
-    title: {
-      display: true,
-      text: 'Presence rate (%)'
-    }
-  },
-  y: {
-    min: 44,
-    max: 56,
-    title: {
-      display: true,
-      text: 'Win rate (%)'
-    }
-  }
-}
+        x: {
+          title: {
+            display: true,
+            text: 'Presence rate (%)'
+          }
+        },
+        y: {
+          min: 44,
+          max: 56,
+          title: {
+            display: true,
+            text: 'Win rate (%)'
+          }
+        }
+      }
     }
   });
 }
-
-  
 </script>
 
 </body>
