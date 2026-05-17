@@ -106,7 +106,7 @@ thead tr {
 }
 
 thead th {
-  padding: 8px 4px;    
+  padding: 10px 4px;    
   font-size: 11px;    
   color: #7b7a8e;
   font-weight: bold !important;  
@@ -124,15 +124,24 @@ tbody tr:hover {
 }
 
 td {
-  padding: 6px 4px;   
+  padding: 8px 4px;   
 }
 
-/* Distribución equilibrada para dar suficiente espacio a las burbujas */
-.col-pos  { width: 4%; text-align: center; }
-.col-hero { width: 14%; }
-.col-tier { width: 5%; text-align: center; }
-.col-rol  { width: 9%; text-align: center; }
-.col-rel  { width: 22%; text-align: center; } /* Columnas para las burbujas */
+/* Nuevos anchos limpios al remover Tier y Rol */
+.col-pos  { width: 6%; text-align: center; }
+.col-hero { width: 22%; }
+.col-rel  { width: 24%; text-align: center; } 
+
+/* Estilos de fondos solicitados para las celdas de la tabla (Cabecera y Cuerpo) */
+.bg-fuerte {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+.bg-debil {
+  background-color: rgba(239, 68, 68, 0.12); /* Rojo translúcido */
+}
+.bg-sinergia {
+  background-color: rgba(168, 85, 247, 0.12); /* Lila translúcido */
+}
 
 .champion {
   display: flex;
@@ -153,60 +162,22 @@ td {
   font-weight: bold;
 }
 
-.tier-badge {
-  width: 20px;
-  height: 20px;
-  margin: auto;
-  transform: rotate(45deg);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid #1c1c1f;
-}
-
-.tier-badge span {
-  transform: rotate(-45deg);
-  color: white;
-  font-weight: bold;
-  font-size: 11px; 
-}
-
-.tier-S { background: #1c7ed6; }
-.tier-A { background: #099268; }
-.tier-B { background: #ff922b; }
-.tier-C { background: #868e96; }
-
-.role-cell {
-  display: flex;
-  justify-content: center;   
-  align-items: center;       
-  gap: 6px;
-  height: 32px;
-}
-
-.role-cell img {
-  width: 25px;              
-  height: 25px;
-  object-fit: contain;
-  opacity: 0.50;            
-  filter: brightness(0.90); 
-}
-
-/* 🟢 Círculos perfectos para los héroes vinculados */
+/* Contenedor de burbujas sin contornos */
 .relation-cell {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 5px;
-  flex-wrap: nowrap; /* Evita que se amontonen abajo en pantallas medianas */
+  gap: 6px;
+  flex-wrap: nowrap;
 }
 
+/* Círculos más grandes (34px) y sin línea de contorno */
 .relation-cell img {
-  width: 26px;
-  height: 26px;
-  border-radius: 50%; /* Foto redonda */
+  width: 34px;
+  height: 34px;
+  border-radius: 50%; 
   object-fit: cover;
-  border: 1px solid #444452;
+  border: none !important; 
 }  
 
 .logo-text {
@@ -288,12 +259,10 @@ td {
         <tr>
           <th class="col-pos" onclick="sortTable('pos')">Pos</th>
           <th class="col-hero">Héroe</th>
-          <th class="col-tier" onclick="sortTable('tier')">Tier</th>
-          <th class="col-rol">Rol</th>
           
-          <th class="col-rel">Fuerte contra</th>
-          <th class="col-rel">Débil contra</th>
-          <th class="col-rel">Sinergia con</th>
+          <th class="col-rel bg-fuerte">Fuerte contra</th>
+          <th class="col-rel bg-debil">Débil contra</th>
+          <th class="col-rel bg-sinergia">Sinergia con</th>
         </tr>
       </thead>
       <tbody></tbody>
@@ -330,50 +299,47 @@ fetch(CSV_URL)
     allData.push({
       nombre: cols[1],
       imagen: cols[3],
+      // Se siguen extrayendo los roles para que los filtros funcionen perfectamente en segundo plano
       roles: [cols[5], cols[6], cols[7]].filter(Boolean),
-      roleImgs: [cols[64], cols[65], cols[66]].map(x => x.trim()).filter(x => x && x !== "#N/A"),
-      tier: cols[62],
       pos: cleanNumber(cols[63]),
 
-      // ⚔️ Fuerte contra (6 Máximos) - Columnas AA a AR
+      // ⚔️ Fuerte contra (6 Máximos)
       counter: [
-        { name: cols[26], img: cols[28] }, // AA y AC
-        { name: cols[29], img: cols[31] }, // AD y AF
-        { name: cols[32], img: cols[34] }, // AG y AI
-        { name: cols[35], img: cols[37] }, // AJ y AL
-        { name: cols[38], img: cols[40] }, // AM y AO
-        { name: cols[41], img: cols[43] }  // AP y AR
+        { name: cols[26], img: cols[28] }, 
+        { name: cols[29], img: cols[31] }, 
+        { name: cols[32], img: cols[34] }, 
+        { name: cols[35], img: cols[37] }, 
+        { name: cols[38], img: cols[40] }, 
+        { name: cols[41], img: cols[43] }  
       ],
 
-      // 🛡️ Débil contra (6 Máximos) - Columnas AS a BJ
+      // 🛡️ Débil contra (6 Máximos)
       weak: [
-        { name: cols[44], img: cols[46] }, // AS y AU
-        { name: cols[47], img: cols[49] }, // AV y AX
-        { name: cols[50], img: cols[52] }, // AY y BA
-        { name: cols[53], img: cols[55] }, // BB y BD
-        { name: cols[54], img: cols[58] }, // BE y BG
-        { name: cols[59], img: cols[61] }  // BH y BJ
+        { name: cols[44], img: cols[46] }, 
+        { name: cols[47], img: cols[49] }, 
+        { name: cols[50], img: cols[52] }, 
+        { name: cols[53], img: cols[55] }, 
+        { name: cols[54], img: cols[58] }, 
+        { name: cols[59], img: cols[61] }  
       ],
 
-      // 🤝 Sinergia con (5 Máximos) - Columnas L a Z
+      // 🤝 Sinergia con (5 Máximos)
       syn: [
-        { name: cols[11], img: cols[13] }, // L y N
-        { name: cols[14], img: cols[16] }, // O y Q
-        { name: cols[17], img: cols[19] }, // R y T
-        { name: cols[20], img: cols[22] }, // U y W
-        { name: cols[23], img: cols[25] }  // X y Z
+        { name: cols[11], img: cols[13] }, 
+        { name: cols[14], img: cols[16] }, 
+        { name: cols[17], img: cols[19] }, 
+        { name: cols[20], img: cols[22] }, 
+        { name: cols[23], img: cols[25] }  
       ]
     });
   });
 
-  // Orden inicial automático por la columna Pos de menor a mayor
   currentSort = { key: 'pos', asc: true };
   allData.sort((a, b) => a.pos - b.pos);
 
   applyFilters();
 });
 
-// Procesa los datos del Excel, ignora celdas en blanco o rotas y arma las imágenes
 function renderIcons(arr){
   return arr
     .filter(x => x.img && x.img !== "#N/A" && x.img.trim() !== "")
@@ -412,25 +378,13 @@ function renderTable(data) {
         </div>
       </td>
 
-      <td class="col-tier">
-        <div class="tier-badge tier-${item.tier}">
-          <span>${item.tier}</span>
-        </div>
-      </td>
-
-      <td class="col-rol">
-        <div class="role-cell">
-          ${item.roleImgs.map(img => `<img src="${img}">`).join("")}
-        </div>
-      </td>
-
-      <td class="col-rel">
+      <td class="col-rel bg-fuerte">
         <div class="relation-cell">${renderIcons(item.counter)}</div>
       </td>
-      <td class="col-rel">
+      <td class="col-rel bg-debil">
         <div class="relation-cell">${renderIcons(item.weak)}</div>
       </td>
-      <td class="col-rel">
+      <td class="col-rel bg-sinergia">
         <div class="relation-cell">${renderIcons(item.syn)}</div>
       </td>
     `;
@@ -455,25 +409,19 @@ document.getElementById("searchInput").addEventListener("input", e => {
   applyFilters();
 });
 
-/* Algoritmo de ordenamiento por Pos o Tier */
+/* Algoritmo de ordenamiento por Pos */
 function sortTable(key) {
   let asc = false;
   if (currentSort.key === key) {
     asc = !currentSort.asc;
   } else {
-    asc = (key === 'pos' || key === 'tier'); 
+    asc = (key === 'pos'); 
   }
   
   currentSort = { key, asc };
 
   allData.sort((a, b) => {
-    let valA = a[key];
-    let valB = b[key];
-
-    if (key === 'tier') {
-      return asc ? valA.localeCompare(valB) : valB.localeCompare(valA);
-    }
-    return asc ? valA - valB : valB - valA;
+    return asc ? a[key] - b[key] : b[key] - a[key];
   });
 
   applyFilters();
