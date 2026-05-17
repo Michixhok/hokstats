@@ -127,20 +127,20 @@ td {
   padding: 8px 4px;   
 }
 
-/* Nuevos anchos limpios al remover Tier y Rol */
+/* Anchos limpios de columnas */
 .col-pos  { width: 6%; text-align: center; }
 .col-hero { width: 22%; }
 .col-rel  { width: 24%; text-align: center; } 
 
-/* Estilos de fondos solicitados para las celdas de la tabla (Cabecera y Cuerpo) */
+/* 🎨 CORRECCIÓN AQUÍ: Fondos translúcidos temáticos asignados correctamente */
 .bg-fuerte {
-  background-color: rgba(255, 255, 255, 0.03);
+  background-color: rgba(34, 197, 94, 0.12);  /* Verde translúcido para Fuertes */
 }
 .bg-debil {
-  background-color: rgba(239, 68, 68, 0.12); /* Rojo translúcido */
+  background-color: rgba(239, 68, 68, 0.12);  /* Rojo translúcido para Débiles */
 }
 .bg-sinergia {
-  background-color: rgba(168, 85, 247, 0.12); /* Lila translúcido */
+  background-color: rgba(168, 85, 247, 0.12); /* Lila translúcido para Sinergias */
 }
 
 .champion {
@@ -162,7 +162,6 @@ td {
   font-weight: bold;
 }
 
-/* Contenedor de burbujas sin contornos */
 .relation-cell {
   display: flex;
   justify-content: center;
@@ -171,7 +170,6 @@ td {
   flex-wrap: nowrap;
 }
 
-/* Círculos más grandes (34px) y sin línea de contorno */
 .relation-cell img {
   width: 34px;
   height: 34px;
@@ -299,7 +297,6 @@ fetch(CSV_URL)
     allData.push({
       nombre: cols[1],
       imagen: cols[3],
-      // Se siguen extrayendo los roles para que los filtros funcionen perfectamente en segundo plano
       roles: [cols[5], cols[6], cols[7]].filter(Boolean),
       pos: cleanNumber(cols[63]),
 
