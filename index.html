@@ -112,7 +112,7 @@ th {
   padding: 8px 4px;    /* Reducimos el espacio lateral en las cabeceras */
   font-size: 11px;    /* Ajustado a 11px para igualar las estadísticas */
   color: #7b7a8e;
-  font-weight: bold;  /* 🔥 TODOS los nombres de las columnas ahora están en negrita */
+  font-weight: bold;  /* 🔥 AQUÍ: Forzamos que TODOS los nombres de columnas estén en negrita */
   cursor: pointer;
 }
 
@@ -142,8 +142,8 @@ td {
 .col-weak { width: 10%; text-align: center; }
 .col-counter { width: 10%; text-align: center; }
 
-/* 🔥 ESTILOS ESPECÍFICOS PARA LAS CELDAS DE DATOS DE WIN, PICK Y BAN (SOLO CUERPO) */
-tbody .col-win, tbody .col-pick, tbody .col-ban {
+/* 🔥 ESTILO EXCLUSIVO PARA LOS NÚMEROS DEL CUERPO DE LA TABLA (Win, Pick, Ban) */
+tbody .col-win-val, tbody .col-pick-val, tbody .col-ban-val {
   font-weight: bold !important;
   color: #ffffff !important;
 }
@@ -406,9 +406,9 @@ tbody .col-win, tbody .col-pick, tbody .col-ban {
           <th class="col-hero">Héroe</th>
           <th class="col-tier" onclick="sortTable('pos')">Tier</th>
           <th class="col-rol">Rol</th>
-          <th class="col-stat col-win" onclick="sortTable('win')">Win</th>
-          <th class="col-stat col-pick" onclick="sortTable('pick')">Pick</th>
-          <th class="col-stat col-ban" onclick="sortTable('ban')">Ban</th>
+          <th class="col-stat" onclick="sortTable('win')">Win</th>
+          <th class="col-stat" onclick="sortTable('pick')">Pick</th>
+          <th class="col-stat" onclick="sortTable('ban')">Ban</th>
 
           <th class="col-stat">Rend. Early</th>
           <th class="col-stat">Rend. Mid</th>
@@ -608,9 +608,9 @@ function renderTable(data) {
         </div>
       </td>
 
-      <td class="col-stat col-win stat">${item.win}%</td>
-      <td class="col-stat col-pick stat">${item.pick}%</td>
-      <td class="col-stat col-ban stat">${item.ban}%</td>
+      <td class="col-stat col-win-val stat">${item.win}%</td>
+      <td class="col-stat col-pick-val stat">${item.pick}%</td>
+      <td class="col-stat col-ban-val stat">${item.ban}%</td>
 
       <td class="col-stat stat">${item.early}</td>
       <td class="col-stat stat">${item.mid}</td>
