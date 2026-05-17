@@ -108,11 +108,12 @@ thead tr {
   border-bottom: 1px solid #1c1c1f;
 }
 
-th {
-  padding: 8px 4px;    /* Reducimos el espacio lateral en las cabeceras */
-  font-size: 11px;    /* Ajustado a 11px para igualar las estadísticas */
+/* 🔥 CORRECCIÓN AQUÍ: Forzamos la negrita apuntando exactamente a las celdas th de thead */
+thead th {
+  padding: 8px 4px;    
+  font-size: 11px;    
   color: #7b7a8e;
-  font-weight: bold;  /* 🔥 AQUÍ: Forzamos que TODOS los nombres de columnas estén en negrita */
+  font-weight: bold !important;  
   cursor: pointer;
 }
 
@@ -136,7 +137,7 @@ td {
 .col-tier { width: 5%; text-align: center; }
 .col-rol  { width: 10%; text-align: center; }
 
-/* 🔄 LAS ESTADÍSTICAS NO TIENEN ANCHO DEFINIDO: Se acomodarán automáticamente ocupando el resto */
+/* 🔄 LAS ESTADÍSTICAS NO TIENEN ANCHO DEFINIDO */
 .col-stat { text-align: center; }
 .col-syn  { width: 10%; text-align: center; }
 .col-weak { width: 10%; text-align: center; }
@@ -163,7 +164,7 @@ tbody .col-win-val, tbody .col-pick-val, tbody .col-ban-val {
 }
 
 .champion span {
-  font-size: 11px; /* Ajustado a 11px para que combine con el resto de la tabla */
+  font-size: 11px; 
   font-weight: bold;
 }
 
@@ -182,7 +183,7 @@ tbody .col-win-val, tbody .col-pick-val, tbody .col-ban-val {
   transform: rotate(-45deg);
   color: white;
   font-weight: bold;
-  font-size: 11px; /* Ajustado a 11px */
+  font-size: 11px; 
 }
 
 .tier-S { background: #1c7ed6; }
@@ -191,25 +192,25 @@ tbody .col-win-val, tbody .col-pick-val, tbody .col-ban-val {
 .tier-C { background: #868e96; }
 
 .stat {
-  font-size: 11px; /* Números en 11px */
+  font-size: 11px; 
   color: #a0a0b5;
-  white-space: nowrap; /* Evita saltos de línea extraños */
+  white-space: nowrap; 
 }
 
 .role-cell {
   display: flex;
-  justify-content: center;   /* centra horizontal */
-  align-items: center;       /* centra vertical */
+  justify-content: center;   
+  align-items: center;       
   gap: 6px;
   height: 32px;
 }
 
 .role-cell img {
-  width: 25px;              /* más grande */
+  width: 25px;              
   height: 25px;
   object-fit: contain;
-  opacity: 0.50;            /* transparencia suave */
-  filter: brightness(0.90); /* baja un poco el blanco */
+  opacity: 0.50;            
+  filter: brightness(0.90); 
   transition: all 0.2s ease;
 }
 
@@ -251,9 +252,9 @@ tbody .col-win-val, tbody .col-pick-val, tbody .col-ban-val {
 }
 
 .info-icon {
-  font-size: 26px;   /* 🔥 más grande */
+  font-size: 26px;   
   line-height: 1;
-  margin-top: 14px;   /* 🔥 más abajo */
+  margin-top: 14px;   
 }
 
 .info-content {
@@ -486,7 +487,7 @@ function cleanNumber(val){
 
   return parseFloat(
     val.toString()
-       .replace(/,/g, '')  // quita comas de miles
+       .replace(/,/g, '')  
        .replace('%', '')
        .trim()
   ) || 0;
@@ -669,7 +670,6 @@ document.querySelectorAll(".view-tab").forEach(tab => {
     document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
     document.getElementById(view).classList.add("active");
 
-    // 👉 crear gráfico SOLO cuando entras a "Graficas"
     if (view === "charts" && !chartCreated && allData.length > 0) {
       createChart();
       chartCreated = true;
